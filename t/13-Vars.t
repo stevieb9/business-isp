@@ -64,9 +64,9 @@ _reset();
 
 eval { $vardb->struct( 'asdfasdf' ) } ;
 like (  $@,
-		qr/No such data type/,
-		"struct() is murdered by ISP::Error->bad_data() if asked for an unknown data type"
-	);
+        qr/No such data type/,
+        "struct() is murdered by ISP::Error->bad_data() if asked for an unknown data type"
+    );
 
 _reset();
 
@@ -81,17 +81,17 @@ my @cards = qw ( visa mastercard amex );
 my $bad_card = 'asdf';
 
 for my $card ( @cards ) {
-	
-	# we're only checking for card validity without processing
-	# anything, so we can enable, then disable this
-	
-	my $bank_config = $vardb->ENABLE_BANK_PROCESSING();
+    
+    # we're only checking for card validity without processing
+    # anything, so we can enable, then disable this
+    
+    my $bank_config = $vardb->ENABLE_BANK_PROCESSING();
 
-	$vardb->ENABLE_BANK_PROCESSING( 1 ) if ! $bank_config;
+    $vardb->ENABLE_BANK_PROCESSING( 1 ) if ! $bank_config;
 
-	is ( $vardb->is_credit_card( $card ), 1, "$card is a credit card" );
+    is ( $vardb->is_credit_card( $card ), 1, "$card is a credit card" );
 
-	$vardb->ENABLE_BANK_PROCESSING( 0 ) if ! $bank_config;
+    $vardb->ENABLE_BANK_PROCESSING( 0 ) if ! $bank_config;
 
 }
 is ( $vardb->is_credit_card( $bad_card ), 0, "$bad_card is not a credit card" );
@@ -106,16 +106,16 @@ push @cards, 'unknown';
 my $cc_scalar_cmp_ret;
 
 if ( ( scalar( @cards ) == scalar ( @known_cards ) )) {
-	$cc_scalar_cmp_ret = 1;
+    $cc_scalar_cmp_ret = 1;
 }
 else {
-	$cc_scalar_cmp_ret = 0;
+    $cc_scalar_cmp_ret = 0;
 }
 
 
 is ( $cc_scalar_cmp_ret,
-	0,
-	"We know in a negative sense that we are testing all cards",
+    0,
+    "We know in a negative sense that we are testing all cards",
 );
 
 
@@ -133,18 +133,18 @@ $plan_info{ bad_attribute } = 'blah';
 
 eval { $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error }) };
 like ( $@,
-	 '/is defined, but it has invalid attribute/',
-	 "compare() dies with an ISP::Error when a struct has invalid attrs",
-	);
+     '/is defined, but it has invalid attribute/',
+     "compare() dies with an ISP::Error when a struct has invalid attrs",
+    );
 
 _reset();
 
 delete $plan_info{ username };
 eval { $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error }) };
 like ( $@,
-	 '/defined, but is missing required attributes/',
-	 "compare() dies with an ISP::Error when a struct is missing attrs" 
-	);
+     '/defined, but is missing required attributes/',
+     "compare() dies with an ISP::Error when a struct is missing attrs" 
+    );
 
 _reset();
 
@@ -155,19 +155,19 @@ delete $plan_info{ username };
 my $compare_w_attrs_disabled_ret = $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error });
 
 is ( $compare_w_attrs_disabled_ret, 
-	 0, 
-	 "compare() returns success if FORGIVE_MISSING_ATTRS is enabled " .
-	 "and there are attrs missing, as long as there aren't illegal attrs",
-	);
+     0, 
+     "compare() returns success if FORGIVE_MISSING_ATTRS is enabled " .
+     "and there are attrs missing, as long as there aren't illegal attrs",
+    );
 
 $vardb->FORGIVE_MISSING_ATTRS( 0 );
 
 eval { $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error }) };
 like ( $@,
-	 '/defined, but is missing required attributes/',
-	 "compare() dies with an ISP::Error when a struct is missing attrs " .
-	 "and FORGIVE_MISSING_ATTRS() has been re-enabled",
-	);
+     '/defined, but is missing required attributes/',
+     "compare() dies with an ISP::Error when a struct is missing attrs " .
+     "and FORGIVE_MISSING_ATTRS() has been re-enabled",
+    );
 
 
 #
@@ -184,7 +184,7 @@ sub _clean
 {
  
         undef $user;
-	undef $sanity;
+    undef $sanity;
         undef $error;
 }
 
@@ -192,13 +192,13 @@ sub _reset {
 
         _clean();
 
-    $user  	= ISP::User->new({ username => 'steveb' });
-	$vardb	= ISP::Vars->new();
-	$sanity	= ISP::Sanity->new();
-    $error 	= ISP::Error->new();
+    $user   = ISP::User->new({ username => 'steveb' });
+    $vardb  = ISP::Vars->new();
+    $sanity = ISP::Sanity->new();
+    $error  = ISP::Error->new();
 
-	# we need to enable merchant processing internally
-	# ...I don't have any other ideas currently
+    # we need to enable merchant processing internally
+    # ...I don't have any other ideas currently
 
     %plan_info = (      
           'pap_date' => '',         
@@ -225,8 +225,8 @@ sub _reset {
           'pap_method' => 'None',
           'next_billing_date' => '2009-08-22',
           'expires' => '2009-10-31',
-		  'hours_balance' => '',
-		  'classification' => '',
-	  );
+          'hours_balance' => '',
+          'classification' => '',
+      );
 }
 

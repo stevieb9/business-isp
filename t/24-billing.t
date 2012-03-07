@@ -14,15 +14,15 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # inv
 
-	my $bill = ISP::Billing->new();
+    my $bill = ISP::Billing->new();
 
-	$bill->email_bill({ invoice => 2 });
+    $bill->email_bill({ invoice => 2 });
 
 }
 
 { # renewal notice
 
-	my $bill	= ISP::Billing->new();
+    my $bill    = ISP::Billing->new();
 
-	$bill->renewal_notice({ account_type => 'month' });
+    $bill->renewal_notice({ account_type => 'month' });
 }

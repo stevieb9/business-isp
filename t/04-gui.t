@@ -29,20 +29,20 @@ my $gui;
 sub _clean {
  
     undef $user;
-	undef $sanity;
+    undef $sanity;
     undef $error;
-	undef $gui;
+    undef $gui;
 }
 
 sub _reset {
 
     _clean();
 
-    $user  	= ISP::User->new({ username => 'steveb' });
-	$vardb	= ISP::Vars->new();
-	$sanity	= ISP::Sanity->new();
-    $error 	= ISP::Error->new();
-#	$gui	= ISP::GUI::Accounting->setup();
+    $user   = ISP::User->new({ username => 'steveb' });
+    $vardb  = ISP::Vars->new();
+    $sanity = ISP::Sanity->new();
+    $error  = ISP::Error->new();
+#   $gui    = ISP::GUI::Accounting->setup();
 }
 
 _reset();

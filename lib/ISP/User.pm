@@ -18,15 +18,15 @@ BEGIN {
     # config variables
 
     my @config_vars = qw (
-						PLANA_DEDUCT_ENABLE	
-						PLANA_MIN_HOURS
-						);
+                        PLANA_DEDUCT_ENABLE 
+                        PLANA_MIN_HOURS
+                        );
 
     for my $member ( @config_vars ) {
         no strict 'refs';
            *{ $member } = sub {                              
                 my $self = shift;                       
-				return $self->{ config }{ $member };        
+                return $self->{ config }{ $member };        
             }                                               
     }                                                       
 
@@ -41,12 +41,12 @@ BEGIN {
                 billing_town 
                 billing_province 
                 billing_postal_code 
-				billing_email_address
-				home_phone 
+                billing_email_address
+                home_phone 
                 work_phone 
-				fax
-		
-			); 
+                fax
+        
+            ); 
 
     for my $member ( @rw_attributes ) { 
 
@@ -111,15 +111,15 @@ BEGIN {
 
 sub new {
 
-    my $thing	= shift;
-	my $params	= shift;
+    my $thing   = shift;
+    my $params  = shift;
 
-	my $username	= $params->{ username };
-	my $config		= $params->{ config };
+    my $username    = $params->{ username };
+    my $config      = $params->{ config };
 
-	my $self = ( ref $thing )
-		? $thing
-		: bless {}, $thing;
+    my $self = ( ref $thing )
+        ? $thing
+        : bless {}, $thing;
 
     $self->configure();
 
@@ -131,298 +131,298 @@ sub new {
 }
 sub build_db_user {
 
-    my $self		= shift;
+    my $self        = shift;
     my $username    = shift;
 
-	my $params		= shift;
+    my $params      = shift;
 
     $self->function_orders();
 
-	my $schema		= $self->schema();
+    my $schema      = $self->schema();
 
-	my $client_info_rs 
-		= $schema->resultset( 'Clients' )->search({ username => $username });
+    my $client_info_rs 
+        = $schema->resultset( 'Clients' )->search({ username => $username });
 
-	return if ! $client_info_rs;
+    return if ! $client_info_rs;
 
-	my $client_info 
-		= $self->schema({ result => $client_info_rs, extract => 'href' })->first();
+    my $client_info 
+        = $self->schema({ result => $client_info_rs, extract => 'href' })->first();
 
-	$self->{ info } = $client_info;
+    $self->{ info } = $client_info;
 
     $self->_init_plans();
 
-	return 0;
+    return 0;
 }
 sub client_info {
 
-	my $self		= shift;
-	my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
-	my $client_info = $params->{ client_info };
+    my $client_info = $params->{ client_info };
 
-	my $error		= ( exists $params->{ error } )
-		? $params->{ error }
-		: ISP::Error->new();
+    my $error       = ( exists $params->{ error } )
+        ? $params->{ error }
+        : ISP::Error->new();
 
-	$self->function_orders();
+    $self->function_orders();
 
-	if ( ! $client_info ) {
-		return $self->{ info };
-	}
+    if ( ! $client_info ) {
+        return $self->{ info };
+    }
 
-	my $schema		= $self->schema();
+    my $schema      = $self->schema();
 
-	my $client_info_rs
-		= $schema->resultset( 'Clients' )->search({ username => $self->username() });
+    my $client_info_rs
+        = $schema->resultset( 'Clients' )->search({ username => $self->username() });
 
-	return if ! $client_info_rs;
-	
-	my $existing_client_info = $client_info_rs->first;
+    return if ! $client_info_rs;
+    
+    my $existing_client_info = $client_info_rs->first;
 
-	my $sanity	= ISP::Sanity->new();
+    my $sanity  = ISP::Sanity->new();
 
-	$client_info->{ last_update } = $self->full_date();
-	
-	$sanity->validate_data({
-						type	=> 'user_info',
-						data	=> $client_info,
-						error	=> $error,
-					});
-	
-	return $error if $error->exists;
+    $client_info->{ last_update } = $self->full_date();
+    
+    $sanity->validate_data({
+                        type    => 'user_info',
+                        data    => $client_info,
+                        error   => $error,
+                    });
+    
+    return $error if $error->exists;
 
-	$existing_client_info->update( $client_info );
+    $existing_client_info->update( $client_info );
 
-	return 0;
+    return 0;
 }
 sub add_client {
 
-    my $self		= shift;
-	my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
     $self->function_orders();
 
-	my $client_info = $params->{ client_info };
-	my $error		= $params->{ error };
+    my $client_info = $params->{ client_info };
+    my $error       = $params->{ error };
 
-	# set the allowed blank fields, then the id
+    # set the allowed blank fields, then the id
 
-	my @allowed_blank_fields = qw(
-							billing_address2
-							shipping_address2
-							status
-							work_phone
-							comment
-							fax_phone
-							home_phone
-						);
+    my @allowed_blank_fields = qw(
+                            billing_address2
+                            shipping_address2
+                            status
+                            work_phone
+                            comment
+                            fax_phone
+                            home_phone
+                        );
 
-	for my $field ( @allowed_blank_fields ) {
-		if ( ! exists $client_info->{ $field } ) {
-			$client_info->{ $field } = '';
-		}
-	}
+    for my $field ( @allowed_blank_fields ) {
+        if ( ! exists $client_info->{ $field } ) {
+            $client_info->{ $field } = '';
+        }
+    }
 
-	$client_info->{ id } = '';
-	$client_info->{ last_update } = $self->full_date();
+    $client_info->{ id } = '';
+    $client_info->{ last_update } = $self->full_date();
 
-	my $sanity		= ISP::Sanity->new();
-	$sanity->validate_data({
-					type	=> 'user_info', 
-					data	=> $client_info, 
-					error	=> $error,
-				});
+    my $sanity      = ISP::Sanity->new();
+    $sanity->validate_data({
+                    type    => 'user_info', 
+                    data    => $client_info, 
+                    error   => $error,
+                });
 
-	return $error if $error->exists();
+    return $error if $error->exists();
 
-	# set up the db stuff now, we'll need it for testing
+    # set up the db stuff now, we'll need it for testing
 
-	my $schema = $self->schema();
-	
-	# ensure there isn't already an existing user
-	
-	my $duplicate_user
-		= $schema->resultset( 'Clients' )->search({ username => $client_info->{ username } })->count();
+    my $schema = $self->schema();
+    
+    # ensure there isn't already an existing user
+    
+    my $duplicate_user
+        = $schema->resultset( 'Clients' )->search({ username => $client_info->{ username } })->count();
 
-	if ( $duplicate_user ) {
-	
-		$error->add_trace();
-		$error->add_message( "username $client_info->{ username } already exists in the database" );
-		return $error;
-	}
+    if ( $duplicate_user ) {
+    
+        $error->add_trace();
+        $error->add_message( "username $client_info->{ username } already exists in the database" );
+        return $error;
+    }
 
-	# continue to add the user
+    # continue to add the user
 
-	my $new_client 
-		= $schema->resultset( 'Clients' )->create( $client_info );
-											
-	$new_client->update();
-	
-	# we need to create an entry in the balance db table
+    my $new_client 
+        = $schema->resultset( 'Clients' )->create( $client_info );
+                                            
+    $new_client->update();
+    
+    # we need to create an entry in the balance db table
 
-	my %balance_info = (
-				   username => $client_info->{ username },
-				   balance  => '0.00',
-				 );
+    my %balance_info = (
+                   username => $client_info->{ username },
+                   balance  => '0.00',
+                 );
 
-	my $new_balance
-		= $schema->resultset( 'Balance' )->create( \%balance_info );
+    my $new_balance
+        = $schema->resultset( 'Balance' )->create( \%balance_info );
 
-	$new_balance->update();
+    $new_balance->update();
 
-	return 0;
+    return 0;
 }
 sub delete_client {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $username	= $params->{ username };
-	my $schema		= $self->schema();
+    my $username    = $params->{ username };
+    my $schema      = $self->schema();
 
-	# check to see if the user exists
+    # check to see if the user exists
 
-	my $existing_user
-		= $schema->resultset( 'Clients' )->search({
-											username => $username,
-										});
+    my $existing_user
+        = $schema->resultset( 'Clients' )->search({
+                                            username => $username,
+                                        });
 
-	if ( ! $existing_user->count() ){
-		return 0;
-	}
+    if ( ! $existing_user->count() ){
+        return 0;
+    }
 
-	my $deleted_ok = $existing_user->delete();
+    my $deleted_ok = $existing_user->delete();
 
-	return $deleted_ok;
+    return $deleted_ok;
 }
 sub add_plan {
 
-    my $self	= shift;
-    my $params	= shift;
-	
+    my $self    = shift;
+    my $params  = shift;
+    
     $self->function_orders();
-	
-	my $plan_info   = $params->{ plan_info };
-    my $error		= $params->{ error };
+    
+    my $plan_info   = $params->{ plan_info };
+    my $error       = $params->{ error };
 
-	# I'll leave in the id check and then set it below. This uses
-	# extra resources, but it allows us to be informed when the caller
-	# is doing something dangerous with the id field
+    # I'll leave in the id check and then set it below. This uses
+    # extra resources, but it allows us to be informed when the caller
+    # is doing something dangerous with the id field
 
-	if ( exists $plan_info->{ id } && $plan_info->{ id } ne '' ) {
+    if ( exists $plan_info->{ id } && $plan_info->{ id } ne '' ) {
 
-	my $error_message = "" .
-		"id field must be empty when adding a new plan";
-		$error->bad_data( $error_message );
+    my $error_message = "" .
+        "id field must be empty when adding a new plan";
+        $error->bad_data( $error_message );
     }
 
-	$plan_info->{ last_update } = $self->full_date();
+    $plan_info->{ last_update } = $self->full_date();
 
-	# the started param is for the Conversion function
-	$plan_info->{ started } = ( $params->{ start_date } )
-		? $params->{ start_date }
-		: $self->full_date();
+    # the started param is for the Conversion function
+    $plan_info->{ started } = ( $params->{ start_date } )
+        ? $params->{ start_date }
+        : $self->full_date();
 
-	my $plan_class = $self->plan_classification({ plan => $plan_info->{ plan } });
+    my $plan_class = $self->plan_classification({ plan => $plan_info->{ plan } });
 
-	$plan_info->{ classification } = $plan_class;
+    $plan_info->{ classification } = $plan_class;
 
-	# some fields are allowed to be blank, however, they must
-	# be present to pass sanity checks
+    # some fields are allowed to be blank, however, they must
+    # be present to pass sanity checks
 
-	my @allowed_blank_fields = qw(
-						os
-						billing_period
-						description
-						next_billing_date
-						server
-						hours_balance
-						classification
-					);
+    my @allowed_blank_fields = qw(
+                        os
+                        billing_period
+                        description
+                        next_billing_date
+                        server
+                        hours_balance
+                        classification
+                    );
 
-	for my $field ( @allowed_blank_fields ) {
+    for my $field ( @allowed_blank_fields ) {
 
-		if ( ! exists $plan_info->{ $field } ) {
-			$plan_info->{ $field } = '';
-		}
-	}
+        if ( ! exists $plan_info->{ $field } ) {
+            $plan_info->{ $field } = '';
+        }
+    }
 
     my $sanity = ISP::Sanity->new;
 
     $sanity->validate_data({ 
-				type	=> 'plan_info', 
-				data	=> $plan_info, 
-				error	=> $error,
-			});
+                type    => 'plan_info', 
+                data    => $plan_info, 
+                error   => $error,
+            });
 
     if ( $error->exists() ) {
             $error->add_trace();
             return $error;
     }
 
-	my $schema = $self->schema();
+    my $schema = $self->schema();
 
-	my $new_plan
-		= $schema->resultset( 'Plans' )->create( $plan_info );
-	
-	if ( ! $new_plan->update() ){
+    my $new_plan
+        = $schema->resultset( 'Plans' )->create( $plan_info );
+    
+    if ( ! $new_plan->update() ){
 
-		$error->add_trace();
-		$error->add_message( "The new plan was not added to the database" );
-		$error->data( $plan_info );
-		
-		return $error;
-	}
+        $error->add_trace();
+        $error->add_message( "The new plan was not added to the database" );
+        $error->data( $plan_info );
+        
+        return $error;
+    }
 
-	return 0;
+    return 0;
 }
 sub _init_plans {
 
-    my $self		= shift;
+    my $self        = shift;
 
     $self->function_orders();
    
     my $username    = $self->username();
-	my $schema		= $self->schema();	
+    my $schema      = $self->schema();  
     
-	delete $self->{ plan } if exists $self->{ plan };
+    delete $self->{ plan } if exists $self->{ plan };
 
-	my $plan_info_result
-		= $schema->resultset( 'Plans' )->search({ username => $username });
+    my $plan_info_result
+        = $schema->resultset( 'Plans' )->search({ username => $username });
 
-	$plan_info_result
-		= $self->schema({ result => $plan_info_result, extract => 'href' });
+    $plan_info_result
+        = $self->schema({ result => $plan_info_result, extract => 'href' });
 
-	while ( my $plan_info = $plan_info_result->next() ) {
-		$self->{ plan }{ $plan_info->{ id } } = $plan_info;
-	}
+    while ( my $plan_info = $plan_info_result->next() ) {
+        $self->{ plan }{ $plan_info->{ id } } = $plan_info;
+    }
 
-	return 0;
+    return 0;
 }
 sub username_to_login {
 
-	my $self		= shift;
-	my $plan		= shift;
-	my $username	= shift;
+    my $self        = shift;
+    my $plan        = shift;
+    my $username    = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	# bug 75 workaround (for now)
-	# some users have multiple plans, and a different login_name than
-	# username. To ensure that we pull radius data for the user, we
-	# convert
+    # bug 75 workaround (for now)
+    # some users have multiple plans, and a different login_name than
+    # username. To ensure that we pull radius data for the user, we
+    # convert
 
-	return $username if ! $username;
+    return $username if ! $username;
 
-	if ( $username ne $plan->{ login_name } && $plan->{ login_name } ) {
+    if ( $username ne $plan->{ login_name } && $plan->{ login_name } ) {
 
-		$username = $plan->{ login_name };
-	}
+        $username = $plan->{ login_name };
+    }
 
-	return $username;
+    return $username;
 }
 sub get_plans {
 
@@ -435,7 +435,7 @@ sub get_plans {
 
     while ( my ( $plan_id, $plan_info ) = each ( %{ $self->{ plan } } )) {
 
-		push @plans, $plan_info;
+        push @plans, $plan_info;
     }
 
     return @plans;
@@ -443,738 +443,738 @@ sub get_plans {
 }
 sub get_plan_ids {
 
-	my $self	= shift;
-	
-	$self->function_orders();
+    my $self    = shift;
+    
+    $self->function_orders();
 
-	my @plan_ids = keys %{ $self->{ plan } };
+    my @plan_ids = keys %{ $self->{ plan } };
 
-	return @plan_ids;
+    return @plan_ids;
 }
 sub get_plan {
 
-    my $self	= shift;
-    my $id		= shift;
+    my $self    = shift;
+    my $id      = shift;
 
     $self->function_orders();
 
-	my $schema	= $self->schema();
+    my $schema  = $self->schema();
 
-	my $plan_rs	= $schema->resultset( 'Plans' );
-	
-	if ( ! defined $id ) {
-		# user wants the last id
-		return $plan_rs->count();
-	}
+    my $plan_rs = $schema->resultset( 'Plans' );
+    
+    if ( ! defined $id ) {
+        # user wants the last id
+        return $plan_rs->count();
+    }
 
-	my $plan = $plan_rs->search({ id => $id });
-	
-	return if ! $plan;
+    my $plan = $plan_rs->search({ id => $id });
+    
+    return if ! $plan;
 
-	my $plan_info = $self->schema({ result => $plan, extract => 'href' })->first();
+    my $plan_info = $self->schema({ result => $plan, extract => 'href' })->first();
 
-	return $plan_info; 
+    return $plan_info; 
 }
 sub get_plan_status {
 
-	my $self	= shift;
-	my $plan_id	= shift;
+    my $self    = shift;
+    my $plan_id = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $plan = $self->get_plan( $plan_id );
+    my $plan = $self->get_plan( $plan_id );
 
-	my $plan_status = $plan->{ plan_status };
+    my $plan_status = $plan->{ plan_status };
 
-	return $plan_status;
+    return $plan_status;
 }
 sub change_plan_status {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $plan_id		= $params->{ plan_id };
-	my $error		= $params->{ error };
-	my $operator	= $params->{ operator };
+    my $plan_id     = $params->{ plan_id };
+    my $error       = $params->{ error };
+    my $operator    = $params->{ operator };
 
-	my $plan		= $self->get_plan( $plan_id );
+    my $plan        = $self->get_plan( $plan_id );
 
-	my $current_status	= $plan->{ plan_status };
-	my $status;
+    my $current_status  = $plan->{ plan_status };
+    my $status;
 
-	if ( $current_status eq 'active' ) {
-		$status = 'hold';
-	}
-	else {
-		$status = 'active';
-	}
+    if ( $current_status eq 'active' ) {
+        $status = 'hold';
+    }
+    else {
+        $status = 'active';
+    }
 
-	$plan->{ plan_status } = $status;
+    $plan->{ plan_status } = $status;
 
-	$self->write_plan_changes({
-					error		=> $error,
-					id			=> $plan_id,
-					plan		=> $plan,
-					change		=> 'plan_status',
-				});
+    $self->write_plan_changes({
+                    error       => $error,
+                    id          => $plan_id,
+                    plan        => $plan,
+                    change      => 'plan_status',
+                });
 
-	$self->add_notes({
-				note	=> "Plan $plan_id changed from $current_status to $status",
-				tag		=> 'plan_status_change',
-				operator	=> $operator,
-			});
+    $self->add_notes({
+                note    => "Plan $plan_id changed from $current_status to $status",
+                tag     => 'plan_status_change',
+                operator    => $operator,
+            });
 
-	return 0;
+    return 0;
 }
 sub plan_password {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $id		= $params->{ plan_id };
-	return 1 if ! $id;
+    my $id      = $params->{ plan_id };
+    return 1 if ! $id;
 
-	my $new_pw	= $params->{ new_password };
+    my $new_pw  = $params->{ new_password };
 
-	my $schema = $self->schema();
+    my $schema = $self->schema();
 
-	my $pwentry = $schema->resultset( 'Plans' )->find({ id => $id });
-	my $orig_pw = $pwentry->password(); 
+    my $pwentry = $schema->resultset( 'Plans' )->find({ id => $id });
+    my $orig_pw = $pwentry->password(); 
 
-	# return the password if we're not changing it
+    # return the password if we're not changing it
 
-	return $orig_pw if ! $new_pw;
+    return $orig_pw if ! $new_pw;
 
-	$pwentry->password( $new_pw );
-	$pwentry->update();
+    $pwentry->password( $new_pw );
+    $pwentry->update();
 
-	return $self->plan_password();
+    return $self->plan_password();
 }
 sub delete_plan {
 
-	my $self	 = shift;
-	my $id		 = shift;
-	my $operator = shift;
+    my $self     = shift;
+    my $id       = shift;
+    my $operator = shift;
 
-	return 1 if ! defined $id;
+    return 1 if ! defined $id;
 
-	$operator	= ( $operator )
-		? $operator
-		: 'system';
+    $operator   = ( $operator )
+        ? $operator
+        : 'system';
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $schema	= $self->schema();
+    my $schema  = $self->schema();
 
-	my $rs
-		= $schema->resultset( 'Plans' )->search({ id => $id });
-	
-	my $existing_plan	= $rs->first;
+    my $rs
+        = $schema->resultset( 'Plans' )->search({ id => $id });
+    
+    my $existing_plan   = $rs->first;
 
-	return 1 if ! $existing_plan;
+    return 1 if ! $existing_plan;
 
-	my $plan_name		= $existing_plan->plan;
+    my $plan_name       = $existing_plan->plan;
 
-	my $deleted_ok = $existing_plan->delete();
-	
-	if ( $deleted_ok ) {
-		my $note 
-		  = "$plan_name account with the id of $id has been deleted";
+    my $deleted_ok = $existing_plan->delete();
+    
+    if ( $deleted_ok ) {
+        my $note 
+          = "$plan_name account with the id of $id has been deleted";
 
-		$self->add_notes({
-					tag			=> 'system',
-					note		=> $note,
-					operator	=> $operator,
-				});
-	}
-	return 0 if $deleted_ok;
+        $self->add_notes({
+                    tag         => 'system',
+                    note        => $note,
+                    operator    => $operator,
+                });
+    }
+    return 0 if $deleted_ok;
 }
 sub plan_hours {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $error		= $params->{ error };
-	my $id			= $params->{ id };
-	my $quantity	= $params->{ quantity };
+    my $error       = $params->{ error };
+    my $id          = $params->{ id };
+    my $quantity    = $params->{ quantity };
 
-	my $plan		= $self->get_plan( $id );
+    my $plan        = $self->get_plan( $id );
 
-	my $sanity		= ISP::Sanity->new();
-	$sanity->validate_data({ 
-				type	=> 'plan_info', 
-				data	=> $plan, 
-				error	=> $error,
-			});
+    my $sanity      = ISP::Sanity->new();
+    $sanity->validate_data({ 
+                type    => 'plan_info', 
+                data    => $plan, 
+                error   => $error,
+            });
 
-	if ( $error->exists() ) {
-		$error->add_trace();
-		$error->add_message( "Plan ID $id is invalid" );
-		return $error;
-	}
+    if ( $error->exists() ) {
+        $error->add_trace();
+        $error->add_message( "Plan ID $id is invalid" );
+        return $error;
+    }
 
-	if ( $quantity !~ /\d+/ ) {
-		return 1;
-	}
+    if ( $quantity !~ /\d+/ ) {
+        return 1;
+    }
 
-	my $current_hours = $plan->{ hours_balance };
+    my $current_hours = $plan->{ hours_balance };
 
-	return $current_hours if ! $quantity;
+    return $current_hours if ! $quantity;
 
-	my $new_hours = ( $current_hours - $quantity );
+    my $new_hours = ( $current_hours - $quantity );
 
-	return $new_hours;
+    return $new_hours;
 }
 sub modify_plan_expiry {
 
-	use DateTime::Format::Strptime;
+    use DateTime::Format::Strptime;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $error		= $params->{error};
-	my $id			= $params->{id};
-	my $quantity	= $params->{quantity};
+    my $error       = $params->{error};
+    my $id          = $params->{id};
+    my $quantity    = $params->{quantity};
 
-	my $plan		= $self->get_plan( $id );
+    my $plan        = $self->get_plan( $id );
 
-	my $sanity = ISP::Sanity->new();
-	$sanity->validate_data({
-				type	=> 'plan_info', 
-				data	=> $plan, 
-				error	=> $error, 
-			});
+    my $sanity = ISP::Sanity->new();
+    $sanity->validate_data({
+                type    => 'plan_info', 
+                data    => $plan, 
+                error   => $error, 
+            });
 
-	return $error if $error->exists();
+    return $error if $error->exists();
 
-	if ( $plan->{ expires } =~ /0000/ ) {
-		return 1; 
-	}
+    if ( $plan->{ expires } =~ /0000/ ) {
+        return 1; 
+    }
 
-	if ( $quantity !~ /\d+/ ) {
-		return 1;
-	}
+    if ( $quantity !~ /\d+/ ) {
+        return 1;
+    }
 
-	my $operand;
+    my $operand;
 
-	if ( $quantity > 0 ) {
-		$operand = 'add';
-	}
-	elsif ( $quantity < 0 ) {
-		$operand = 'subtract';
-	}
-	else {
-		return 1;
-	}
+    if ( $quantity > 0 ) {
+        $operand = 'add';
+    }
+    elsif ( $quantity < 0 ) {
+        $operand = 'subtract';
+    }
+    else {
+        return 1;
+    }
 
-	my $date_format
-		= new DateTime::Format::Strptime( pattern => '%Y-%m-%d', );
+    my $date_format
+        = new DateTime::Format::Strptime( pattern => '%Y-%m-%d', );
 
-	my $expiry
-		= $date_format->parse_datetime( $plan->{'expires'} );
+    my $expiry
+        = $date_format->parse_datetime( $plan->{'expires'} );
 
-	$expiry->$operand( months => $quantity );
+    $expiry->$operand( months => $quantity );
 
-	$expiry = $expiry->ymd('-');
+    $expiry = $expiry->ymd('-');
 
-	return $expiry;
-}	
+    return $expiry;
+}   
 sub plana_deduction {
 
-	use ISP::Error;
-	use ISP::Sanity;
+    use ISP::Error;
+    use ISP::Sanity;
 
-	use Data::Dumper;
+    use Data::Dumper;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $error		= $params->{ error };
-	
-	# the very first thing we do is ensure that we already haven't
-	# run in this current month
+    my $error       = $params->{ error };
+    
+    # the very first thing we do is ensure that we already haven't
+    # run in this current month
 
-	my $sanity		= ISP::Sanity->new();
-	my $executed = $sanity->audit({
-								operator	=> 'system',
-								runtype		=> 'auto',
-							});
-	
-	if ( $executed ) {
+    my $sanity      = ISP::Sanity->new();
+    my $executed = $sanity->audit({
+                                operator    => 'system',
+                                runtype     => 'auto',
+                            });
+    
+    if ( $executed ) {
 
-		my $message = "plana_deduction has already run this month";
-		$error->bad_data( $message );
-	}
+        my $message = "plana_deduction has already run this month";
+        $error->bad_data( $message );
+    }
 
     my $month;           
-	
-	if ( $params->{ month } ) {        
-		$month = $params->{ month };        
-		if ( $month !~ m{ \A \d{4}-\d{2} \z }xms ){            
-			croak "The 'month' param must be in the form YYYY-MM: $!";        
-		}    
-	}      
-	else {        
-		my $datetime = $self->date();        
-		$datetime->subtract( months => 1 );        
-		$month = $self->date( { get => 'month', datetime => $datetime } );    
-	}
+    
+    if ( $params->{ month } ) {        
+        $month = $params->{ month };        
+        if ( $month !~ m{ \A \d{4}-\d{2} \z }xms ){            
+            croak "The 'month' param must be in the form YYYY-MM: $!";        
+        }    
+    }      
+    else {        
+        my $datetime = $self->date();        
+        $datetime->subtract( months => 1 );        
+        $month = $self->date( { get => 'month', datetime => $datetime } );    
+    }
 
-	my $plan_ids	= $self->plan_members({ plan_name => 'plana', return_id => 1 });
-	my $usernames	= $self->plan_members({ plan_name => 'plana' });
+    my $plan_ids    = $self->plan_members({ plan_name => 'plana', return_id => 1 });
+    my $usernames   = $self->plan_members({ plan_name => 'plana' });
 
-	my $error_flag = 0;
-	my %result;
+    my $error_flag = 0;
+    my %result;
 
-	for my $plan_id ( @$plan_ids ) {
+    for my $plan_id ( @$plan_ids ) {
 
-		my $username	= shift @$usernames;
-		my $user		= ISP::User->new({ username => $username });
+        my $username    = shift @$usernames;
+        my $user        = ISP::User->new({ username => $username });
 
-		my $hours_remaining	
-			= $self->plan_hours({ id => $plan_id, quantity => 0, error => $error });
-	
-		$result{ hours_remaining } += $hours_remaining;
+        my $hours_remaining 
+            = $self->plan_hours({ id => $plan_id, quantity => 0, error => $error });
+    
+        $result{ hours_remaining } += $hours_remaining;
 
-		my $account_plan = $self->get_plan( $plan_id );
-		
-		if ( $error->exists() ) {
-			
-			# we need this flag so we can tell after the loop that an error
-			# has occured
+        my $account_plan = $self->get_plan( $plan_id );
+        
+        if ( $error->exists() ) {
+            
+            # we need this flag so we can tell after the loop that an error
+            # has occured
 
-			$error_flag = 1;
-			
-			$error->add_trace();
-			$error->add_message( "The above fatal errors occurred while trying to perform PlanA deductions on plan $plan_id" );
+            $error_flag = 1;
+            
+            $error->add_trace();
+            $error->add_message( "The above fatal errors occurred while trying to perform PlanA deductions on plan $plan_id" );
 
-			# this resets the error exists bit back to zero, so that
-			# this if statement doesn't trigger on subsequent runs.
-			# we re-enable it (if necessary) after the for loop
+            # this resets the error exists bit back to zero, so that
+            # this if statement doesn't trigger on subsequent runs.
+            # we re-enable it (if necessary) after the for loop
 
-			$error->reset();	
-			
-			next();
-		}
+            $error->reset();    
+            
+            next();
+        }
 
-		my $used_hours	 = ( $user->get_month_hours_used({ plan => $account_plan, month => $month }) )
-			? $user->get_month_hours_used({ plan => $account_plan, month => $month })
-			: 0;
+        my $used_hours   = ( $user->get_month_hours_used({ plan => $account_plan, month => $month }) )
+            ? $user->get_month_hours_used({ plan => $account_plan, month => $month })
+            : 0;
 
-		$result{ used_hours } += $used_hours;
-		$result{ total_users }++;
+        $result{ used_hours } += $used_hours;
+        $result{ total_users }++;
 
-		if ( $self->PLANA_DEDUCT_ENABLE() ) {
-			
-			if ( $used_hours < $self->PLANA_MIN_HOURS() ) {
-			
-				$result{ users_under }++;
+        if ( $self->PLANA_DEDUCT_ENABLE() ) {
+            
+            if ( $used_hours < $self->PLANA_MIN_HOURS() ) {
+            
+                $result{ users_under }++;
 
-				my $deducted_hours = ( $self->PLANA_MIN_HOURS - $used_hours );
-				$result{ deducted_hours } += $deducted_hours;
+                my $deducted_hours = ( $self->PLANA_MIN_HOURS - $used_hours );
+                $result{ deducted_hours } += $deducted_hours;
 
-				my $note = "$deducted_hours hours were deducted for the month of $month by the PlanA deduction utility";	
-					
-				$user->add_notes({
-								tag		=> 'system',
-								note	=> $note,
-							});
+                my $note = "$deducted_hours hours were deducted for the month of $month by the PlanA deduction utility";    
+                    
+                $user->add_notes({
+                                tag     => 'system',
+                                note    => $note,
+                            });
 
-				$used_hours = $self->PLANA_MIN_HOURS();
-			}
-		}
+                $used_hours = $self->PLANA_MIN_HOURS();
+            }
+        }
 
-		$used_hours = ( $used_hours * -1 );
+        $used_hours = ( $used_hours * -1 );
 
-	}
+    }
 
-	$error->reset( 1 ) if $error_flag;
-	
-	my $audited = $sanity->audit({
-							complete	=> 1,
-							operator	=> 'system',
-							runtype		=> 'auto',
-					});
+    $error->reset( 1 ) if $error_flag;
+    
+    my $audited = $sanity->audit({
+                            complete    => 1,
+                            operator    => 'system',
+                            runtype     => 'auto',
+                    });
 
-	if ( ! $audited ) {
-		my $message = "plana_deduction ran, but it could not be audited...update the log manually";
-		$error->bad_data( $message );
-	}
+    if ( ! $audited ) {
+        my $message = "plana_deduction ran, but it could not be audited...update the log manually";
+        $error->bad_data( $message );
+    }
 
-	my @return;
+    my @return;
 
-	push @return, \%result;
-	push (@return, $error) if $error->exists();
+    push @return, \%result;
+    push (@return, $error) if $error->exists();
 
-	return \@return;
+    return \@return;
 }
 sub add_notes {
 
-	my $self		= shift;
-	my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $note		= $params->{ note };
+    my $note        = $params->{ note };
 
-	my $operator	= ( $params->{ operator } ) 
-		? $params->{ operator }	
-		: 'system';
+    my $operator    = ( $params->{ operator } ) 
+        ? $params->{ operator } 
+        : 'system';
 
-	my $tag			= ( $params->{ tag } )
-		? $params->{ tag }
-		: 'unclassified';
+    my $tag         = ( $params->{ tag } )
+        ? $params->{ tag }
+        : 'unclassified';
 
-	my $date		= ( $params->{ date } )
-		? $params->{ date }
-		: $self->full_date();
+    my $date        = ( $params->{ date } )
+        ? $params->{ date }
+        : $self->full_date();
 
-	my %default_tags;
+    my %default_tags;
 
-	$default_tags{ non_payment }		= "Note added as a reminder that this account is in arrears";
-	$default_tags{ password_change }	= "Clients password changed from original default";
-	$default_tags{ resolved }			= "Issues relating to the last note have been resolved";
+    $default_tags{ non_payment }        = "Note added as a reminder that this account is in arrears";
+    $default_tags{ password_change }    = "Clients password changed from original default";
+    $default_tags{ resolved }           = "Issues relating to the last note have been resolved";
 
-	$note = $default_tags{ $tag } if ! $note;
+    $note = $default_tags{ $tag } if ! $note;
 
-	return 1 if ! $note;
-	
-	# prepend a newline so the notes look cleaner
-	$note = "\n\n" . $note;
+    return 1 if ! $note;
+    
+    # prepend a newline so the notes look cleaner
+    $note = "\n\n" . $note;
 
-	my $username	= $self->username();
+    my $username    = $self->username();
 
-	#id			=> '',
-	my %note_entry = (
-				tag			=> $tag,
-				date		=> $date,
-				operator	=> $operator,
-				username	=> $username,
-				note		=> $note,
-			);
+    #id         => '',
+    my %note_entry = (
+                tag         => $tag,
+                date        => $date,
+                operator    => $operator,
+                username    => $username,
+                note        => $note,
+            );
 
-	my $schema = $self->schema();
+    my $schema = $self->schema();
 
-	my $new_notes	= $schema->resultset( 'Notes' )->create( \%note_entry );
-	my $result_ok	= $new_notes->update();
+    my $new_notes   = $schema->resultset( 'Notes' )->create( \%note_entry );
+    my $result_ok   = $new_notes->update();
 
-	if ( $result_ok ) {
-		return 0;
-	}
-	else {
-		return 1;
-	}
+    if ( $result_ok ) {
+        return 0;
+    }
+    else {
+        return 1;
+    }
 }
 sub get_notes {
 
-	my $self		= shift;
-	my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $note_id		= $params->{ id };
+    my $note_id     = $params->{ id };
 
-	my $schema		= $self->schema();
+    my $schema      = $self->schema();
 
-	# return a single record if we received a note id
+    # return a single record if we received a note id
 
-	if ( defined $note_id ) {
-		
-		my $note = $schema->resultset( 'Notes' )->search({ id => $note_id });
-		my $note_data = $self->schema({ result => $note, extract => 'href' })->first();
+    if ( defined $note_id ) {
+        
+        my $note = $schema->resultset( 'Notes' )->search({ id => $note_id });
+        my $note_data = $self->schema({ result => $note, extract => 'href' })->first();
 
-		return $note_data if $note_data;
+        return $note_data if $note_data;
 
-		return;
-	}
+        return;
+    }
 
-	# otherwise, return all notes for the current user
+    # otherwise, return all notes for the current user
 
-	my $notes = $schema->resultset( 'Notes' )->search( 
-												{ username => $self->username() }, 
-												{ order_by	=> 'id DESC' },
-											);
-	
-	$notes = $self->schema({ result => $notes, extract => 'href' });
+    my $notes = $schema->resultset( 'Notes' )->search( 
+                                                { username => $self->username() }, 
+                                                { order_by  => 'id DESC' },
+                                            );
+    
+    $notes = $self->schema({ result => $notes, extract => 'href' });
 
-	my @user_notes;
+    my @user_notes;
 
-	while ( my $note = $notes->next() ) {
-		push @user_notes, $note;
-	}
+    while ( my $note = $notes->next() ) {
+        push @user_notes, $note;
+    }
 
-	return \@user_notes if $user_notes[0];
+    return \@user_notes if $user_notes[0];
 
-	return;
+    return;
 }
 sub delete_notes {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $id		= $params->{ id };
+    my $id      = $params->{ id };
 
-	return 1 unless $id;
+    return 1 unless $id;
 
-	my $schema = $self->schema();
+    my $schema = $self->schema();
 
-	my $existing_note
-		= $schema->resultset( 'Notes' )->find({ id => $id });
+    my $existing_note
+        = $schema->resultset( 'Notes' )->find({ id => $id });
 
-	my $deleted_ok = $existing_note->delete();	
+    my $deleted_ok = $existing_note->delete();  
 
-	return 0 if $deleted_ok;
+    return 0 if $deleted_ok;
 
-	return 1;
+    return 1;
 }
 sub write_plan_changes {
 
-	use ISP::Sanity;
+    use ISP::Sanity;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $error			= $params->{ error };
-	my $id				= $params->{ id };
-	my $updated_plan	= $params->{ plan };
-	my $field_to_change	= $params->{ change };
+    my $error           = $params->{ error };
+    my $id              = $params->{ id };
+    my $updated_plan    = $params->{ plan };
+    my $field_to_change = $params->{ change };
 
-	my $sanity	= ISP::Sanity->new();
+    my $sanity  = ISP::Sanity->new();
 
-	$sanity->validate_data({ 
-				type	=> 'plan_info', 
-				data	=> $updated_plan, 
-				error	=> $error, 
-			});
+    $sanity->validate_data({ 
+                type    => 'plan_info', 
+                data    => $updated_plan, 
+                error   => $error, 
+            });
 
-	return $error if $error->exists();
-	
-	$self->function_orders();
+    return $error if $error->exists();
+    
+    $self->function_orders();
 
-	unless (defined $error) {
-		$error = ISP::Error->new();
-		$error->bad_api();
+    unless (defined $error) {
+        $error = ISP::Error->new();
+        $error->bad_api();
     }
 
-	# if there is more than one field that the caller wants changed
-	# they've passed in an array
+    # if there is more than one field that the caller wants changed
+    # they've passed in an array
 
-	my $schema	= $self->schema();
-	my $table	= $schema->resultset( 'Plans' )->find({ id => $id });
+    my $schema  = $self->schema();
+    my $table   = $schema->resultset( 'Plans' )->find({ id => $id });
 
-	if ( ref $field_to_change eq 'ARRAY' ) {
+    if ( ref $field_to_change eq 'ARRAY' ) {
 
-		for my $changed_field ( @$field_to_change ) {
-	
-			$table->$changed_field( $updated_plan->{ $changed_field } );
-			$table->update();
-		}
-	}	
-	else {
-		
-		# only a single field to change
+        for my $changed_field ( @$field_to_change ) {
+    
+            $table->$changed_field( $updated_plan->{ $changed_field } );
+            $table->update();
+        }
+    }   
+    else {
+        
+        # only a single field to change
 
-		$table->$field_to_change( $updated_plan->{ $field_to_change } );
-		$table->update();
-	}
+        $table->$field_to_change( $updated_plan->{ $field_to_change } );
+        $table->update();
+    }
 
-	$self->last_plan_update( $id );
+    $self->last_plan_update( $id );
 
-	return 0;
+    return 0;
 }
 sub get_client_list {
 
-	my $self	= shift;
+    my $self    = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $schema	= $self->schema();
-	
-	my $rs			= $schema->resultset( 'Clients' )->get_column( 'username' );
-	my @client_list = $rs->all();
-		
-	return @client_list;
+    my $schema  = $self->schema();
+    
+    my $rs          = $schema->resultset( 'Clients' )->get_column( 'username' );
+    my @client_list = $rs->all();
+        
+    return @client_list;
 }
 sub plan_members {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $plan_name = $params->{ plan_name };
-	my $return_id = $params->{ return_id };
-	my $status	  = ( $params->{ status } )
-		? $params->{ status }
-		: 'active';
-		
-	my $schema	= $self->schema();
+    my $plan_name = $params->{ plan_name };
+    my $return_id = $params->{ return_id };
+    my $status    = ( $params->{ status } )
+        ? $params->{ status }
+        : 'active';
+        
+    my $schema  = $self->schema();
 
-	# if the caller wants just the ids all of the plans within
-	# a specific group, we'll return just that
+    # if the caller wants just the ids all of the plans within
+    # a specific group, we'll return just that
 
-	if ( $return_id ) {
+    if ( $return_id ) {
 
-		my $rs = $schema->resultset( 'Plans' )->search(
-									{ plan => { -like => "%$plan_name%" }},
-									{ plan_status => $status },
-								);
-		my @ids;
+        my $rs = $schema->resultset( 'Plans' )->search(
+                                    { plan => { -like => "%$plan_name%" }},
+                                    { plan_status => $status },
+                                );
+        my @ids;
 
-		while ( my $record = $rs->next ) {
-			push @ids, $record->id;
-		}
+        while ( my $record = $rs->next ) {
+            push @ids, $record->id;
+        }
 
-		return \@ids;
-	}
+        return \@ids;
+    }
 
-	# otherwise, the caller wants the list of usernames
+    # otherwise, the caller wants the list of usernames
 
-	my $rs	= $schema->resultset( 'Plans' )->search({
-									plan => { -like => "%$plan_name%" },
-									plan_status => $status,
-								});
-	my @plan_members;											
+    my $rs  = $schema->resultset( 'Plans' )->search({
+                                    plan => { -like => "%$plan_name%" },
+                                    plan_status => $status,
+                                });
+    my @plan_members;                                           
 
-	while ( my $record = $rs->next ) {
-		push @plan_members, $record->username;	
-   }	
+    while ( my $record = $rs->next ) {
+        push @plan_members, $record->username;  
+   }    
 
     return \@plan_members;
 }
 sub get_monthly_login_totals {
 
-	use ISP::RADIUS;
+    use ISP::RADIUS;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $plan		= $params->{ plan };
-	my $plan_name	= $plan->{ plan };
-	my $class		= $self->plan_classification({ plan => $plan_name });
-	my $stats;
-	
-	my $username = $self->username();
-	$username	 = $self->username_to_login( $plan, $username );
+    my $plan        = $params->{ plan };
+    my $plan_name   = $plan->{ plan };
+    my $class       = $self->plan_classification({ plan => $plan_name });
+    my $stats;
+    
+    my $username = $self->username();
+    $username    = $self->username_to_login( $plan, $username );
 
-	if ( $class ) {
-		my $radius	= ISP::RADIUS->new();
+    if ( $class ) {
+        my $radius  = ISP::RADIUS->new();
 
-		$stats	
-			= $radius->monthly_login_totals({
-								username	=> $username,
-								nas			=> $class,
-							});
-	}
-	
-	return $stats;
+        $stats  
+            = $radius->monthly_login_totals({
+                                username    => $username,
+                                nas         => $class,
+                            });
+    }
+    
+    return $stats;
 }
 sub get_month_hours_used {
-	
-	use ISP::RADIUS;
+    
+    use ISP::RADIUS;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $plan		= $params->{ plan };
-	my $plan_name	= $plan->{ plan };
+    my $plan        = $params->{ plan };
+    my $plan_name   = $plan->{ plan };
 
-	my $class	= $self->plan_classification({ plan => $plan });
-	my $month	= $params->{ month };
+    my $class   = $self->plan_classification({ plan => $plan });
+    my $month   = $params->{ month };
 
-	my $username = $self->username();
+    my $username = $self->username();
 
-	$username = $self->username_to_login( $plan, $username );
+    $username = $self->username_to_login( $plan, $username );
 
-	my $radius	= ISP::RADIUS->new();
-	
-	if ( $month ) {
-	
-		my $hours_used 
-		  = $radius->month_hours_used({ username => $username, nas => $class, month => $month });
-	
-		return $hours_used;
-	}
+    my $radius  = ISP::RADIUS->new();
+    
+    if ( $month ) {
+    
+        my $hours_used 
+          = $radius->month_hours_used({ username => $username, nas => $class, month => $month });
+    
+        return $hours_used;
+    }
 
-	my $hours_used = $radius->month_hours_used({ username => $username, nas => $class });
+    my $hours_used = $radius->month_hours_used({ username => $username, nas => $class });
 
-	return $hours_used;
+    return $hours_used;
 }
 sub plan_classification {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $plan	= $params->{ plan };
+    my $plan    = $params->{ plan };
 
-	my $vardb	= ISP::Vars->new();
-	
-	my $class 
-		= $vardb->plan_classification({ plan => $plan });
+    my $vardb   = ISP::Vars->new();
+    
+    my $class 
+        = $vardb->plan_classification({ plan => $plan });
 
-	return $class;
-	
+    return $class;
+    
 }
 sub last_plan_update {
 
-	my $self	= shift;
-	my $plan_id	= shift;
-	
-	$self->function_orders();
+    my $self    = shift;
+    my $plan_id = shift;
+    
+    $self->function_orders();
 
-	my $date	= $self->full_date();
-	my $schema	= $self->schema();
+    my $date    = $self->full_date();
+    my $schema  = $self->schema();
 
-	my $plan	= $schema->resultset( 'Plans' )->find({ id => $plan_id });
-	
-	return 0 if $plan->last_update( $date );
+    my $plan    = $schema->resultset( 'Plans' )->find({ id => $plan_id });
+    
+    return 0 if $plan->last_update( $date );
 
-	return;
+    return;
 }
 sub radius_password {
 
-	use ISP::RADIUS;
+    use ISP::RADIUS;
 
-	my $self		= shift;
-	my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $new_pw		= $params->{ password };
+    my $new_pw      = $params->{ password };
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $radius		= ISP::RADIUS->new();
+    my $radius      = ISP::RADIUS->new();
 
-	# return if getter
-	return $radius->password({ username => $self->username() }) if ! $new_pw;
+    # return if getter
+    return $radius->password({ username => $self->username() }) if ! $new_pw;
 
-	my $password =  $radius->password({
-							username => $self->username(), 
-							password => $new_pw, 
-						});
+    my $password =  $radius->password({
+                            username => $self->username(), 
+                            password => $new_pw, 
+                        });
 
-	return $password;
+    return $password;
 }
 
 sub DESTROY {

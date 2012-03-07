@@ -10,8 +10,8 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
 
-	use_ok( 'ISP::Sanity' );
-	use_ok( 'ISP::Error' );
+    use_ok( 'ISP::Sanity' );
+    use_ok( 'ISP::Error' );
 
 # Declarations go here, but defs in the 'maintenance' area
 
@@ -22,16 +22,16 @@ my $error;
 
 sub _clean {
  
-	undef $sanity;
-	undef $error;
+    undef $sanity;
+    undef $error;
 }
 
 sub _reset {
 
     _clean();
 
-	$sanity	= ISP::Sanity->new();
-	$error	= ISP::Error->new();
+    $sanity = ISP::Sanity->new();
+    $error  = ISP::Error->new();
 }
 
 # Tests go below _nothing();
@@ -46,11 +46,11 @@ sub _nothing {} # placeholder for vim folds. Tests below...
 
 { # check against empty string in Sanity check_username()
 
-	_reset();
+    _reset();
 
-	my $username = '';
+    my $username = '';
 
-	my $return = $sanity->check_username( 'un', $username, $error );
+    my $return = $sanity->check_username( 'un', $username, $error );
 
-	is ( $return, 1, "ISP::Sanity check_username does not allow the empty string as a param" );
+    is ( $return, 1, "ISP::Sanity check_username does not allow the empty string as a param" );
 }

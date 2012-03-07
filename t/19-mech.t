@@ -18,16 +18,16 @@ my $obj;
 
 sub _clean {
  
-	undef $mech;
-	undef $obj;
+    undef $mech;
+    undef $obj;
 }
 
 sub _reset {
 
     _clean();
 
-	$obj = ISP::Object->new();
-	$mech = WWW::Mechanize->new();
+    $obj = ISP::Object->new();
+    $mech = WWW::Mechanize->new();
 }
 
 sub _nothing{} # placeholder
@@ -40,33 +40,33 @@ sub _nothing{} # placeholder
 
 {
 
-	_reset();
+    _reset();
 
-	my $url = $obj->ACCT_APP();
+    my $url = $obj->ACCT_APP();
 
-	$mech->get( $url );
+    $mech->get( $url );
 
-	like ( 	$mech->content(),
-			qr/Operator Name:/,
-			"login() run_mode requests a username"
-		);
+    like (  $mech->content(),
+            qr/Operator Name:/,
+            "login() run_mode requests a username"
+        );
 
-	like (  $mech->content(),
-			qr/Password:/,
-			"login() run_mode requests an operator"
-		);
+    like (  $mech->content(),
+            qr/Password:/,
+            "login() run_mode requests an operator"
+        );
 
-	$mech->submit_form(
-		form_number	=> 1,
-		fields		=> {
-				operator => 'ssssssssssssssssssssssixxxxxxxxxeve',
-				password => '',
-			}
-	);
+    $mech->submit_form(
+        form_number => 1,
+        fields      => {
+                operator => 'ssssssssssssssssssssssixxxxxxxxxeve',
+                password => '',
+            }
+    );
 
-	like (  $mech->content(),
-			qr/Error messages:/,
-			"A bad operator id in login() results in an Error"
-		);
+    like (  $mech->content(),
+            qr/Error messages:/,
+            "A bad operator id in login() results in an Error"
+        );
 
 }

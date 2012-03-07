@@ -17,14 +17,14 @@ my $sanity;
 
 sub _clean {
  
-	undef $sanity;
+    undef $sanity;
 }
 
 sub _reset {
 
     _clean();
 
-	$sanity	= ISP::Sanity->new({ new({ config => 'ISP.conf-dist' }) });
+    $sanity = ISP::Sanity->new({ new({ config => 'ISP.conf-dist' }) });
 }
 
 # Tests go below _nothing();

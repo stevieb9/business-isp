@@ -6,12 +6,12 @@ __PACKAGE__->load_components( qw/Core/ );
 __PACKAGE__->table( 'audit' );
 
 __PACKAGE__->add_columns( qw(
-						id
-						process
-						date
-						type
-						schedule
-						operator
-					));
+                        id
+                        process
+                        date
+                        type
+                        schedule
+                        operator
+                    ));
 
 __PACKAGE__->set_primary_key( qw/ id / );

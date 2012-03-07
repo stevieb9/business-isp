@@ -10,8 +10,8 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  	use_ok( 'ISP::Sanity' );
-	use_ok( 'ISP::Error' );
+    use_ok( 'ISP::Sanity' );
+    use_ok( 'ISP::Error' );
 
 # Declarations go here
 
@@ -28,16 +28,16 @@ EOT
 
 sub _clean {
  
-	undef $sanity;
-	undef $error;
+    undef $sanity;
+    undef $error;
 }
 
 sub _reset {
 
     _clean();
 
-	$sanity	= ISP::Sanity->new();
-	$error	= ISP::Error->new();
+    $sanity = ISP::Sanity->new();
+    $error  = ISP::Error->new();
 }
 
 # Tests go below _nothing();
@@ -45,14 +45,14 @@ sub _reset {
 sub _nothing {} # placeholder for vim folds. Tests below...
 
 {
-	_reset();
+    _reset();
 
-	my $un_ret = $sanity->check_username( 'un', '_aaaaa', $error );
+    my $un_ret = $sanity->check_username( 'un', '_aaaaa', $error );
 
-	is ( $un_ret, 1, "Sanity check_username() notes a problem and returns 1 " .
-					 "when a username preceeded with _ is passed in, and all " .
-					 "other checks have passed"
-		);
+    is ( $un_ret, 1, "Sanity check_username() notes a problem and returns 1 " .
+                     "when a username preceeded with _ is passed in, and all " .
+                     "other checks have passed"
+        );
 
 
 }

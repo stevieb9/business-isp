@@ -15,32 +15,32 @@ use Time::HiRes 'time';
     # constants
 
     my @constants = qw (
-			UNDEF
-			CAPTCHA_LENGTH
-			BANK_TEST_MODE
-			ENABLE_BANK_PROCESSING
-			TEMPLATE_DIR
+            UNDEF
+            CAPTCHA_LENGTH
+            BANK_TEST_MODE
+            ENABLE_BANK_PROCESSING
+            TEMPLATE_DIR
             CONFIG_DIR
-			CURRENT_CONFIG_FILE
-			ACCT_APP
-			HTML_MANUAL_LOCATION
-			SOURCE_REPO_LINK
-			IN_TEST_MODE
-			HST
-			GST
+            CURRENT_CONFIG_FILE
+            ACCT_APP
+            HTML_MANUAL_LOCATION
+            SOURCE_REPO_LINK
+            IN_TEST_MODE
+            HST
+            GST
             PST
-			VERSION
-			DISABLE_ALL_CODE_DEBUG
-			TIMEZONE
-		);
+            VERSION
+            DISABLE_ALL_CODE_DEBUG
+            TIMEZONE
+        );
 
     for my $member (@constants) {
         no strict 'refs';
 
         *{$member} = sub {
             my $self = shift;
-			$self->{config}{$member} = shift if @_;
-			return $self->{config}{$member};
+            $self->{config}{$member} = shift if @_;
+            return $self->{config}{$member};
         }
     }
 }
@@ -55,7 +55,7 @@ use Time::HiRes 'time';
 
         sub CODEFLOW {
             my $self = shift;
-			my $skip = @_;
+            my $skip = @_;
             return \$codeflow_storage if $skip;
 
             my ($rest, $user_param) = @_;
@@ -84,7 +84,7 @@ use Time::HiRes 'time';
 
             my $self = shift;
 
-			my $skip = @_;
+            my $skip = @_;
             return @stack if $skip;
 
             my $caller = (caller(3))[3] ? (caller(3))[3] : 0;
@@ -101,7 +101,7 @@ use Time::HiRes 'time';
         sub GET_STACK_TRACING {
 
             my $self = shift;
-			return @stack;
+            return @stack;
         }
     }
 
@@ -109,7 +109,7 @@ use Time::HiRes 'time';
 
         sub MASTER_DISPATCH {
             my $self = shift;
-			return $master_dispatch;
+            return $master_dispatch;
         }
     }
 }
@@ -118,90 +118,90 @@ sub new {
 
     use Config::Tiny;
 
-    my $class 	= shift;
-	my $params	= shift;
+    my $class   = shift;
+    my $params  = shift;
 
-	my $self  = bless {}, $class;
+    my $self  = bless {}, $class;
 
-	# configuration file bootstrap
+    # configuration file bootstrap
 
-	my @locations = qw( env param default );
+    my @locations = qw( env param default );
 
-	my $conf_file;
+    my $conf_file;
 
-	if ( exists $ENV{'ISP_CONFIG'} ) {
-		$conf_file = $ENV{'ISP_CONFIG'};
-	}
-	elsif ( exists $params->{ config } ) {
-		$conf_file = $params->{ config };
-	}
-	else {
-		$conf_file = '/usr/local/etc/ISP.conf';
-	}
+    if ( exists $ENV{'ISP_CONFIG'} ) {
+        $conf_file = $ENV{'ISP_CONFIG'};
+    }
+    elsif ( exists $params->{ config } ) {
+        $conf_file = $params->{ config };
+    }
+    else {
+        $conf_file = '/usr/local/etc/ISP.conf';
+    }
 
-		
-	my $config = Config::Tiny->read( $conf_file );
+        
+    my $config = Config::Tiny->read( $conf_file );
 
-	# class specific
+    # class specific
     
-	if ( $class =~ /ISP::GUI/ ) {
-	
-		my $gui_base = 'ISP::GUI::Base';
-		
-		while ( my ( $key, $value ) = each ( %{ $config->{ $gui_base } } )) {
-				$key = uc $key;
-				$self->{ config }{ $key } = $value;
-		}
-	}
+    if ( $class =~ /ISP::GUI/ ) {
+    
+        my $gui_base = 'ISP::GUI::Base';
+        
+        while ( my ( $key, $value ) = each ( %{ $config->{ $gui_base } } )) {
+                $key = uc $key;
+                $self->{ config }{ $key } = $value;
+        }
+    }
 
-	while ( my ($key, $value) = each (%{$config->{$class}})) {
-	    $key = uc $key;
+    while ( my ($key, $value) = each (%{$config->{$class}})) {
+        $key = uc $key;
         $self->{config}{$key} = $value;
     }
 
-	# version
-	while ( my ($key, $value) = each (%{$config->{'Version'}})) {
-    	$key = uc $key;
-		$self->{config}{$key} = $value;
+    # version
+    while ( my ($key, $value) = each (%{$config->{'Version'}})) {
+        $key = uc $key;
+        $self->{config}{$key} = $value;
     }
-	
-	# database
-	while ( my ( $key, $value ) = each ( %{ $config->{ 'Database' } } )){
-		$key = uc $key;
-		$self->{ database }{ $key } = $value;
-	}
-	{ # database symtab entries
+    
+    # database
+    while ( my ( $key, $value ) = each ( %{ $config->{ 'Database' } } )){
+        $key = uc $key;
+        $self->{ database }{ $key } = $value;
+    }
+    { # database symtab entries
 
-		for my $member ( keys %{ $self->{ database } } ){
-			no strict 'refs';
+        for my $member ( keys %{ $self->{ database } } ){
+            no strict 'refs';
 
-			*{ $member } = sub {
-				my $self = shift;
-				$self->{ database }{ $member } = shift if @_;
-				return $self->{ database }{ $member };
-			}
-		}
-	}
+            *{ $member } = sub {
+                my $self = shift;
+                $self->{ database }{ $member } = shift if @_;
+                return $self->{ database }{ $member };
+            }
+        }
+    }
 
-	# inject the config file into the object
-	$config->{ Constants }{ current_config_file } = $conf_file;
+    # inject the config file into the object
+    $config->{ Constants }{ current_config_file } = $conf_file;
 
-	# constants
+    # constants
     while ( my ($key, $value) = each (%{$config->{'Constants'}})) {
     $key = uc $key;
             $self->{config}{$key} = $value;
     }
-	
-	# global
+    
+    # global
     while ( my ($tag, $rest) = each ( %{$config->{'Global'}} )) {
 
             $tag = uc $tag;
             if ($rest) {
-					$self->{dispatch}{$tag} = MASTER_DISPATCH()->{$tag};
+                    $self->{dispatch}{$tag} = MASTER_DISPATCH()->{$tag};
             }
     }
 
-	#$self->function_orders();
+    #$self->function_orders();
 
     return $self;
 }
@@ -212,23 +212,23 @@ sub configure {
     my $object = shift;
     my $class  = ref $object;
 
-	$object->function_orders();
+    $object->function_orders();
 
-	my $params = shift;
+    my $params = shift;
 
-	my $conf_file;
+    my $conf_file;
 
-	if ( exists $ENV{'ISP_CONFIG'} ) {
-		$conf_file = $ENV{'ISP_CONFIG'};
-	}
-	elsif ( exists $params->{ config } ) {
-		$conf_file = $params->{ config };
-	}
-	else {	
-		$conf_file = '/usr/local/etc/ISP.conf';
-	}
+    if ( exists $ENV{'ISP_CONFIG'} ) {
+        $conf_file = $ENV{'ISP_CONFIG'};
+    }
+    elsif ( exists $params->{ config } ) {
+        $conf_file = $params->{ config };
+    }
+    else {  
+        $conf_file = '/usr/local/etc/ISP.conf';
+    }
 
-	return 1 if ! -e $conf_file;
+    return 1 if ! -e $conf_file;
 
     my $config = Config::Tiny->read( $conf_file );
 
@@ -237,87 +237,87 @@ sub configure {
         $object->{config}{$key} = $value;
     }
 
-	# email
+    # email
 
-#	while ( my ( $key, $value ) = each ( %{ $config->{ 'Email' } } )) {
-#		$key = uc $key;
-#		$object->{ email }{ $key } = $value;
-#	}
+#   while ( my ( $key, $value ) = each ( %{ $config->{ 'Email' } } )) {
+#       $key = uc $key;
+#       $object->{ email }{ $key } = $value;
+#   }
 
-#	{ # email symtab entries
+#   { # email symtab entries
 
-#		no warnings 'redefine';
+#       no warnings 'redefine';
 
-#		for my $member ( keys %{ $object->{ email }} ) {
-#			no strict 'refs';
+#       for my $member ( keys %{ $object->{ email }} ) {
+#           no strict 'refs';
 
-#			*{ $member } = sub {
-#				my $object = shift;
-#				$object->{ email }{ $member } = shift if @_;
-#				return $object->{ email }{ $member };
-#			}
-#		}
-#	}
+#           *{ $member } = sub {
+#               my $object = shift;
+#               $object->{ email }{ $member } = shift if @_;
+#               return $object->{ email }{ $member };
+#           }
+#       }
+#   }
 
-	# database
-	while ( my ( $key, $value ) = each ( %{ $config->{ 'Database' } } )){
-		$key = uc $key;
-		$object->{ database }{ $key } = $value;
-	}
-	{ # database symtab entries
+    # database
+    while ( my ( $key, $value ) = each ( %{ $config->{ 'Database' } } )){
+        $key = uc $key;
+        $object->{ database }{ $key } = $value;
+    }
+    { # database symtab entries
 
-		no warnings 'redefine';
+        no warnings 'redefine';
 
-		for my $member ( keys %{ $object->{ database } } ){
-			no strict 'refs';
+        for my $member ( keys %{ $object->{ database } } ){
+            no strict 'refs';
 
-			*{ $member } = sub {
-				my $object = shift;
-				$object->{ database }{ $member } = shift if @_;
-				return $object->{ database }{ $member };
-			} 
-		}
-	}
+            *{ $member } = sub {
+                my $object = shift;
+                $object->{ database }{ $member } = shift if @_;
+                return $object->{ database }{ $member };
+            } 
+        }
+    }
 
-	# inject the config file
-	
-	$config->{ Constants }{ current_config_file } = $conf_file;
+    # inject the config file
+    
+    $config->{ Constants }{ current_config_file } = $conf_file;
 
     while ( my ($key, $value) = each (%{$config->{'Constants'}})) {
-	    $key = uc $key;
+        $key = uc $key;
         $object->{config}{$key} = $value;
     }
 
     while ( my ($tag, $rest) = each ( %{$config->{'Global'}} )) {
  
-	    $tag = uc $tag;
+        $tag = uc $tag;
         if ($rest) {
             $object->{dispatch}{$tag} = MASTER_DISPATCH()->{$tag};
         }
     }
 
-	return 0;
+    return 0;
 }
 sub date {
 
     use DateTime;
     
-	my $self    = shift;
+    my $self    = shift;
     my $params  = shift;    
-	
-	if ( exists $params->{ get } && $params->{ get } !~ m{ \A (day|month|year) \z }xms ) {
+    
+    if ( exists $params->{ get } && $params->{ get } !~ m{ \A (day|month|year) \z }xms ) {
    
         croak "\n\nThe get parameter must be one of 'day', 'month' or 'year': $!";    
-	}    
-	
-	my $get_what = ( $params->{ get } )
+    }    
+    
+    my $get_what = ( $params->{ get } )
         ? $params->{ get }
         : '';
     
-	my $datetime;     
-	
-	if ( $params->{ datetime } ) {        
-		$datetime = $params->{ datetime };
+    my $datetime;     
+    
+    if ( $params->{ datetime } ) {        
+        $datetime = $params->{ datetime };
     }   
     else {
         $datetime = DateTime->now( time_zone => $self->TIMEZONE() );
@@ -352,11 +352,11 @@ sub function_orders {
 
     my $self = shift;
 
-	# bypass if code debugging is disabled
+    # bypass if code debugging is disabled
 
-	return if $self->DISABLE_ALL_CODE_DEBUG();
+    return if $self->DISABLE_ALL_CODE_DEBUG();
     
-	while ( my ($tag, $function) = each ( %{$self->{dispatch}} )) {
+    while ( my ($tag, $function) = each ( %{$self->{dispatch}} )) {
         $self->{dispatch}{$tag}();
     }
 }
@@ -365,48 +365,48 @@ sub build_stack {
     use Storable;
 
     my $self = shift;
-	my $params = shift;
+    my $params = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $stack_file = $params->{ stack_file };
+    my $stack_file = $params->{ stack_file };
 
-	if ( ! $stack_file || ! -e $stack_file ) {
-    	$stack_file  = '/tmp/stack.txt';
-	}
+    if ( ! $stack_file || ! -e $stack_file ) {
+        $stack_file  = '/tmp/stack.txt';
+    }
 
-	my $data;
+    my $data;
 
-	if ( -e $stack_file ) { 	
-		$data = retrieve($stack_file);
-	}
+    if ( -e $stack_file ) {     
+        $data = retrieve($stack_file);
+    }
 
-	unshift @{$data}, {
+    unshift @{$data}, {
             package  => (caller(0))[0],
             filename => (caller(0))[1],
             line     => (caller(0))[2],
             sub      => (caller(1))[3],
-    	};        
+        };        
 
     store ($data, $stack_file);
 }
 sub db_handle {
 
-    my $self	= shift;
+    my $self    = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
     my $db_source   = ( $self->IN_TEST_MODE() )
-		? $self->TEST_MODE_SOURCE()
-		: $self->MASTER_SOURCE();
+        ? $self->TEST_MODE_SOURCE()
+        : $self->MASTER_SOURCE();
 
     my $db_user     = ( $self->IN_TEST_MODE() )
-		? ''	
-		: $self->MASTER_USER();
+        ? ''    
+        : $self->MASTER_USER();
     
-	my $db_pass     = ( $self->IN_TEST_MODE() )
-		? ''
-		: $self->MASTER_PASS();
+    my $db_pass     = ( $self->IN_TEST_MODE() )
+        ? ''
+        : $self->MASTER_PASS();
  
     my $dbh = DBI->connect(
             $db_source,
@@ -424,224 +424,224 @@ sub db_handle {
 }
 sub dsn {
 
-	my $self 	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	my $table	= $params->{ table };
+    my $table   = $params->{ table };
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $source	= ( $self->IN_TEST_MODE() )
-		? $self->TEST_MODE_SOURCE()
-		: $self->MASTER_SOURCE();
-	
-	my $user	= ( $self->IN_TEST_MODE() )
-		? ''
-		: $self->MASTER_USER();
+    my $source  = ( $self->IN_TEST_MODE() )
+        ? $self->TEST_MODE_SOURCE()
+        : $self->MASTER_SOURCE();
+    
+    my $user    = ( $self->IN_TEST_MODE() )
+        ? ''
+        : $self->MASTER_USER();
 
-	my $pass	= ( $self->IN_TEST_MODE() )
-		? ''
-		: $self->MASTER_PASS();
+    my $pass    = ( $self->IN_TEST_MODE() )
+        ? ''
+        : $self->MASTER_PASS();
 
-	my %dsn = (
-		'!DataSource'   => $source,
-    	'!Username'     => $user,
-    	'!Password'     => $pass,
-    	'!Table'        => $table,
-  	);
+    my %dsn = (
+        '!DataSource'   => $source,
+        '!Username'     => $user,
+        '!Password'     => $pass,
+        '!Table'        => $table,
+    );
 
-	return %dsn;
+    return %dsn;
 }
 sub schema {
 
-	use ISP::Database;
-	use ISP::Replicated;
+    use ISP::Database;
+    use ISP::Replicated;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $result	= $params->{ result };
-	my $extract	= $params->{ extract };
+    my $result  = $params->{ result };
+    my $extract = $params->{ extract };
 
-	# if an indication of an extraction is passed in, ensure
-	# both params are present, or return undef
+    # if an indication of an extraction is passed in, ensure
+    # both params are present, or return undef
 
-	if ( $result && ! $extract ) {
-		return;
-	}
-	if ( ! $result && $extract ) {
-		return;
-	}
+    if ( $result && ! $extract ) {
+        return;
+    }
+    if ( ! $result && $extract ) {
+        return;
+    }
 
-	# do the extraction work, if necessary
+    # do the extraction work, if necessary
 
-	if ( $result && $extract ) {
+    if ( $result && $extract ) {
 
-		my %inflator = (
-					href	=> 'DBIx::Class::ResultClass::HashRefInflator',
-				);
-	
-		$result->result_class( $inflator{ $extract } );
+        my %inflator = (
+                    href    => 'DBIx::Class::ResultClass::HashRefInflator',
+                );
+    
+        $result->result_class( $inflator{ $extract } );
 
-		return $result;
-	}
+        return $result;
+    }
 
-	# get the db info
+    # get the db info
 
-	my $database_servers = $self->database_config();
+    my $database_servers = $self->database_config();
 
-	my $master = shift @{ $database_servers };
+    my $master = shift @{ $database_servers };
 
-	if ( ! $self->IN_TEST_MODE() && $self->ENABLE_REPLICATION() ) {
-	
-		my $schema 
-			= ISP::Replicated->connect( @{ $master } );
+    if ( ! $self->IN_TEST_MODE() && $self->ENABLE_REPLICATION() ) {
+    
+        my $schema 
+            = ISP::Replicated->connect( @{ $master } );
 
-		$schema->storage->connect_replicants( @{ $database_servers } );
-		
-		return $schema;
-	}
+        $schema->storage->connect_replicants( @{ $database_servers } );
+        
+        return $schema;
+    }
 
-	my $schema
-		= ISP::Database->connect( @{ $master } );
+    my $schema
+        = ISP::Database->connect( @{ $master } );
 
-	return $schema;
+    return $schema;
 }
 sub database_config {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $database_servers; # aref
+    my $database_servers; # aref
 
-	# configure the test server if required
+    # configure the test server if required
 
-	print $self->IN_TEST_MODE() . "'n";
-	if ( $self->IN_TEST_MODE() ){
+    print $self->IN_TEST_MODE() . "'n";
+    if ( $self->IN_TEST_MODE() ){
 
-		push( @$database_servers, [
-								$self->TEST_MODE_SOURCE(),
-							]);
+        push( @$database_servers, [
+                                $self->TEST_MODE_SOURCE(),
+                            ]);
 
-		return $database_servers;
-	}
+        return $database_servers;
+    }
 
-	# configure the master
+    # configure the master
 
-	push( @$database_servers, [
-								$self->MASTER_SOURCE(),
-								$self->MASTER_USER(),
-								$self->MASTER_PASS(),
-							]);
+    push( @$database_servers, [
+                                $self->MASTER_SOURCE(),
+                                $self->MASTER_USER(),
+                                $self->MASTER_PASS(),
+                            ]);
 
-	# ...and add any slaves
+    # ...and add any slaves
 
-	if ( $self->ENABLE_REPLICATION() && $self->SLAVE_SERVERS() ){
-		
-		for my $slave_number ( 1 .. $self->SLAVE_SERVERS() ){
-			
-			my $slave_info = "SLAVE_${ slave_number }_";
+    if ( $self->ENABLE_REPLICATION() && $self->SLAVE_SERVERS() ){
+        
+        for my $slave_number ( 1 .. $self->SLAVE_SERVERS() ){
+            
+            my $slave_info = "SLAVE_${ slave_number }_";
 
-			my $slave; # aref
+            my $slave; # aref
 
-			for my $item ( qw/ SOURCE USER PASS / ){
-					
-				my $function = $slave_info . $item;
-				
-				push @$slave, $self->$function();
-			}		
-				
-			push @$database_servers, $slave;
-		}
-	}
+            for my $item ( qw/ SOURCE USER PASS / ){
+                    
+                my $function = $slave_info . $item;
+                
+                push @$slave, $self->$function();
+            }       
+                
+            push @$database_servers, $slave;
+        }
+    }
 
-	# if the master is locked for maintenance, shift it off
-	# the stack
+    # if the master is locked for maintenance, shift it off
+    # the stack
 
-	if ( $self->MASTER_LOCKED() ) {
-		
-		shift @$database_servers;
-	}
+    if ( $self->MASTER_LOCKED() ) {
+        
+        shift @$database_servers;
+    }
 
-	return $database_servers;
+    return $database_servers;
 }
 sub item_count {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $date	= $params->{ date };
-	my $column	= $params->{ column };
-	my $table	= $params->{ table };
+    my $date    = $params->{ date };
+    my $column  = $params->{ column };
+    my $table   = $params->{ table };
 
-	my $schema	= $self->schema();
-	my $col_rs	= $schema->resultset( $table )->search({
-													date	=> { -like => "$date%" },
-												});
+    my $schema  = $self->schema();
+    my $col_rs  = $schema->resultset( $table )->search({
+                                                    date    => { -like => "$date%" },
+                                                });
 
-	my %entries;
+    my %entries;
 
-	while ( my $record = $col_rs->next ) {
-		$entries{ $record->$column }++;
-	}
+    while ( my $record = $col_rs->next ) {
+        $entries{ $record->$column }++;
+    }
 
-	return \%entries;
+    return \%entries;
 }
 sub tax_rate {
 
-	my $self = shift;
+    my $self = shift;
     my $tax  = shift;
     
-	$self->function_orders();
+    $self->function_orders();
 
-	return unless $tax;
+    return unless $tax;
 
     return $self->GST() if $tax eq 'gst';
     return $self->PST() if $tax eq 'pst';
-	return $self->HST() if $tax eq 'hst';
+    return $self->HST() if $tax eq 'hst';
 
-	return;
+    return;
 }
 sub bank_info {
 
-	use Config::Tiny;
+    use Config::Tiny;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
-	
-	my $conf_file = $self->CURRENT_CONFIG_FILE();
+    $self->function_orders();
+    
+    my $conf_file = $self->CURRENT_CONFIG_FILE();
 
-	my $config = Config::Tiny->read( $conf_file );
+    my $config = Config::Tiny->read( $conf_file );
 
-	my $bank_info;
+    my $bank_info;
 
-	if ( $self->BANK_TEST_MODE() ) {
-		$bank_info = $config->{ 'BankTest' };
-	}
-	else {
-		$bank_info = $config->{ 'Bank' };
-	}
-	
-	return $bank_info;
+    if ( $self->BANK_TEST_MODE() ) {
+        $bank_info = $config->{ 'BankTest' };
+    }
+    else {
+        $bank_info = $config->{ 'Bank' };
+    }
+    
+    return $bank_info;
 }
 sub full_date {
 
-	use DateTime;
-	use DateTime::Format::MySQL;
-	
-	my $self 	= shift;
-	my $date	= DateTime->now( time_zone => 'America/New_York' );
-	$date	= DateTime::Format::MySQL->format_datetime( $date );
+    use DateTime;
+    use DateTime::Format::MySQL;
+    
+    my $self    = shift;
+    my $date    = DateTime->now( time_zone => 'America/New_York' );
+    $date   = DateTime::Format::MySQL->format_datetime( $date );
 
-	return $date;
+    return $date;
 }
 sub string_date {
 
@@ -649,19 +649,19 @@ sub string_date {
  
     my $self = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $date        = DateTime->now(time_zone => 'America/New_York');
+    my $date        = DateTime->now(time_zone => 'America/New_York');
     my $date_string = $date->month_abbr ." ". $date->day .", ". $date->year;
  
     return $date_string;
 }
 sub string_to_date {
     
-    my $self	= shift;
+    my $self    = shift;
     my $string  = shift;
-	
-	$self->function_orders();
+    
+    $self->function_orders();
 
     my %months = (
             'Jan' => 1,
@@ -678,7 +678,7 @@ sub string_to_date {
             'Dec' => 12
         );
 
-	$string =~ s/,/ /g;
+    $string =~ s/,/ /g;
     my ($mon, $day, $year) = split (/\s+/, $string);
     $mon = $months{$mon};
 
@@ -688,81 +688,81 @@ sub storeit {
 
     use Storable;
 
-    my $self  	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
-	
-	my $data  = $params->{ data };
-	my $store = $params->{ store };
+    $self->function_orders();
+    
+    my $data  = $params->{ data };
+    my $store = $params->{ store };
 
-	if ( ! $store ) {
-		return 1;
-	}
+    if ( ! $store ) {
+        return 1;
+    }
 
-	store( \$data, $store );
+    store( \$data, $store );
 
-	return 0;
+    return 0;
 }
 sub retrieveit {
 
-	use Storable;
+    use Storable;
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
-	
-	my $store 	= $params->{ store };
-	
-	if ( ! $store ) {
-		return 1;
-	}
+    $self->function_orders();
+    
+    my $store   = $params->{ store };
+    
+    if ( ! $store ) {
+        return 1;
+    }
 
-	if ( -e $store ) {
-		return 1;
-	}
+    if ( -e $store ) {
+        return 1;
+    }
 
-	my $data = retrieve( $store );
+    my $data = retrieve( $store );
 
-	return $data;
-}	
+    return $data;
+}   
 sub captcha {
 
-	my $self 	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $input	= $params->{ input };
-	my $captcha	= $params->{ captcha };
+    my $input   = $params->{ input };
+    my $captcha = $params->{ captcha };
 
-	if ( ! $input && ! $captcha) {
-		
-		# caller wants a new captcha
+    if ( ! $input && ! $captcha) {
+        
+        # caller wants a new captcha
 
-		my $captcha_length = $self->CAPTCHA_LENGTH();
+        my $captcha_length = $self->CAPTCHA_LENGTH();
 
-		my $new_captcha;
+        my $new_captcha;
 
-		for ( 1 .. $captcha_length ) {	
-			$new_captcha .= int( rand( 10 ));
-		}
+        for ( 1 .. $captcha_length ) {  
+            $new_captcha .= int( rand( 10 ));
+        }
 
-		return $new_captcha;
-	}
-	
-	if ( ! $captcha && $input ) {
-		return 0;
-	}
-	if ( ! $input && $captcha ) {
-		return 0;
-	}
-	if ( $captcha == $input ) {
-		return 'ok';
-	}
+        return $new_captcha;
+    }
+    
+    if ( ! $captcha && $input ) {
+        return 0;
+    }
+    if ( ! $input && $captcha ) {
+        return 0;
+    }
+    if ( $captcha == $input ) {
+        return 'ok';
+    }
 
-	return 0;
+    return 0;
 }
 sub DESTROY {
 
@@ -811,8 +811,8 @@ if it exists.
 
 There are two optional named parameters that can be passed in as a hash reference:
 
-	config 		=> '/path/to/file',
-	more_config	=> '/path/to/additional.config/'
+    config      => '/path/to/file',
+    more_config => '/path/to/additional.config/'
 
 If config is not passed in, the default configuration file will be used.
 
@@ -913,8 +913,8 @@ of configuring a result with an inflator.
 When called with no parameters, returns $schema, which is ready 
 to be used directly, eg:
 
-	$obj->schema();
-	$schema->resultset( 'Clients' )->(1)
+    $obj->schema();
+    $schema->resultset( 'Clients' )->(1)
 
 If an inflation method is desired for the results of a schema call,
 both RESULT and EXTRACT parameters are mandatory, and must be passed in
@@ -1032,7 +1032,7 @@ Returns the reformatted date as a scalar string.
 
 Call this method when you need a stringified date in MySQL format, eg:
 
-	'2009-08-12 HH:MM:SS'
+    '2009-08-12 HH:MM:SS'
 
 Takes no parameters, returns the stringified date.
 
@@ -1081,8 +1081,8 @@ is determined by the 'captcha_length' directive in the configuration file.
 To compare the captcha with the user's input, pass in the following two parameters
 as a hash reference.
 
-	captcha	=> $captcha,
-	input	=> $user_input
+    captcha => $captcha,
+    input   => $user_input
 
 Where $captcha is the captcha originally supplied in the initial call, and 
 $input is what the user supplied. Returns "ok" upon successful match.

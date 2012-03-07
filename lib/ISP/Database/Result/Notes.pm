@@ -9,12 +9,12 @@ __PACKAGE__->load_components( qw/Core/ );
 __PACKAGE__->table( 'notes' );
 
 __PACKAGE__->add_columns( qw(
-							id          
-							username    
-							note        
-							tag         
-							operator    
-							date        
-				));
+                            id          
+                            username    
+                            note        
+                            tag         
+                            operator    
+                            date        
+                ));
 
 __PACKAGE__->set_primary_key( qw/ id / );

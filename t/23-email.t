@@ -21,15 +21,15 @@ my $template = 't/test_email.tpl';
 
 { # send one
 
-	my $snd = ISP::Email->new();
+    my $snd = ISP::Email->new();
 
-	$snd->email({
-				subject	=> 'System check',
-				tmpl	=> $template,
-				to		=> 'steve.bertrand@gmail.com',
-				data	=> {
-							test => 'test',
-							sender => 'stevieb'
-						},
-			});
+    $snd->email({
+                subject => 'System check',
+                tmpl    => $template,
+                to      => 'steve.bertrand@gmail.com',
+                data    => {
+                            test => 'test',
+                            sender => 'stevieb'
+                        },
+            });
 }

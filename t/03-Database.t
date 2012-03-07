@@ -18,6 +18,6 @@ my $obj = ISP::Object->new({ config => $conf });
 my $schema = $obj->schema(); 
 
 {
-	my $notes = $schema->resultset( 'Notes' )->find( 1 );
-	ok( $notes->id() == 1, "id 1 of Notes using DBIx::Class is 1" );
+    my $notes = $schema->resultset( 'Notes' )->find( 1 );
+    ok( $notes->id() == 1, "id 1 of Notes using DBIx::Class is 1" );
 }

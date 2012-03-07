@@ -10,72 +10,72 @@ use base qw(ISP::Object);
 
 BEGIN {
 # config accessors
-	my @config_vars = qw (
-						ALL_EMAIL_TO_DEVEL
-						COPY_EMAIL_TO_DEVEL
-						SMTP_SERVER
-						SMTP_FROM
-						EMAIL_ADDR_DEVEL
-						EMAIL_ADDR_ACCOUNTING
-						EMAIL_ADDR_SUPPORT
-						DEBUG_TO_STDOUT
-					);
+    my @config_vars = qw (
+                        ALL_EMAIL_TO_DEVEL
+                        COPY_EMAIL_TO_DEVEL
+                        SMTP_SERVER
+                        SMTP_FROM
+                        EMAIL_ADDR_DEVEL
+                        EMAIL_ADDR_ACCOUNTING
+                        EMAIL_ADDR_SUPPORT
+                        DEBUG_TO_STDOUT
+                    );
 
-	for my $member (@config_vars) {
-		no strict 'refs';
-		*{$member} = sub {								
-			my $self = shift;						
-			return $self->{config}{$member};		
-		}												
-	}														
+    for my $member (@config_vars) {
+        no strict 'refs';
+        *{$member} = sub {                              
+            my $self = shift;                       
+            return $self->{config}{$member};        
+        }                                               
+    }                                                       
 } # end BEGIN  
 
 sub new {
 
-	my $class		= shift;
-	my $params		= shift;
+    my $class       = shift;
+    my $params      = shift;
 
-	my $self = {};
-	bless $self, $class;
+    my $self = {};
+    bless $self, $class;
 
-	$self->configure();
-	$self->function_orders();
+    $self->configure();
+    $self->function_orders();
 
-	return $self;
+    return $self;
 }
 
 sub email {
 
-	my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	my $to = ( $self->ALL_EMAIL_TO_DEVEL() )
-		?	$self->EMAIL_ADDR_DEVEL()
-		:	$params->{ to };
+    my $to = ( $self->ALL_EMAIL_TO_DEVEL() )
+        ?   $self->EMAIL_ADDR_DEVEL()
+        :   $params->{ to };
 
-	my $cc = ( $self->COPY_EMAIL_TO_DEVEL() )
-		?	$self->EMAIL_ADDR_DEVEL()
-		:	'';
+    my $cc = ( $self->COPY_EMAIL_TO_DEVEL() )
+        ?   $self->EMAIL_ADDR_DEVEL()
+        :   '';
 
-	my $subject	= $params->{ subject };
-	my $tmpl	= $params->{ tmpl };
-	my $data	= $params->{ data };
-	my $from	= $self->SMTP_FROM();
-	my $smtp	= $self->SMTP_SERVER();
+    my $subject = $params->{ subject };
+    my $tmpl    = $params->{ tmpl };
+    my $data    = $params->{ data };
+    my $from    = $self->SMTP_FROM();
+    my $smtp    = $self->SMTP_SERVER();
 
-	my $msg		= MIME::Lite::TT->new(
-					
-					From		=> $from,
-					To			=> $to,
-					Cc			=> $cc,
-					Subject		=> $subject,
-					Template	=> $tmpl,
-					TmplParams	=> $data,
-				);
+    my $msg     = MIME::Lite::TT->new(
+                    
+                    From        => $from,
+                    To          => $to,
+                    Cc          => $cc,
+                    Subject     => $subject,
+                    Template    => $tmpl,
+                    TmplParams  => $data,
+                );
 
-	my @failed;
-	
-	$msg->send( 'smtp', $smtp, Debug=>$self->DEBUG_TO_STDOUT() );
+    my @failed;
+    
+    $msg->send( 'smtp', $smtp, Debug=>$self->DEBUG_TO_STDOUT() );
 }
 
 sub _nothing{} # vim placeholder for folds
@@ -138,7 +138,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-	perldoc ISP::Email
+    perldoc ISP::Email
 
 =head1 COPYRIGHT & LICENSE
 

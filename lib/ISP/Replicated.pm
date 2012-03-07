@@ -6,7 +6,7 @@ __PACKAGE__->load_namespaces();
 __PACKAGE__->storage_type(
                 '::DBI::Replicated' => {
                         balancer_type => '::Random',
-			            balancer_args => {
+                        balancer_args => {
                                 auto_validate_every => 5,
                                 master_read_weight => 1
                         },

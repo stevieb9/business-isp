@@ -39,8 +39,8 @@ my $error;
 
 sub _clean {
 
-	undef $vardb;
-	undef $sanity;
+    undef $vardb;
+    undef $sanity;
     undef $error;
 }
 
@@ -48,9 +48,9 @@ sub _reset {
 
     _clean();
 
-	$vardb	= ISP::Vars->new();
-	$sanity	= ISP::Sanity->new();
-    $error 	= ISP::Error->new();
+    $vardb  = ISP::Vars->new();
+    $sanity = ISP::Sanity->new();
+    $error  = ISP::Error->new();
 }
 
 sub _nothing{} # placeholder
@@ -63,23 +63,23 @@ _reset();
 
 {
 
-	for my $count ( 1..3 ) {
+    for my $count ( 1..3 ) {
 
-		$error->add_message( "This is msg $count" );
-		$error->data( { $count => $count } );
-		$error->add_trace();
+        $error->add_message( "This is msg $count" );
+        $error->data( { $count => $count } );
+        $error->add_trace();
 
-	}
+    }
 
-	my %gui_data = $error->render_gui_data();
+    my %gui_data = $error->render_gui_data();
 
-	my $data_count 	= scalar ( @{ $gui_data{ DATA } } );
-	my $msg_count 	= scalar ( @{ $gui_data{ MESSAGES } } );
-	my $trace_count	= scalar ( @{ $gui_data{ STACK } } );
+    my $data_count  = scalar ( @{ $gui_data{ DATA } } );
+    my $msg_count   = scalar ( @{ $gui_data{ MESSAGES } } );
+    my $trace_count = scalar ( @{ $gui_data{ STACK } } );
 
-	is ( $data_count, 	3, "when Error has three data elements, so does the gui data" );
-	is ( $msg_count,	3, "when Error has three message elems, so does the gui data" );
-	is ( $trace_count,	4, "when Error is called directly, it contains one additional stack entry" );
+    is ( $data_count,   3, "when Error has three data elements, so does the gui data" );
+    is ( $msg_count,    3, "when Error has three message elems, so does the gui data" );
+    is ( $trace_count,  4, "when Error is called directly, it contains one additional stack entry" );
 
 
 }

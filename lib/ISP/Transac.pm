@@ -8,7 +8,7 @@ use base qw( ISP::Object );
 
 BEGIN {
 # config accessors
-	my @config_vars = qw (
+    my @config_vars = qw (
                         );
     for my $member ( @config_vars ) {
         no strict 'refs';
@@ -23,39 +23,39 @@ sub create_transaction {
 
     use ISP::Sanity;
 
-    my $class	= shift;
-	my $params	= shift;
+    my $class   = shift;
+    my $params  = shift;
 
-	my $data	= $params->{ data };
-    my $error	= $params->{ error };
+    my $data    = $params->{ data };
+    my $error   = $params->{ error };
 
     unless ( defined $error ) {
         $error = ISP::Error->new();
         $error->bad_api();
     }
 
-	my $self = {};
-   	bless $self, $class;
-   	$self->configure();
+    my $self = {};
+    bless $self, $class;
+    $self->configure();
 
     $self->function_orders();
 
     my $sanity = ISP::Sanity->new;
 
     $sanity->validate_data({ 
-				type	=> 'transaction_data', 
-				data	=> $data, 
-				error	=> $error,
-			});
+                type    => 'transaction_data', 
+                data    => $data, 
+                error   => $error,
+            });
 
     my $failure = $error->exists();
 
     if ( $failure ) {
         $error->add_trace();
-	    return( $error );
+        return( $error );
     }
 
-	push @{ $self->{ line_items } }, $data;
+    push @{ $self->{ line_items } }, $data;
 
     return $self;
 }
@@ -63,13 +63,13 @@ sub add_transaction_line {
 
     use ISP::Sanity;
     
-    my $self	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
     $self->function_orders();
 
-	my $data	= $params->{ data };
-    my $error	= $params->{ error };
+    my $data    = $params->{ data };
+    my $error   = $params->{ error };
 
     unless (defined $error) {
         $error = ISP::Error->new();
@@ -78,10 +78,10 @@ sub add_transaction_line {
 
     my $sanity = ISP::Sanity->new;
     $sanity->validate_data({
-					type	=> 'transaction_data', 
-					data	=> $data, 
-					error	=> $error
-				});
+                    type    => 'transaction_data', 
+                    data    => $data, 
+                    error   => $error
+                });
 
     my $failure = $error->exists;
 
@@ -90,9 +90,9 @@ sub add_transaction_line {
         return $error;
     }
 
-	push @{ $self->{ line_items } }, $data;
+    push @{ $self->{ line_items } }, $data;
 
-	return 0;
+    return 0;
 }
 sub purchase {
 
@@ -103,13 +103,13 @@ sub purchase {
     my $ledger = ISP::Ledger->new();
 
     my $self     = shift;
-	my $params	 = shift;
+    my $params   = shift;
 
     $self->function_orders();
 
-	my $client			= $params->{ client };
-	my $bank_receipt	= $params->{ bank_receipt };
-	my $error			= $params->{ error };
+    my $client          = $params->{ client };
+    my $bank_receipt    = $params->{ bank_receipt };
+    my $error           = $params->{ error };
 
     # check for mandatory $error param
 
@@ -129,22 +129,22 @@ sub purchase {
     }
 
 
-	return $error if $error->exists();
+    return $error if $error->exists();
 
-	my $transac_invoice_number
-		= $ledger->write_ledger({
-					transaction 	=> $self->{ line_items },
-					client			=> $client,
-				});
-	
-	if ( $bank_receipt ) {
-		$ledger->bank_receipt({
-						invoice_number	=> $transac_invoice_number,
-						bank_receipt	=> $bank_receipt,
-					});
-	}
+    my $transac_invoice_number
+        = $ledger->write_ledger({
+                    transaction     => $self->{ line_items },
+                    client          => $client,
+                });
+    
+    if ( $bank_receipt ) {
+        $ledger->bank_receipt({
+                        invoice_number  => $transac_invoice_number,
+                        bank_receipt    => $bank_receipt,
+                    });
+    }
 
-	return $transac_invoice_number;
+    return $transac_invoice_number;
 
 } # end sub purchase
 
@@ -157,14 +157,14 @@ sub payment {
     my $sanity = ISP::Sanity->new;
     my $ledger = ISP::Ledger->new;
 
-    my $self		= shift;
-    my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
     $self->function_orders();
 
-	my $client			= $params->{ client };
-	my $bank_receipt	= $params->{ bank_receipt };
-	my $error			= $params->{ error };
+    my $client          = $params->{ client };
+    my $bank_receipt    = $params->{ bank_receipt };
+    my $error           = $params->{ error };
 
     # check for mandatory $error param
 
@@ -183,146 +183,146 @@ sub payment {
                 "Please review 'perldoc ISP::Transac' for proper usage: $!";
     }
 
-	# do sanity checking on the payment
-	$sanity->validate_payment({
-		   		transaction	=> $self->{ line_items },
-				error		=> $error 
-			});
+    # do sanity checking on the payment
+    $sanity->validate_payment({
+                transaction => $self->{ line_items },
+                error       => $error 
+            });
 
-	return $error if $error->exists();
+    return $error if $error->exists();
 
-	my $transac_invoice_number
-		= $ledger->write_ledger({
-					transaction 	=> $self->{ line_items },
-					client			=> $client,
-				});
-	
-	# save the bank receipt
+    my $transac_invoice_number
+        = $ledger->write_ledger({
+                    transaction     => $self->{ line_items },
+                    client          => $client,
+                });
+    
+    # save the bank receipt
 
-	if ( $bank_receipt ) {	
-		
-		$ledger->bank_receipt({
-						invoice_number	=> $transac_invoice_number,
-						bank_receipt	=> $bank_receipt,
-					});
-	}
+    if ( $bank_receipt ) {  
+        
+        $ledger->bank_receipt({
+                        invoice_number  => $transac_invoice_number,
+                        bank_receipt    => $bank_receipt,
+                    });
+    }
 
-	return $transac_invoice_number;
+    return $transac_invoice_number;
 
 } # end sub payment
 
 
 sub renew {
 
-	use ISP::Ledger;
-	use ISP::User;
-	use ISP::Sanity;
+    use ISP::Ledger;
+    use ISP::User;
+    use ISP::Sanity;
 
-	my $self		= shift;
-	my $params		= shift;
+    my $self        = shift;
+    my $params      = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $client			= $params->{ client };
-	my $bank_receipt	= $params->{ bank_receipt };
-	my $error			= $params->{ error };
+    my $client          = $params->{ client };
+    my $bank_receipt    = $params->{ bank_receipt };
+    my $error           = $params->{ error };
 
-	# check for mandatory $error param
-	unless (defined $error) {
-		$error = ISP::Error->new;
-		$error->bad_api();
-	}
-	
-	#my $failure	= $error->exists();
-	#if ($failure) {
-#		die	"There were errors, but you have not used the API properly." .
-#			"Please review 'perldoc ISP::Transac for proper usage: $!";
-#	}
+    # check for mandatory $error param
+    unless (defined $error) {
+        $error = ISP::Error->new;
+        $error->bad_api();
+    }
+    
+    #my $failure    = $error->exists();
+    #if ($failure) {
+#       die "There were errors, but you have not used the API properly." .
+#           "Please review 'perldoc ISP::Transac for proper usage: $!";
+#   }
 
-	my $ledger = ISP::Ledger->new();
+    my $ledger = ISP::Ledger->new();
 
-	my $transac_invoice_number
-		= $ledger->write_ledger({
-					client			=> $client,
-					transaction	=> $self->{ line_items },
-				});
+    my $transac_invoice_number
+        = $ledger->write_ledger({
+                    client          => $client,
+                    transaction => $self->{ line_items },
+                });
 
-	if ( $bank_receipt ) {
-	
-		$ledger->bank_receipt({
-					invoice_number		=> $transac_invoice_number,
-					bank_receipt		=> $bank_receipt,
-				});
-	}
+    if ( $bank_receipt ) {
+    
+        $ledger->bank_receipt({
+                    invoice_number      => $transac_invoice_number,
+                    bank_receipt        => $bank_receipt,
+                });
+    }
 
-	if ($error->exists()) {
+    if ($error->exists()) {
         $error->add_trace;
         return;
     }
 
-	return $transac_invoice_number;
+    return $transac_invoice_number;
 }
 sub credit_card_payment {
 
-	use Exact::Transaction;
+    use Exact::Transaction;
 
-	my $self 	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $transaction_data_ref 	= $params->{ transaction_data };
-	my $error					= $params->{ error };
+    my $transaction_data_ref    = $params->{ transaction_data };
+    my $error                   = $params->{ error };
 
-	my $bank_info_ref			= $self->bank_info();
+    my $bank_info_ref           = $self->bank_info();
 
-	my $bank_connection	= Exact::Transaction->new( %$bank_info_ref );
+    my $bank_connection = Exact::Transaction->new( %$bank_info_ref );
 
-	$bank_connection->TransactionReset();
-	$bank_connection->SetPurchaseType();
-	$bank_connection->SendToServer( %$transaction_data_ref );
+    $bank_connection->TransactionReset();
+    $bank_connection->SetPurchaseType();
+    $bank_connection->SendToServer( %$transaction_data_ref );
 
-	my ( $response_code, $response_message ) 
-		= $bank_connection->get( 'Exact_Resp_Code', 'Exact_Message' );
-	
-	while ( $bank_connection->{ InSending } ) {}
-	$bank_connection->CommitTransaction();
+    my ( $response_code, $response_message ) 
+        = $bank_connection->get( 'Exact_Resp_Code', 'Exact_Message' );
+    
+    while ( $bank_connection->{ InSending } ) {}
+    $bank_connection->CommitTransaction();
 
-	my $bank_connection_result = $bank_connection->CTR();
+    my $bank_connection_result = $bank_connection->CTR();
 
-	if ( $bank_connection->get( 'Transaction_Approved' )) {
-		return ( $response_code, $response_message, $bank_connection_result );
-	}
-	else {
-		return ( $response_code, $response_message );
-	}
+    if ( $bank_connection->get( 'Transaction_Approved' )) {
+        return ( $response_code, $response_message, $bank_connection_result );
+    }
+    else {
+        return ( $response_code, $response_message );
+    }
 }
 sub calculate_invoice_amount {
 
-	my $self 	= shift;
-	my $params	= shift;
+    my $self    = shift;
+    my $params  = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	my $username		= $params->{ username };
-	my $transac_data	= $params->{ data }; # href
+    my $username        = $params->{ username };
+    my $transac_data    = $params->{ data }; # href
 
-	my $user = ISP::User->new({ username => $username });
-	my $tax_exempt	= $user->tax_exempt();
+    my $user = ISP::User->new({ username => $username });
+    my $tax_exempt  = $user->tax_exempt();
 
-	my $total_amount;
+    my $total_amount;
 
-	while ( my ( $qty, $amt ) = each ( %$transac_data )) {
-		$total_amount += ( $qty * $amt );
-	}
+    while ( my ( $qty, $amt ) = each ( %$transac_data )) {
+        $total_amount += ( $qty * $amt );
+    }
 
-	if ( $tax_exempt !~ /y/i ) {
-		my $tax_rate	= $self->tax_rate( 'hst' );
-		my $tax			= ( $total_amount * $tax_rate );
-		$total_amount  += $tax;
-	}
+    if ( $tax_exempt !~ /y/i ) {
+        my $tax_rate    = $self->tax_rate( 'hst' );
+        my $tax         = ( $total_amount * $tax_rate );
+        $total_amount  += $tax;
+    }
 
-	return sprintf( '%.2f', $total_amount );
+    return sprintf( '%.2f', $total_amount );
 
 }
 sub DESTROY {
@@ -346,9 +346,9 @@ our $VERSION = sprintf "%d", q$Revision: 188 $ =~ /(\d+)/;
 
     # Create a new transaction, and populate it with some initial data
     my $transaction = ISP::Transac->create_transaction({
-												data	=> \%data, 
-												error	=> $error
-											});
+                                                data    => \%data, 
+                                                error   => $error
+                                            });
 
     # Add more items to the transaction
     $transaction->add_transaction_line({ data => \%data, error => $error });
@@ -425,9 +425,9 @@ are present, and the caller has not done error trapping/processing.
 
 Valid parameters are as follows:
 
-	client		=> $client 		# ISP::User object
-	cc_receipt	=> $cc_receipt	# bank receipt string
-	error		=> $error		# ISP::Error object
+    client      => $client      # ISP::User object
+    cc_receipt  => $cc_receipt  # bank receipt string
+    error       => $error       # ISP::Error object
 
 Both error and client are mandatory. Returns the invoice number of the
 transaction upon success.
@@ -465,12 +465,12 @@ reference.
 ERROR is an ISP::Error object, and DATA must be supplied as a hashref in the
 following format:
 
-	my $transaction_data = {                        
-			DollarAmount    => $amount,                        
-			Card_Number     => $card_number,                        
-			Expiry_Date     => $card_expiry,                        
-			CardHoldersName => $card_holder,                    
-		};
+    my $transaction_data = {                        
+            DollarAmount    => $amount,                        
+            Card_Number     => $card_number,                        
+            Expiry_Date     => $card_expiry,                        
+            CardHoldersName => $card_holder,                    
+        };
 
 Returns the payment statement from the bank upon approval, or the bank response code
 upon failure.

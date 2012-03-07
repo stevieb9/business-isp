@@ -38,14 +38,14 @@ my $user;
 
 sub _clean {
 
-	undef $user;
+    undef $user;
 }
 
 sub _reset {
 
     _clean();
 
-	$user = ISP::User->new({ username => 'steveb' });
+    $user = ISP::User->new({ username => 'steveb' });
 }
 
 sub _nothing{} # placeholder
@@ -58,22 +58,22 @@ _reset();
 
 {
 
-	my $plan	= $user->get_plan( 1 );
+    my $plan    = $user->get_plan( 1 );
 
-	$plan->{ login_name } = 'mike';
-	
-	my $real_username = $user->username();
+    $plan->{ login_name } = 'mike';
+    
+    my $real_username = $user->username();
 
-	my $changed_username = $user->username_to_login( $plan, $real_username );
+    my $changed_username = $user->username_to_login( $plan, $real_username );
 
-	ok( $changed_username eq 'mike', "when username and login_name differ, the username is changed temporarily" );
+    ok( $changed_username eq 'mike', "when username and login_name differ, the username is changed temporarily" );
 
-	$plan->{ login_name } = '';
+    $plan->{ login_name } = '';
 
-	$changed_username = $user->username_to_login( $plan, $real_username );
+    $changed_username = $user->username_to_login( $plan, $real_username );
 
-	print "$real_username, $changed_username\n";
-	ok ( $changed_username eq 'steveb', "if a login name is blank, we retain the original username" );
+    print "$real_username, $changed_username\n";
+    ok ( $changed_username eq 'steveb', "if a login name is blank, we retain the original username" );
 
-	$plan->{ login_name } = '';
+    $plan->{ login_name } = '';
 }

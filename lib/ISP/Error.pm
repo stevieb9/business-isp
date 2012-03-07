@@ -9,15 +9,15 @@ use Storable;
 
 BEGIN {
 
-	# config accessors
+    # config accessors
     my @config_vars = qw (
                          );
 
-	for my $member ( @config_vars ) {
+    for my $member ( @config_vars ) {
         no strict 'refs';
         *{ $member } = sub {                              
             my $self = shift;                       
-   			return $self->{ config }{ $member };        
+            return $self->{ config }{ $member };        
         }                                               
     }                                                       
 } # end BEGIN  
@@ -25,41 +25,41 @@ BEGIN {
 sub add_trace {
 
     my $self = shift;
-	my $step_back = shift;
+    my $step_back = shift;
 
     $self->function_orders();
 
-	if ( $step_back ) {
+    if ( $step_back ) {
 
-		my $valid_caller = ( caller(1) )[0];
+        my $valid_caller = ( caller(1) )[0];
 
-		if ( ! $valid_caller ) {
+        if ( ! $valid_caller ) {
 
-			my $message =	"\nYou must have a valid position in the stack trace " .
-							"to call add_trace() with the BACK parameter. " .
-							"See perldoc ISP::Error\n\n";
-		
-			$self->bad_api( $message );
-		}
+            my $message =   "\nYou must have a valid position in the stack trace " .
+                            "to call add_trace() with the BACK parameter. " .
+                            "See perldoc ISP::Error\n\n";
+        
+            $self->bad_api( $message );
+        }
 
-		unshift @{ $self->{ stack } }, {
-	        package  => ( caller(1) )[0],
-   	        filename => ( caller(1) )[1],
-        	line     => ( caller(1) )[2],
+        unshift @{ $self->{ stack } }, {
+            package  => ( caller(1) )[0],
+            filename => ( caller(1) )[1],
+            line     => ( caller(1) )[2],
             sub      => ( caller(2) )[3] || 'main()',
-   		}; 
-		
-		return 1;
-	}
+        }; 
+        
+        return 1;
+    }
 
     unshift @{ $self->{ stack } }, {
-	        package  => ( caller(0) )[0],
+            package  => ( caller(0) )[0],
             filename => ( caller(0) )[1],
             line     => ( caller(0) )[2],
             sub      => ( caller(1) )[3] || 'main()',
     };
 
-	return 0;
+    return 0;
 }
 sub add_message {
 
@@ -75,7 +75,7 @@ sub add_message {
 
     $self->_flag();
 
-	return 0;
+    return 0;
 }
 sub data {
 
@@ -97,27 +97,27 @@ sub _flag {
     $self->add_trace() unless $self->exists();
     $self->{ exists } = 1;
 
-	return 0;
+    return 0;
 }
 sub exists {
 
     my $self = shift;
     $self->function_orders();
 
-	return $self->{ exists } if $self->{ exists };
+    return $self->{ exists } if $self->{ exists };
 
-	return 0;
+    return 0;
 } 
 sub reset {
 
-	my $self 		= shift;
-	my $re_enable	= shift;
+    my $self        = shift;
+    my $re_enable   = shift;
 
-	$self->function_orders();
+    $self->function_orders();
 
-	$self->{ exists } = ( $re_enable )
-		? 1
-		: 0;
+    $self->{ exists } = ( $re_enable )
+        ? 1
+        : 0;
 }
 sub dump_stack {
 
@@ -128,7 +128,7 @@ sub dump_stack {
 
     print Dumper \$self->{ stack };
 
-	return 0;
+    return 0;
 }
 sub dump_messages {
 
@@ -139,7 +139,7 @@ sub dump_messages {
 
     print Dumper \$self->{ messages };
 
-	return 0;
+    return 0;
 }
 sub dump_data {
 
@@ -150,7 +150,7 @@ sub dump_data {
 
     print Dumper \$self->{ data };
 
-	return 0;
+    return 0;
 }
 sub dump_all {
 
@@ -160,14 +160,14 @@ sub dump_all {
 
     print Dumper \$self->{ messages }, \$self->{ stack }, \$self->{ data };
 
-	return 0;
+    return 0;
 }
 sub get_messages {
 
     my $self = shift;
     $self->function_orders();
 
-	return $self->{ messages } if $self->{ messages };
+    return $self->{ messages } if $self->{ messages };
 
 }
 sub get_stack {
@@ -180,7 +180,7 @@ sub get_stack {
 sub bad_api {
 
     my $self    = shift;
-	my $message	= shift;
+    my $message = shift;
 
     $self->function_orders();
 
@@ -190,14 +190,14 @@ sub bad_api {
 
     $_caller = $0 unless defined $_caller;
 
-	if ( $message ) {
-		die "\n\nBad API call to ${ _sub } from ${ _caller }\n\n" .
-			"$message\nCaller: ${ _caller }, Function: ${ _sub }...\n\n";
-	}
-	else {
-    	die "\n\nBad API call to ${_sub} from ${_caller}: You did not supply an ISP::Error object\n\n" .
-        	"Please read \"perldoc $_package\" for proper API use\n\n";
-	}
+    if ( $message ) {
+        die "\n\nBad API call to ${ _sub } from ${ _caller }\n\n" .
+            "$message\nCaller: ${ _caller }, Function: ${ _sub }...\n\n";
+    }
+    else {
+        die "\n\nBad API call to ${_sub} from ${_caller}: You did not supply an ISP::Error object\n\n" .
+            "Please read \"perldoc $_package\" for proper API use\n\n";
+    }
 }
 sub bad_data {                        
 
@@ -206,7 +206,7 @@ sub bad_data {
 
     $self->function_orders();
 
-	my $_sub        = ( caller(1) )[3];        
+    my $_sub        = ( caller(1) )[3];        
     my $_package    = ( caller(0) )[0];
     my $_caller     = ( caller(2) )[3];
         
@@ -215,7 +215,7 @@ sub bad_data {
     if ( $message ) {
         die "\n\n$message\nCaller: ${_caller}, Function: ${_sub}...\n\n";
     } 
-	else {
+    else {
         die "\n\nInvalid data type or structure passed to ${_sub} from ${_caller}: " .
         "The sanity check has failed during the data compare() phase\n" .
         "FATAL: This is currently a fatal error\n";            
@@ -239,8 +239,8 @@ sub render_gui_data {
 
     for my $each_sub_data ( @$data ) {
 
-		my $temp;
-		
+        my $temp;
+        
         while ( my ( $key, $value ) = each ( %$each_sub_data )) {
             
             $temp->{"d${tmpl_iter}"} = "${key} => ${value}";
@@ -255,9 +255,9 @@ sub render_gui_data {
 
     my %error_tpl_data = (
 
-        MESSAGES 	=> $messages,
-        STACK     	=> $stack,
-        DATA     	=> $gui_data,
+        MESSAGES    => $messages,
+        STACK       => $stack,
+        DATA        => $gui_data,
     );
     
     return %error_tpl_data;
