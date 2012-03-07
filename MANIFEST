@@ -20,6 +20,7 @@ lib/Business/ISP/Error.pm
 lib/Business/ISP/GUI/Accounting.pm
 lib/Business/ISP/GUI/Base.pm
 lib/Business/ISP/ISP.conf.pod
+lib/Business/ISP/ISP.pm
 lib/Business/ISP/Ledger.pm
 lib/Business/ISP/Object.pm
 lib/Business/ISP/Replicated.pm

@@ -14,3 +14,5 @@ Makefile.old
 ^doc/*html$
 .hg/
 .hgignore$
+^MYMETA.json$
+^MYMETA.yml$
