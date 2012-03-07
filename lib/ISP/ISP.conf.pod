@@ -1,0 +1,558 @@
+=head1 NAME
+
+ISP.conf - Configuration file for the core ISP:: modules.
+
+=head1 DESCRIPTION
+
+ISP.conf is the primary configuration file for the core ISP::
+modules.
+
+By default, it is installed into /usr/local/etc as ISP.conf-dist. It
+is up to you to rename it to ISP.conf and perform initial site-specific
+configuration. During an upgrade, the installer will print to STDOUT
+any directives that have been added or removed from the current
+configuration file.
+
+=head1 HEADINGS
+
+The headings within the configuration file are primarly used by the
+system to determine which directives belong to certain modules.
+
+
+
+
+=head2 [ Version ]
+
+Contains the system version number. Do not change it.
+
+
+
+
+=head2 [ ISP::Error ]
+
+No directives at this time.
+
+
+
+
+=head2 [ ISP::Ledger ]
+
+
+=head3 lines_to_stdout
+
+Disable, enable printing the sanitized ledger entries to STDOUT prior
+to being inserted into the database. This directive is useless while
+within the GUI.
+
+Valid values: 0, 1.
+
+Default: off.
+
+
+
+=head2 [ ISP::Sanity ]
+
+=head3 validate_value_codeflow
+
+Enable, disable the validate_value() function from being included in the
+global codeflow trace. Note, this is very verbose.
+
+Valid values: 0, 1
+
+Default: off.
+
+=head3 validate_value_trace
+
+Same as validate_value_codeflow, but instead of codeflow, validate_value
+will be tracked in the stack trace.
+
+Valid values: 0, 1
+
+Default: off.
+
+=head3 validate_value_debug
+
+Enables, disables extra debugging output to STDOUT. Use only for troubleshooting.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 disable_validate_value
+
+Enables, disables the bypassing of validate_value() entirely. Never, ever
+enable this directive.
+
+Valid values: 0, 1
+
+Default: off.
+
+
+
+
+
+
+=head2 [ ISP::Transac ]
+
+No directives at this time.
+
+
+
+
+=head2 [ ISP::User ]
+
+=head3 plana_deduct_enable
+
+Enforce a minimum monthly hourly use for PlanA users. If a user doesn't use
+up the number of hours configured in 'plana_min_hours', the system will
+effectively erase the unused time up to the number in that directive.
+
+Valid values: 1, 0.
+
+Default: on.
+
+=head3 plana_min_hours
+
+The integer configured for this directive represents the minimum monthly
+number of hours a PlanA user must use in a month, or else any unused time up
+to this minimum will be deducted from their allotted hours remaining.
+
+plana_deduct_enable must be on for the deduction to have any effect.
+
+Valid values: any integer
+
+Default: 5.
+
+
+
+
+=head2 [ ISP::Vars ]
+
+
+=head3 forgive_missing_attrs
+
+Allow the system to forgive you if a data type you are trying to use
+does not contain all mandatory attributes. Use only for testing.
+
+Valid values: 0, 1.
+
+Default: off.
+
+
+
+=head2 [ ISP::GUI::Accounting ]
+
+=head3 enable_url_checksum
+
+This variable controls whether manual manipulation of URL strings
+is allowed. Disable only for testing.
+
+Valid values: 0, 1.
+
+Default: on.
+
+=head3 url_checksum_key
+
+If enable_url_checksum is true, the checksum will be based on the value
+you set here. It should be a random MD5 hash. It should be changed from
+the default.
+
+=head3 url_checksum_digest
+
+The digest to use for URL checksumming. Currently, only Digest::MD5 is
+supported.
+
+Valid values: Digest::MD5.
+
+Default: Digest::MD5
+
+=head3 die_on_bad_params
+
+If the GUI attempts to send a parameter to a template but the template
+does not have the parameter defined, the GUI will die. Disabling this
+setting will allow the templates to gracefully accept and discard unknown
+parameters.
+
+Valid values: 0, 1.
+
+Default: on.
+
+=head3 display_contact_info
+
+Display the client contact information when viewing a client's account.
+
+Valid values: 0, 1.
+
+Default: on.
+
+=head3 display_plan_stats
+
+When viewing a client's access plan, display their monthly login history.
+
+Valid values: 0, 1.
+
+Default: on.
+
+=head3 display_source_repo
+
+This controls whether a link to the web-based, read-only current version system
+should be displayed in the header.
+
+Valid values: 0, 1
+
+Default: off.
+
+=head3 render_codeflow
+
+After each page load, and after all of the data has been rendered, this
+will display the function calls that the system utilized to get you to where
+you are. For performance reasons, use only for testing.
+
+Dependencies:
+
+[Global]->codeflow set to true.
+
+[Constants]->disable_all_code_debug set to false.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 render_stack_tracing
+
+Much like render_codeflow, this will display a complete stack trace, as opposed
+to just the function names.
+
+Dependencies: 
+
+[Global]->stack_tracing set to true
+
+[Constants]->disable_all_code_debug set to false
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 render_skipped_checks
+
+Display any Sanity checks that the system has internally allowed to be bypassed.
+Generally used for development, but it is useful to be able to recall which
+parameters don't have any input checking.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 javascript_library
+
+HTTP location of the isp.js javascript library.
+
+Default: http://example.com/scripts/isp.js
+
+=head3 client_cookie_expiry
+
+Expire client (operator) session cookie after this much idle time. 
+
+Valid values are m (minute), h (hour), d (day), w (week) m (month) and
+y (year).
+
+client_cookie_expiry MUST be higher than both client_session_expiry
+and client_login_timeout.
+
+Default: 24h
+
+=head3 client_session_expiry
+
+The client (operator) session will time-out after this period of time. Has the same
+valid values as client_cookie_expiry.
+
+This must be set lower than client_cookie_expiry.
+
+Default: 30m
+
+=head3 client_login_timeout
+
+Client (operator) login will be forced to re-login after this much idle time.
+The same values that client_cookie_expiry apply here as well.
+
+This must be set lower than both client_cookie_expiry and client_session_expiry.
+
+Default: 5m
+
+
+
+=head2 [ Global ]
+
+=head3 codeflow
+
+Have the system keep track of all software functions encountered throughout a
+process chain.
+
+For performance reasons, this should be off unless debugging/troubleshooting.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 stack_tracing
+
+Have the system keep track of the entire software stack trace information
+throughout a process chain.
+
+For performance reasons, this should be off unless troubleshooting.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 profiling
+
+This is not yet implemented.
+
+
+
+=head2 [ Constants ]
+
+=head3 bank_test_mode
+
+Allow the system to process credit card transactions locally, without
+involving the bank.
+
+Use for testing only.
+
+Valid values: 0, 1.
+
+Default: on.
+
+=head3 enable_bank_processing
+
+If you have a credit card processing merchant account, the system can
+process credit card transactions directly. Only Chase Paymentech is
+available currently however.
+
+Valid values: 0, 1
+
+Default: off
+
+=head3 in_test_mode
+
+This is a developer directive. It is used while running the 'make test'
+routine while modifying the source code.
+
+It should never be enabled.
+
+Valid values: 0, 1.
+
+Default: on.
+
+=head3 template_dir
+
+Directory path to where the HTML (and other) templates are located.
+
+Default: /usr/local/share/ISP.
+
+=head3 config_dir
+
+Directory path to where this file is located.
+
+Default: /usr/local/etc.
+
+=head3 acct_app
+
+The name and HTTP path of the accounting CGI application.
+
+Default: http://acct.example.com/cgi-bin/accounting.cgi
+
+=head3 html_manual_location
+
+The HTML URL of the directory that contains the HTML perldoc pages.
+
+Default: http://example.com/ispmanual
+
+=head3 source_repo_link
+
+The HTML URL of the current version system web viewer.
+
+=head3 captcha_length
+
+The number of integers to use for verification captchas.
+
+Default: 4.
+
+=head3 gst
+
+GST tax rate, as a dollar fraction.
+
+Default: .05
+
+=head3 pst
+
+PST tax rate, as a dollar fraction.
+
+Default: .08
+
+=head3 disable_all_code_debug
+
+Disables all debugging code (eg: stack_tracing, codeflow etc).
+
+Valid values: 0, 1.
+
+Default: on
+
+=head3 timezone
+
+Informs the system of the local timezone, for use as a default in DateTime
+objects
+
+Valid values: See the documentation for DateTime.
+
+Default: America/New_York
+
+
+
+
+=head2 [ Bank ]
+
+Do not change these parameters. This section may dissapear.
+
+NOTE: This section is ONLY valid if you use Chase Paymentech's
+Exact Gateway portal.
+
+
+=head2 [ BankTest ]
+
+See [ Bank ]
+
+
+
+=head2 [ Database ]
+
+=head3 enable_replication
+
+Informs the system that you have a MySQL cluster setup, and allows writing
+to the master server, while load-balancing reads across the slaves.
+
+For this directive to have any effect, you must have at least one slave_servers,
+and a slave must be configured.
+
+Do not enable this unless you have a proper MySQL replication cluster configured.
+The system will cease to function if these settings are incorrect.
+
+Note that 'slave_1_source' etc are displayed in the default configuration file
+for example purposes. Additional slaves are configured the same way, but with
+the integer incremented.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 master_locked
+
+Informs the system that the master database server in the cluster is offline for
+maintenance. During this time, all writes will be blocked. The GUI will display
+an error if any functions that can potentially write to the database are called.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 slave_servers
+
+The number of read-only slave servers you have in your cluster.
+
+Valid values: any integer.
+
+Default: 0.
+
+=head3 maintenance_source
+
+The DBI connect string of the database that will be used to accept writes
+while the master cluster server is offline for maintenance.
+
+Valid value: any DBI connect source string.
+
+THIS FEATURE IS NOT YET FUNCTIONAL.
+
+=head3 master_source
+
+MySQL DBI source string.
+
+=head3 master_user
+
+Username of the user who has proper privileges on the master_source.
+
+=head3 master_pass
+
+Password of 'master_user'.
+
+=head3 slave_1_source
+
+See master_source.
+
+=head3 slave_1_user
+
+User for slave_1_source.
+
+=head3 slave_1_pass
+
+...
+
+=head3 test_mode_source
+
+Same as master_source, but used exclusively when a developer is running
+tests after a code update.
+
+=head3 test_mode_user
+
+User for the test database.
+
+=head3 test_mode_user
+
+Password for the test database user.
+
+=head2 [ Email ]
+
+Email address and configuration settings for notifications, reports, bugs etc
+
+=head3 all_email_to_devel
+
+Configure the system to send all email, regardless of type or purpose to the 
+address listed in the 'email_addr_devel' directive. Should only be used for
+testing.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 copy_email_to_devel
+
+Similar to 'all_email_to_devel', but this directive allows you to email the
+original recipient, but also have a copy of each message sent to the system's
+maintainer.
+
+Valid values: 0, 1.
+
+Default: off.
+
+=head3 email_addr_devel
+
+Email address of the person who is responsible for maintaining the system, and
+it's backend databases.
+
+=head3 email_addr_accounting
+
+Address of the person responsible for managing the accounting of the company.
+The majority of financial and client reports are sent here.
+
+=head3 email_addr_support
+
+Address of someone within the company's support department.
+
+=head3 smtp_server
+
+FQDN of the SMTP server you will use to relay all system email through.
+
+=head3 smtp_from
+
+The email address that will appear in the From: field of all emails. This
+is the address that will also receive any and all SMTP related error messages.

@@ -1,0 +1,14 @@
+# This document is for developer notes only
+
+# Conversion from inf to db
+
+- utilities/convert.pl
+
+# get a select drop down:
+
+my $vardb        = ISP::Vars->new();    
+my $payment_method_select = $vardb->build_select( 'payment_method', 'visa');    
+$self->pb_param( payment_method => $payment_method_select );
+
+# and to use the select statement in a template:
+<TMPL_VAR payment_method>

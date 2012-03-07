@@ -1,0 +1,72 @@
+# This document is for developer reference only
+
+############
+###########
+# INSTALL
+
+- required modules:
+
+Config::Tiny
+DateTime
+DateTime::Format::MySQL
+DBI
+DBIx::Recordset
+Data::Types				( scary, this is my hacked ver )
+HTML::Menu::Select
+Exact::Transaction		( scary, custom! )
+CGI::Application
+CGI::Application::Plugin::PageBuilder
+Test::Pod::Coverage
+CGI::Application::Plugin::Session
+CGI::Application::Plugin::LinkIntegrity
+CGI::Application::Plugin::Forward
+EagleUser				( scary, deprecated! )
+DBD::mysql
+CGI::HTMLError
+Email::Valid
+ISP::RADIUS
+
+* profiles need to be copied
+* template directories need to be created manually
+* need automated db setup/configuration
+
+
+### process of installation ( so far )
+
+- install required dependencies
+- create the template directories
+- install the application(s)
+- copy the profiles
+- create the database
+- modify the configuration (particularly for the db)
+- install the db schema
+- copy the data from the inf system
+- enable 'disable_validate_value' in the config file
+- convert it
+
+
+
+
+################3
+##############
+# remember!
+
+- use the old *accounting stuff as a template to re-create the programs
+
+- left things in a state in show_plans() trying to get the status link working
+
+- use the 'notes' framework for an excellent example of template usage
+  and looping
+
+- r892 - tagged release-0.0.1
+
+- added bugzilla functionality. check it, particularly for Sanity
+
+- finished review/update to Ledger.pm
+
+- finished review/update to Error.pm (except for unless)
+
+- expiry dates will now be the first of the month, not the last
+
+- r576 of User.pm was the last revision that contained all of the old
+  .inf style crap

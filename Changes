@@ -1,0 +1,134 @@
+Revision history for ISP::* 
+
+0.0.13_01   2012-03-07
+- implemented the new HST tax system (but left gst/pst in the config
+  file just in case)
+- renamed src/examples/steve.pref to src/examples/admin.pref
+- removed the production [Bank] section from config file
+- removed all instances of site-specific names (some functions may
+  have broken as a result)
+- replaced my old email author address
+- added a META_MERGE{} section in Makefile.PL to house our bugtracker
+  and repository links
+
+Notable bug fixes:
+
+- bug 208: client_info() now updates the db properly
+- bug 209: editable form fields now default to whatever is currently
+           set, if something is currently set
+
+
+
+
+0.12
+- major inroads into the Reporting framework
+- new functions to manage CGI sessions
+- more granular returns for the ledgers
+- system can now identify a devel/test system from a production one by
+  simply including a lower-case 'd' at the end of the version number in
+  the live-time config file. eg: 0.12d (bug 194)
+- API CHANGE: Reports::total_by_payment_type to income_by_payment_type()
+- three other reports written
+- ISP::Email config is saved across re-installations
+- Conversion routines now deal with the resetting of their invoice
+  numbers, starting from one
+
+Notable bug fixes:
+
+- bug 194: gui now clearly outputs a warning to let the operator know
+           that they are working within a devel environment ('d' after
+           the ver num)
+- bug 187: reports must have the ability to delete its own session data
+- bug 177: gledger was not inserting payment value even in cases where
+           the payment type was invoice or not
+- bug 202: in the GUI display, the location of the config file is now 
+           accurate. Object contains this constant, and it remains
+           correct.
+- bug 205: 'payment' and 'amount' are now being handled correctly upon
+           conversion
+
+
+
+
+0.10
+- changed version numbering scheme, again
+- new process auditing system introduced
+- added Reports, Email and Billing
+- documents (invoices/receipts) can now be emailed out
+- first financial report complete
+
+Notable bug fixes:
+
+- bug 165: automated processes are now audited to ensure they don't run more
+           than once per time-frame
+- bug 157: upgrade check is now done via Makefile.PL
+- bug 160: client's information is now editable, and also available in a
+           detailed view as well
+- bug 150: plana deduction now knows if it has run this month or not (bug 165)
+
+
+
+
+
+0.0.9
+- changed version numbering scheme
+- created a GUI base class, ISP::GUI::Base
+- config file location can now be overridden by setting $ENV{ ISP_CONFIG }
+- clicking on a config file heading or directive in the GUI 'Display Config'
+  will take you to the specific portion of the online documentation
+- MySQL replication now fully functional
+- PlanA unused deduction framework complete, only lacking the write-to-db
+  hook
+- the 'plan status' change link now updates the RADIUS password depending
+  on whether the account is going on hold, or back to active
+- numerous documentation updates/fixes
+- perlcritic severity 5 pass
+- all tests pass
+- deleting a user plan results in auto notes, as does a couple of other
+  operations
+- purchase item field now defaults to blank
+
+Notable bug fixes:
+
+- bug 84: master database 'locking' functional. Reads happen from slaves, and
+  attempted writes displays warning messages
+- bug 41: the .t testing system now uses it's own SQLite database
+- bug 91: renew() a plan that can't be renewed now displays something sane
+- bug 65: huge overhaul on the installer and Makefile.PL
+- bug 56: if a user's username is different from one of their plan's login
+          name, the login name will be preferred when searching the RADIUS
+          database
+- bug 9 : account renewals now reset the user's RADIUS password if the account
+          had been put on hold 
+
+
+
+0.0.8
+- config file has been renamed as ISP.conf-dist and it is installed via
+  make. This ensures that during an upgrade, an existing config file is
+  not overwritten
+- introduced DBIx::Class, and rewrote all calls requiring DB operations
+  to use it
+- DEPRECATED ISP::Object::dsn() and ISP::Object::db_handle(). They will
+  be obsoleted/removed ~v0.0.10
+- ALPHA database replication implemented
+- added new targets to Makefile.PL. make install now installs everything
+- config file now has a man page: "man ISP::ISP.conf"
+- configuration file directives in the gui now take the user to the appropriate
+  section of the config file manual when clicked on
+- ISP.conf config file now has a man page ( perldoc ISP::ISP.conf )
+- simulated master database server locking introduced
+
+
+
+0.0.7
+- all methods/functions that require more than one parameter passed in
+  now require all parameters passed in within a hash reference
+- massive documentation (POD) updates
+- upgraded to perl 5.10
+
+
+
+0.0.4
+- merger with eagleaccounting is complete. Some of the older scripts
+  may still be needed, but a re-write of them is most likely

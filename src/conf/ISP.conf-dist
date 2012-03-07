@@ -1,0 +1,99 @@
+[Version]
+version					= 0.12
+
+[ISP::Error]
+
+[ISP::Ledger]
+lines_to_stdout         = 0 ; for legacy only. Do not use
+
+[ISP::Sanity]
+validate_value_codeflow	= 0 ; validate_value() appends to codeflow
+validate_value_trace	= 0 ; validate_value() appends to trace
+validate_value_debug	= 0 ; print to STDOUT when entering validate_value()
+disable_validate_value	= 0 ; only for testing
+
+[ISP::Transac]
+
+[ISP::User]
+plana_deduct_enable		= 1 ; perform monthly plana deductions
+plana_min_hours			= 5 ; number of hours user must use each month
+
+[ISP::Vars]
+forgive_missing_attrs	= 0 ; don't die if a data type is missing fields
+
+[ISP::GUI::Base]
+enable_url_checksum		= 1 ; enable modification of URLs
+url_checksum_key		= 4d8dca2274cf1c6b741f7115c02bd64c
+url_checksum_digest		= Digest::MD5
+die_on_bad_params		= 1 ; in CGI::Application
+render_codeflow			= 0 ; display the codeflow for debugging
+render_stack_tracing	= 0 ; display the stack trace for debugging
+render_skipped_checks	= 0 ; display skipped Sanity checks
+javascript_library		= http://isp.example.com/isp.js
+client_session_expiry	= 24h ; m=minute, h=hour, d=day, w=week
+client_cookie_expiry	= 30m ; must be higher than client_session_expiry 
+client_login_timeout	= 5m ; must be less than both cookie and session expiry
+
+[ISP::GUI::Accounting]
+display_plan_stats		= 1	; show up/down/hrs -- requires ISP::RADIUS
+display_contact_info	= 1 
+display_source_repo		= 0 ; display the link to the source repository
+
+[Global]
+codeflow				= 0 ; keep track of the programs logic flow
+stack_tracing			= 0 ; keep stack trace information
+profiling				= 0 ; not implemented
+
+[Constants]
+bank_test_mode			= 1
+enable_bank_processing	= 0
+in_test_mode			= 1 ; use only the test db as defined in [Database]
+template_dir			= /usr/local/share/ISP
+config_dir				= /usr/local/etc
+http_server				= http://example.com
+cgi_dir					= /usr/local/www/apache22/cgi-bin
+web_dir					= /usr/local/www/apache22/data
+image_dir				= /usr/local/www/apache22/graphics
+script_dir				= /usr/local/bin
+acct_app				= http://example.com/cgi-bin/accounting.cgi
+html_manual_location	= http://example.com/ispmanual
+source_repo_link		= http://devel.ibctech.ca/viewvc/viewvc.cgi/ISP/trunk
+captcha_length			= 4
+hst						= .13
+gst						= .05
+pst						= .08
+disable_all_code_debug	= 0 ; function_orders() will be bypassed
+timezone				= America/New_York
+
+[BankTest]
+ExactID					= A00990-01
+ClientName				= My Perl Testing
+Password				= cadsmwp
+SocketLog				= 1
+Socket_Log_Name			= /tmp/debug.log
+Socket_Log_Level		= $Exact::Transaction::LOG_VERBOSE
+Interval_Time			= 56000
+ETGPort					= 2640
+
+[Database]
+enable_replication		= 0
+master_locked			= 0
+slave_servers			= 0
+maintenance_source		= DBI:mysql:ispmaint:maint.example.com:
+master_source			= DBI:mysql:isp:master.example.com:
+master_user				= isp
+master_pass				= password
+slave_1_source			= DBI:mysql:isp:slave1.example.com:
+slave_1_user			= isp
+slave_1_pass			= password
+test_mode_source		= DBI:SQLite:t/isp_test.db
+
+[ISP::Email]
+all_email_to_devel		= 0 ; email everything to the maintainer
+copy_email_to_devel		= 0 ; copy all email to the maintainer
+smtp_server             = smtp.example.com
+smtp_from               = accounting@example.com
+email_addr_devel		= devel@example.com
+email_addr_accounting	= accounting@example.com
+email_addr_support		= support@example.com
+debug_to_stdout			= 0

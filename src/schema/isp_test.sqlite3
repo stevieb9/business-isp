@@ -1,0 +1,154 @@
+CREATE TABLE bank (
+  id integer primary key autoincrement,
+  invoice_number mediumint(16) default NULL,
+  record text default NULL
+);
+
+CREATE TABLE balance(
+  id INTEGER PRIMARY KEY autoincrement,
+  username varchar(45) NOT NULL default '',
+  balance decimal(8,2) default NULL
+);
+
+
+CREATE TABLE clients(
+  id integer not null primary key autoincrement,
+  username varchar(45) default NULL,
+  last_update datetime default NULL,
+  status varchar(7) default NULL,
+  home_phone varchar(14) default NULL,
+  work_phone varchar(14) default NULL,
+  fax_phone varchar(14) default NULL,
+  tax_exempt char(1) default NULL,
+  comment varchar(255) default NULL,
+  billing_company_name varchar(45) default NULL,
+  billing_first_name varchar(20) default NULL,
+  billing_last_name varchar(40) default NULL,
+  billing_address1 varchar(45) default NULL,
+  billing_address2 varchar(45) default NULL,
+  billing_town varchar(40) default NULL,
+  billing_province varchar(25) default NULL,
+  billing_postal_code varchar(20) default NULL,
+  billing_email_address varchar(60) default NULL,
+  shipping_company_name varchar(45) default NULL,
+  shipping_first_name varchar(20) default NULL,
+  shipping_last_name varchar(40) default NULL,
+  shipping_address1 varchar(45) default NULL,
+  shipping_address2 varchar(45) default NULL,
+  shipping_town varchar(40) default NULL,
+  shipping_province varchar(25) default NULL,
+  shipping_postal_code varchar(20) default NULL,
+  shipping_email_address varchar(60) default NULL
+);
+
+
+CREATE TABLE gledger (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username varchar(45) NOT NULL default '',
+  amount decimal(6,2) default NULL,
+  payment decimal(6,2) default NULL,
+  quantity smallint(6) default NULL,
+  payment_method varchar(40) default NULL,
+  comment varchar(255) default NULL,
+  invoice_number mediumint(16) default NULL,
+  item_name varchar(60) default NULL,
+  total_price decimal(6,2) default NULL,
+  date datetime default NULL
+);
+
+
+CREATE TABLE inv_num (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  inv_num mediumint(12) default NULL,
+  date date NOT NULL default ''
+);
+
+
+CREATE TABLE notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username varchar(45) NOT NULL default '',
+  note MEDIUMTEXT default NULL,
+  tag varchar(16) default NULL,
+  operator varchar(16) default NULL,
+  date DATETIME default NULL
+);
+
+
+CREATE TABLE operators (
+  opid INTEGER PRIMARY KEY AUTOINCREMENT,
+  operator varchar(16) default NULL,
+  password varchar(16) default NULL,
+  opgroup varchar(16) default NULL,
+  name varchar(45) default NULL,
+  comment varchar(255) default NULL,
+  email_address varchar(60) default NULL,
+  rank smallint(3) default NULL
+);
+
+
+CREATE TABLE plans (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  plan_status varchar(7) default NULL,
+  username varchar(45) NOT NULL default '',
+  login_name varchar(45) default NULL,
+  password varchar(20) default NULL,
+  server varchar(60) NOT NULL default '',
+  email varchar(60) default NULL,
+  dob varchar(12) default NULL,
+  last_update date default NULL,
+  plan varchar(15) default NULL,
+  description varchar(60) default NULL,
+  rate decimal(6,2) default NULL,
+  hours smallint(6) default NULL,
+  over_rate decimal(6,2) default NULL,
+  billing_period varchar(9) default NULL,
+  expires date default NULL,
+  started date default NULL,
+  pap_date tinyint(4) default NULL,
+  next_billing_date date default NULL,
+  pap_method varchar(25) default NULL,
+  billing_method varchar(22) default NULL,
+  os varchar(8) default NULL,
+  dsl_number varchar(13),  
+  comment varchar(255) default NULL,
+  hours_balance decimal(7,2) not null default 0,
+  classification varchar(24) default NULL
+);
+
+
+CREATE TABLE uledger (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username varchar(45) NOT NULL default '',
+  amount decimal(6,2) default NULL,
+  payment varchar(40) default NULL,
+  comment varchar(255) default NULL,
+  date datetime default NULL,
+  invoice_number INTEGER(12)
+);
+
+CREATE TABLE audit (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  process varchar(45) NOT NULL default '',
+  date date default NULL,
+  type varchar(16) default NULL,
+  schedule varchar(20) default NULL,
+  operator varchar(20) default NULL
+);
+
+INSERT INTO balance VALUES (1,'steveb','0.00');
+INSERT INTO balance VALUES (2,'noplan','0.00');
+INSERT INTO balance VALUES (3,'plana','0.00');
+
+INSERT INTO clients VALUES (1,'steveb','2009-11-09 16:35:37','','905-885-4911','','','N','A test plan','internet','Steve','Bertrand','49 Toronto Rd','','Port Hope','Ontario','L1A 3R8','isp@example.com','isp internet','Steve','Bertrand','49 Toronto Rd','','Port Hope','Ontario','L1A 3R8','isp@example.com');
+
+INSERT INTO clients VALUES (2,'noplan','2009-11-09 16:39:34','','','','','N','','Internet','No','Plan','123 This St','','Cobourg','Ontario','K9A 4M2','isp@example.com','Internet','No','Plan','123 This St','','Cobourg','Ontario','K9A 4M2','isp@example.com');
+
+INSERT INTO clients VALUES (3,'plana','2009-11-09 16:46:53','','','','','Y','','Internet','plana','plana','123 Nowhere St','','Cobourg','Ontario','K9A 4M2','isp@example.com','Internet','plana','plana','123 Nowhere St','','Cobourg','Ontario','K9A 4M2','isp@example.com');
+
+INSERT INTO notes VALUES (1,'steveb','This is a note for the accounting system. Were testing it out','unclassified','system','2009-11-13 15:04:03');
+
+INSERT INTO operators VALUES (1,'steve','','admin','Steve Bertrand','','isp@example.com',1);
+
+INSERT INTO plans VALUES (1,'active','steveb','steveb','hello','','isp@example.com','1975-09-08','2009-11-09','pland','','29.99',300,'1.00','','2009-01-01','2009-11-09',0,'0000-00-00','none','email','','','','0.00',NULL);
+
+INSERT INTO plans VALUES (2,'active','plana','plana','testing','','isp@example.com','1975-09-08','2009-11-30','plana','','3.00',50,'2.00','','0000-00-00','2009-11-09',0,'0000-00-00','none','email','','','','-100.00',NULL);

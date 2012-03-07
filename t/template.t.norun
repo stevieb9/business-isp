@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Test::More qw(no_plan);
+
+print "\n\n***** Init *****\n\n";
+#  use_ok('ISP::Sanity');
+
+# Declarations go here
+
+my $sanity;
+
+
+# Maintenance subs go here
+
+sub _clean {
+ 
+	undef $sanity;
+}
+
+sub _reset {
+
+    _clean();
+
+	$sanity	= ISP::Sanity->new({ new({ config => 'ISP.conf-dist' }) });
+}
+
+# Tests go below _nothing();
+
+sub _nothing {} # placeholder for vim folds. Tests below...

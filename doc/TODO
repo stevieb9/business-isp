@@ -1,0 +1,154 @@
+# This document for developer reference only
+
+- consider adding pod for the check_* functions in Sanity (or at least consider
+  making note of them somewhere in the pod)
+
+- the use of 'unless'. Shlomi Fish suggests that you must use unless as such:
+  unless ( defined $error ), ie the parens are necessary
+
+- *** find way to segregate 'todo' into a .01 tag release 'requirement' doc
+
+- in Error, consider ways to 'manipulate' the message subsystem (delete), and
+  consider whether returning an aref is better than returning an array
+
+- ## extensive code review. go through every sub in every module, and:
+  - change all params to named
+  - write test(s)
+  - update/write POD
+  - fix up the version code
+
+  ## then:
+  - ensure all subs conform to new params, and pass tests
+  - ensure POD is accurate
+  - set the version num
+  - create a tag  
+
+- add sanity check for add_user
+
+- FIXME: negative numbers don't work in renewals
+
+- implement password changing, and status changing when plans are renewed
+
+- in all renew, purchase and payment, standardize on how gst/pst is
+  tallied, and ensure that there is consistency through the sanity and
+  transac processing so that we don't negate/increase the tax
+
+- REVIEW: if such a function doesn't exist, add function to insert today as
+  the expiry date in ISP::User->add_plan(), if the field from the form
+  is empty.
+
+  In reality, the above may not be a good move, as some people won't expire.
+  Instead, figure out a way to warn the operator about a blank expiry instead
+
+- write method in Vars so we can easily get the named value of any given
+  member of a data type
+
+- FIXME: consider changing coding style to get far more core functionality
+  out of the gui, and insert it either in the core modules themselves,
+  or into an abstraction module that can handle both gui and cli.
+
+  This will allow the gui to be a true 'plugin', instead of containing
+  too much core functionality
+
+- write new inv num functions, and eliminate the .inf style format
+
+- review the balance routine in write_ledger(). I can just tell that it's
+  not quite accurate
+
+- review the crappy way that we set amount to 0 if it is negative in
+  write_ledger()
+
+- remove legacy inv_num stuff... the new invoice_number() method is done
+
+- check to see if an invoice check needs to zero payment when writing
+  the gledger
+
+- uledger not getting updated with gst/pst in total amount
+
+- get write_ledger() to tally the balance...also, need to sort out the whole
+  amount/payment numbers, as having payment do a negative 'amount' is ambiguous
+
+- looks like payment is calculating GST
+
+- add error checking for expiry date functions in user, and come up
+  with some sane form of return if an error exists
+
+- add some form of error checking in get_plan() in User, so that we can
+  gracefully handle cases where a plan ID doesn't exist
+
+- fix all text fields so they have a max char limit
+
+- add sanity check for renewal params, particularly quantity
+
+- need to perform id checks for all data types (plan_info etc)... the id check
+  in question currently is in add_plan in User. Move this to Sanity
+
+- put check into Sanity for empty expiry date. On line 250 of Sanity, it
+  barfs as an empty expiry is a no-param within a pattern match. ALSO, it
+  seems as though we need to do some major consideration on field tests for
+  last_billing_date etc, and be more lax on them if they are undef
+
+- fix get_plan() in User, so that we don't have to generate an entire user
+  object to get the plan. This needs to be an obj and class method
+
+- renew() in Transac needs to gather plans, calculate the transaction,
+  authorize with bank, update ledgers, update plan data and return the
+  bank transaction info, new expiry dates etc
+
+- either make plans in _client_info_table() accept more plans, or make it so
+  that there is a <td> that displays a generic error if die_on_bad_params() is
+  not enabled
+
+- need to make significant modifications for values in Conversion's plans_to_db()
+
+- ** REVIEW ALL INCARNATIONS OF exist() IN ALL MODULES
+  SEE Uri's AUTOVIV DOC....
+
+- fix undef bug in @stack in Object
+
+- clarify error message for "not a valid data type"
+
+- rewrite sanity, so that each field (eg: login_name) has it's own internal
+  sub, instead of having to copy/paste similar items for different data types
+
+- FIXME: allow 0 hours in add_plan()
+
+- change User->add_plan() to use the new method of error handling
+
+- fix Sanity->_var_sanity() so that instead of having to pass in the data 'type',
+  it will get it from the calling sub
+
+- put a test of input compared to db fields for plan_info in Sanity. For that
+  matter, do it for all checks
+
+- Error is printing the wrong caller in some cases when bad_api() is
+  called
+
+- fix things to the damn labels show up in 'Account Plans', not the values
+
+- put GST & PST selects into Vars
+
+- change all web programs to dynamically cross-reference the var data against
+  Vars for their descriptive titles
+
+- fix the terrible way we access the plan data in GUI::Accounting... This is
+  bound to cause future collisions
+
+- fix the plan access in general
+
+- write method in User that will print out all available plan values, so
+  we can create a Vars entry for name-to-type
+
+- ensure that 'Login' parameter will not screw up the accounting ledger
+  in payment and purchase templates
+
+- make consistent 'use' calls and config calls in all applications
+
+- implement a good amount of input checking on ALL cgi's
+
+-- Chas Owens says --
+
+A side note to the main discussion: never use ref to check if a
+reference is to a specific type of variable; use reftype from
+Scalar::Util instead.  Only use ref to determine if a scalar is a
+reference or to find out its class. 

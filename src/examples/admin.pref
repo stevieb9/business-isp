@@ -1,0 +1,5 @@
+operator = admin 
+group	= admin
+name	= admin 
+opid	= 1
+email	= admin@example.com 
