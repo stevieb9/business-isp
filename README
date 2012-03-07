@@ -54,7 +54,7 @@ To install this module, run the following commands:
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc ISP::[component]
+    perldoc Business::ISP::[component]
 
 Or, you can find a list of all module perldocs online on your webserver
 under the /ispmanual directory.

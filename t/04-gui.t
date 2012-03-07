@@ -14,11 +14,11 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
-#  use_ok('ISP::GUI::Accounting');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
+#  use_ok('Business::ISP::GUI::Accounting');
 
 my $user;
 my $sanity;
@@ -38,11 +38,11 @@ sub _reset {
 
     _clean();
 
-    $user   = ISP::User->new({ username => 'steveb' });
-    $vardb  = ISP::Vars->new();
-    $sanity = ISP::Sanity->new();
-    $error  = ISP::Error->new();
-#   $gui    = ISP::GUI::Accounting->setup();
+    $user   = Business::ISP::User->new({ username => 'steveb' });
+    $vardb  = Business::ISP::Vars->new();
+    $sanity = Business::ISP::Sanity->new();
+    $error  = Business::ISP::Error->new();
+#   $gui    = Business::ISP::GUI::Accounting->setup();
 }
 
 _reset();

@@ -16,11 +16,11 @@ use Test::More qw(no_plan);
 use Data::Dumper;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
-  use_ok('ISP::Transac');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
+  use_ok('Business::ISP::Transac');
 
 my $user;
 my $sanity;
@@ -53,15 +53,15 @@ my %payment_on_acct = (
 { # create_transaction
 
     _reset();
-    my $test_transac = ISP::Transac->create_transaction({ data => \%line_item, error => $error });
-    isa_ok ( $test_transac, 'ISP::Transac', "create_transaction called with valid data return" );
+    my $test_transac = Business::ISP::Transac->create_transaction({ data => \%line_item, error => $error });
+    isa_ok ( $test_transac, 'Business::ISP::Transac', "create_transaction called with valid data return" );
 }
 
 { # calculate_invoice_amount
 
     _reset();
 
-    my $test_transac = ISP::Transac->create_transaction({ data => \%line_item, error => $error });
+    my $test_transac = Business::ISP::Transac->create_transaction({ data => \%line_item, error => $error });
 
     my $amount = $test_transac->calculate_invoice_amount({ 
                                 username => $user->username(), 
@@ -112,7 +112,7 @@ my %payment_on_acct = (
         $item{ payment }        = $payment;
         $item{ amount }         = $payment;
 
-        my $transac = ISP::Transac->create_transaction({ data => \%item, error => $error });
+        my $transac = Business::ISP::Transac->create_transaction({ data => \%item, error => $error });
 
         my $return = $transac->purchase({ client => $user, error => $error });
 
@@ -124,7 +124,7 @@ my %payment_on_acct = (
 
     _reset();
 
-    can_ok ( 'ISP::Transac', ( 'renew' ) );
+    can_ok ( 'Business::ISP::Transac', ( 'renew' ) );
 
     my @renewals = (
                     { 
@@ -138,7 +138,7 @@ my %payment_on_acct = (
                 );
 
     #my $return = $transac->renew( \@renewals, $error );
-    #is_ok ( $return, 0, "ISP::Transac->renew({ new({ config => 'ISP.conf-dist' }) }) returns success if all params are valid" );
+    #is_ok ( $return, 0, "Business::ISP::Transac->renew({ new({ config => 'ISP.conf-dist' }) }) returns success if all params are valid" );
 }
 
 SKIP: {
@@ -146,7 +146,7 @@ SKIP: {
     eval { require Exact::Transaction };
     skip "Exact::Transaction not installed" if $@;
 
-    my $config_check    = ISP::Object->new();
+    my $config_check    = Business::ISP::Object->new();
     my $enable_bank     = $config_check->ENABLE_BANK_PROCESSING();
 
     skip "Bank processing is not enabled" if ! $enable_bank;
@@ -155,7 +155,7 @@ SKIP: {
 
     _reset();
 
-    can_ok( 'ISP::Transac', 'credit_card_payment' );
+    can_ok( 'Business::ISP::Transac', 'credit_card_payment' );
 
     my $amount      = '29.99';
     my $card_number = '4111111111111111';
@@ -175,7 +175,7 @@ SKIP: {
                             transaction_data    => \%transaction_data,
                         });
 
-    is ( $return[0], '00',  "ISP::Transac->credit_card_payment response code " .
+    is ( $return[0], '00',  "Business::ISP::Transac->credit_card_payment response code " .
                             "is 00 on success"
     );
 
@@ -206,9 +206,9 @@ SKIP: {
 
 { # transaction return
 
-    my $transac_payment = ISP::Transac->create_transaction({ data => \%line_item, error => $error });
+    my $transac_payment = Business::ISP::Transac->create_transaction({ data => \%line_item, error => $error });
     my $return = $transac_payment->payment({ client => $user, error => $error });
-    isa_ok ( $return, 'ISP::Error', "ISP::Transac->payment() with invalid data, return" );  
+    isa_ok ( $return, 'Business::ISP::Error', "Business::ISP::Transac->payment() with invalid data, return" );  
 
 }
 
@@ -216,18 +216,18 @@ SKIP: {
     
     _reset();
 
-    my $transac_payment = ISP::Transac->create_transaction({ data => \%payment_on_acct, error => $error });
+    my $transac_payment = Business::ISP::Transac->create_transaction({ data => \%payment_on_acct, error => $error });
     my $return = $transac_payment->payment({ client =>  $user, error => $error });
-    like ( $return, qr/\d+/, "ISP::Transac->payment() returns success with valid data" );
+    like ( $return, qr/\d+/, "Business::ISP::Transac->payment() returns success with valid data" );
 }
 
 { # purchase
 
     _reset();
 
-    my $transac_purchase = ISP::Transac->create_transaction({ data => \%line_item, error => $error });
+    my $transac_purchase = Business::ISP::Transac->create_transaction({ data => \%line_item, error => $error });
     my $return = $transac_purchase->purchase({ client => $user, error => $error });
-    like ( $return, qr/\d+/, "ISP::Transac->purchase() returns success with valid data" );
+    like ( $return, qr/\d+/, "Business::ISP::Transac->purchase() returns success with valid data" );
 }
 
 { # bad transac data
@@ -244,7 +244,7 @@ SKIP: {
                   item_name     => 'sohodsl',
         );
 
-    my $bad_transac = ISP::Transac->create_transaction({ data => \%bad_data, error => $error }); 
+    my $bad_transac = Business::ISP::Transac->create_transaction({ data => \%bad_data, error => $error }); 
 }
 
 { # hst test
@@ -261,7 +261,7 @@ SKIP: {
                   item_name     => 'Tax',
         );
 
-    my $transac = ISP::Transac->create_transaction({ data => \%tax_item, error => $error }); 
+    my $transac = Business::ISP::Transac->create_transaction({ data => \%tax_item, error => $error }); 
 
     ok ( $transac =~ /\d{2,12}/, "HST/Tax passes all checks" );
 }
@@ -279,10 +279,10 @@ sub _reset {
 
     _clean();
 
-    $transac    = ISP::Transac->new();
+    $transac    = Business::ISP::Transac->new();
 
-    $user   = ISP::User->new({ username => 'steveb' });
-    $vardb  = ISP::Vars->new();
-    $sanity = ISP::Sanity->new();
-    $error  = ISP::Error->new();
+    $user   = Business::ISP::User->new({ username => 'steveb' });
+    $vardb  = Business::ISP::Vars->new();
+    $sanity = Business::ISP::Sanity->new();
+    $error  = Business::ISP::Error->new();
 }

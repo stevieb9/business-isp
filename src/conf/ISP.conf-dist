@@ -1,27 +1,27 @@
 [Version]
 version                 = 0.13_01
 
-[ISP::Error]
+[Business::ISP::Error]
 
-[ISP::Ledger]
+[Business::ISP::Ledger]
 lines_to_stdout         = 0 ; for legacy only. Do not use
 
-[ISP::Sanity]
+[Business::ISP::Sanity]
 validate_value_codeflow = 0 ; validate_value() appends to codeflow
 validate_value_trace    = 0 ; validate_value() appends to trace
 validate_value_debug    = 0 ; print to STDOUT when entering validate_value()
 disable_validate_value  = 0 ; only for testing
 
-[ISP::Transac]
+[Business::ISP::Transac]
 
-[ISP::User]
+[Business::ISP::User]
 plana_deduct_enable     = 1 ; perform monthly plana deductions
 plana_min_hours         = 5 ; number of hours user must use each month
 
-[ISP::Vars]
+[Business::ISP::Vars]
 forgive_missing_attrs   = 0 ; don't die if a data type is missing fields
 
-[ISP::GUI::Base]
+[Business::ISP::GUI::Base]
 enable_url_checksum     = 1 ; enable modification of URLs
 url_checksum_key        = 4d8dca2274cf1c6b741f7115c02bd64c
 url_checksum_digest     = Digest::MD5
@@ -34,8 +34,8 @@ client_session_expiry   = 24h ; m=minute, h=hour, d=day, w=week
 client_cookie_expiry    = 30m ; must be higher than client_session_expiry 
 client_login_timeout    = 5m ; must be less than both cookie and session expiry
 
-[ISP::GUI::Accounting]
-display_plan_stats      = 1 ; show up/down/hrs -- requires ISP::RADIUS
+[Business::ISP::GUI::Accounting]
+display_plan_stats      = 1 ; show up/down/hrs -- requires Business::ISP::RADIUS
 display_contact_info    = 1 
 display_source_repo     = 0 ; display the link to the source repository
 
@@ -88,7 +88,7 @@ slave_1_user            = isp
 slave_1_pass            = password
 test_mode_source        = DBI:SQLite:t/isp_test.db
 
-[ISP::Email]
+[Business::ISP::Email]
 all_email_to_devel      = 0 ; email everything to the maintainer
 copy_email_to_devel     = 0 ; copy all email to the maintainer
 smtp_server             = smtp.example.com

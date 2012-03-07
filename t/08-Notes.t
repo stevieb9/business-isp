@@ -10,10 +10,10 @@ use Test::More qw(no_plan);
 use Data::Dumper;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
 
 my $user;
 my $sanity;
@@ -40,7 +40,7 @@ $ENV{'ISP_CONFIG'} = $conf;
                 date        => $date,
             });
 
-    is ( $add_notes_ret, 0, "ISP::User add_notes() returns 0 upon completion" );
+    is ( $add_notes_ret, 0, "Business::ISP::User add_notes() returns 0 upon completion" );
 
     # no note param
 
@@ -53,7 +53,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
     is (    $add_notes_ret, 
             1, 
-            "ISP::User add_notes() doesn't insert, " .
+            "Business::ISP::User add_notes() doesn't insert, " .
             "returns 1 if a note is not passed in, " .
             "and the classification tag is not set to " .
             "something that the system will set the note to a default" 
@@ -105,7 +105,7 @@ $ENV{'ISP_CONFIG'} = $conf;
     isa_ok ( $notes_aref, 'ARRAY', "get_notes() returns an array reference" );
     isa_ok ( $notes_aref->[0], 'HASH', "each element in get_notes() return is a hash ref" );
 
-    my $bad_notes_user = ISP::User->new({ config => $conf, username => 'rauch' });
+    my $bad_notes_user = Business::ISP::User->new({ config => $conf, username => 'rauch' });
 
     my $no_notes_ret = $bad_notes_user->get_notes();
     is ( $no_notes_ret, undef, "calling get_notes() when no notes exists returns undef" );
@@ -136,10 +136,10 @@ sub _reset {
 
     _clean();
 
-    $user   = ISP::User->new({ config => $conf, username => 'steveb' });
-    $vardb  = ISP::Vars->new({ config => $conf });
-    $sanity = ISP::Sanity->new({ config => $conf });
-    $error  = ISP::Error->new({ config => $conf });
+    $user   = Business::ISP::User->new({ config => $conf, username => 'steveb' });
+    $vardb  = Business::ISP::Vars->new({ config => $conf });
+    $sanity = Business::ISP::Sanity->new({ config => $conf });
+    $error  = Business::ISP::Error->new({ config => $conf });
 }
 
 

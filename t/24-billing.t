@@ -5,8 +5,8 @@ use strict;
 
 use Test::More qw( no_plan );
 
-use_ok('ISP::Object');
-use_ok('ISP::Billing');
+use_ok('Business::ISP::Object');
+use_ok('Business::ISP::Billing');
 
 use Cwd 'abs_path';
 my $conf = abs_path( 't/ISP.conf-dist' );
@@ -14,7 +14,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # inv
 
-    my $bill = ISP::Billing->new();
+    my $bill = Business::ISP::Billing->new();
 
     $bill->email_bill({ invoice => 2 });
 
@@ -22,7 +22,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # renewal notice
 
-    my $bill    = ISP::Billing->new();
+    my $bill    = Business::ISP::Billing->new();
 
     $bill->renewal_notice({ account_type => 'month' });
 }

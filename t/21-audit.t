@@ -2,7 +2,7 @@
 
 use strict;
 
-# ISP::Sanity::audit()
+# Business::ISP::Sanity::audit()
 
 use Test::More qw(no_plan);
 use Data::Dumper;
@@ -13,14 +13,14 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 print <<EOT;
 
-Test for the audit() method in ISP::Sanity
+Test for the audit() method in Business::ISP::Sanity
 
 EOT
 
 print "\n\n***** Init *****\n\n";
 
-use ISP::Sanity;
-use ISP::Object;
+use Business::ISP::Sanity;
+use Business::ISP::Object;
 
 my $sanity;
 my $schema;
@@ -35,7 +35,7 @@ sub _reset {
 
     _clean();
 
-    $sanity     = ISP::Sanity->new();
+    $sanity     = Business::ISP::Sanity->new();
     $schema     = $sanity->schema();
     $rs     = $schema->resultset( 'Audit' );
 }
@@ -76,7 +76,7 @@ $rs->delete();
 
     like (  $@,
             '/has already run its/',
-            "audit() dies via ISP::Error if trying to run a process more than once per cycle"
+            "audit() dies via Business::ISP::Error if trying to run a process more than once per cycle"
     );
 
     $rs->delete;
@@ -106,7 +106,7 @@ $rs->delete();
 
     like (  $@,
             '/Can not perform an audit on unknown process/',
-            "audit() dies via ISP::Error if an unknown process name is passed in"
+            "audit() dies via Business::ISP::Error if an unknown process name is passed in"
     );
 }
 
@@ -122,7 +122,7 @@ $rs->delete();
 
     like (  $@,
             '/audit process could not log that/',
-            "audit() dies via ISP::Error if the audit log could not be written to the db"
+            "audit() dies via Business::ISP::Error if the audit log could not be written to the db"
     );
 
     $rs->delete;

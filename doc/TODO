@@ -34,7 +34,7 @@
   transac processing so that we don't negate/increase the tax
 
 - REVIEW: if such a function doesn't exist, add function to insert today as
-  the expiry date in ISP::User->add_plan(), if the field from the form
+  the expiry date in Business::ISP::User->add_plan(), if the field from the form
   is empty.
 
   In reality, the above may not be a good move, as some people won't expire.

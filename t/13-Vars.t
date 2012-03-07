@@ -14,10 +14,10 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
 
 my $user;
 my $sanity;
@@ -65,7 +65,7 @@ _reset();
 eval { $vardb->struct( 'asdfasdf' ) } ;
 like (  $@,
         qr/No such data type/,
-        "struct() is murdered by ISP::Error->bad_data() if asked for an unknown data type"
+        "struct() is murdered by Business::ISP::Error->bad_data() if asked for an unknown data type"
     );
 
 _reset();
@@ -134,7 +134,7 @@ $plan_info{ bad_attribute } = 'blah';
 eval { $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error }) };
 like ( $@,
      '/is defined, but it has invalid attribute/',
-     "compare() dies with an ISP::Error when a struct has invalid attrs",
+     "compare() dies with an Business::ISP::Error when a struct has invalid attrs",
     );
 
 _reset();
@@ -143,7 +143,7 @@ delete $plan_info{ username };
 eval { $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error }) };
 like ( $@,
      '/defined, but is missing required attributes/',
-     "compare() dies with an ISP::Error when a struct is missing attrs" 
+     "compare() dies with an Business::ISP::Error when a struct is missing attrs" 
     );
 
 _reset();
@@ -165,7 +165,7 @@ $vardb->FORGIVE_MISSING_ATTRS( 0 );
 eval { $vardb->compare({ type => 'plan_info', data => \%plan_info, error => $error }) };
 like ( $@,
      '/defined, but is missing required attributes/',
-     "compare() dies with an ISP::Error when a struct is missing attrs " .
+     "compare() dies with an Business::ISP::Error when a struct is missing attrs " .
      "and FORGIVE_MISSING_ATTRS() has been re-enabled",
     );
 
@@ -192,10 +192,10 @@ sub _reset {
 
         _clean();
 
-    $user   = ISP::User->new({ username => 'steveb' });
-    $vardb  = ISP::Vars->new();
-    $sanity = ISP::Sanity->new();
-    $error  = ISP::Error->new();
+    $user   = Business::ISP::User->new({ username => 'steveb' });
+    $vardb  = Business::ISP::Vars->new();
+    $sanity = Business::ISP::Sanity->new();
+    $error  = Business::ISP::Error->new();
 
     # we need to enable merchant processing internally
     # ...I don't have any other ideas currently

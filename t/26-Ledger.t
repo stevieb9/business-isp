@@ -14,12 +14,12 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
-  use_ok('ISP::Transac');
-  use_ok('ISP::Ledger');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
+  use_ok('Business::ISP::Transac');
+  use_ok('Business::ISP::Ledger');
 
 my $user;
 my $sanity;
@@ -35,7 +35,7 @@ my $ledger;
     my $username = $user->username();
 
     my $current_balance = $ledger->balance({ username => $username });
-    like ( $current_balance, qr/\d{1,}/, "ISP::Ledger->balance() returns a digit given a username" );
+    like ( $current_balance, qr/\d{1,}/, "Business::ISP::Ledger->balance() returns a digit given a username" );
 
     my $new_balance = '129.49';
 
@@ -44,7 +44,7 @@ my $ledger;
     $ledger->balance({ username => $username, balance => '0.00' });
     my $balance_return = $ledger->balance({ username => $username, balance => $new_balance });
 
-    is ( $balance_return, 0, "ISP::Ledger->balance() returns success (0) if new balance is inserted to the db" );
+    is ( $balance_return, 0, "Business::ISP::Ledger->balance() returns success (0) if new balance is inserted to the db" );
 
     my $new_current_balance = $ledger->balance({ username => $username });
     is ( $new_current_balance, '129.49', "adding 129.49 via Ledger->balance() does the right thing" );
@@ -152,12 +152,12 @@ sub _reset {
 
     _clean();
 
-     $user      = ISP::User->new({ config => $conf, username => 'steveb' });
-     $sanity        = ISP::Sanity->new({ config => $conf });
-     $vardb     = ISP::Vars->new({ config => $conf });
-     $error     = ISP::Error->new({ config => $conf });
-     $transac       = ISP::Transac->new({ config => $conf });
-     $ledger        = ISP::Ledger->new({ config => $conf });
+     $user      = Business::ISP::User->new({ config => $conf, username => 'steveb' });
+     $sanity        = Business::ISP::Sanity->new({ config => $conf });
+     $vardb     = Business::ISP::Vars->new({ config => $conf });
+     $error     = Business::ISP::Error->new({ config => $conf });
+     $transac       = Business::ISP::Transac->new({ config => $conf });
+     $ledger        = Business::ISP::Ledger->new({ config => $conf });
 
 }
 

@@ -6,7 +6,7 @@
 
 # get a select drop down:
 
-my $vardb        = ISP::Vars->new();    
+my $vardb        = Business::ISP::Vars->new();    
 my $payment_method_select = $vardb->build_select( 'payment_method', 'visa');    
 $self->pb_param( payment_method => $payment_method_select );
 

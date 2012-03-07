@@ -5,7 +5,7 @@ use strict;
 #
 # bug 49 test
 #
-# ISP::Error
+# Business::ISP::Error
 #
 
 # This bug refers to a situation where render_gui_data() would
@@ -29,9 +29,9 @@ that it doesn't get rendered exponentially by the gui.
 EOT
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
 
 my $sanity;
 my $vardb;
@@ -48,9 +48,9 @@ sub _reset {
 
     _clean();
 
-    $vardb  = ISP::Vars->new();
-    $sanity = ISP::Sanity->new();
-    $error  = ISP::Error->new();
+    $vardb  = Business::ISP::Vars->new();
+    $sanity = Business::ISP::Sanity->new();
+    $error  = Business::ISP::Error->new();
 }
 
 sub _nothing{} # placeholder

@@ -10,8 +10,8 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
 
-    use_ok( 'ISP::Sanity' );
-    use_ok( 'ISP::Error' );
+    use_ok( 'Business::ISP::Sanity' );
+    use_ok( 'Business::ISP::Error' );
 
 # Declarations go here, but defs in the 'maintenance' area
 
@@ -30,8 +30,8 @@ sub _reset {
 
     _clean();
 
-    $sanity = ISP::Sanity->new();
-    $error  = ISP::Error->new();
+    $sanity = Business::ISP::Sanity->new();
+    $error  = Business::ISP::Error->new();
 }
 
 # Tests go below _nothing();
@@ -40,7 +40,7 @@ sub _nothing {} # placeholder for vim folds. Tests below...
 
 #
 # bug 17
-# - ISP::Sanity check_username() apparently allows ''
+# - Business::ISP::Sanity check_username() apparently allows ''
 #   in the regex check
 #
 
@@ -52,5 +52,5 @@ sub _nothing {} # placeholder for vim folds. Tests below...
 
     my $return = $sanity->check_username( 'un', $username, $error );
 
-    is ( $return, 1, "ISP::Sanity check_username does not allow the empty string as a param" );
+    is ( $return, 1, "Business::ISP::Sanity check_username does not allow the empty string as a param" );
 }

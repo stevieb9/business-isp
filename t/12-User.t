@@ -11,9 +11,9 @@ use Test::More qw(no_plan);
 
 BEGIN {
   #
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Error');
 }
 
 my $user = undef;
@@ -26,36 +26,36 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\nInitialization ******************\n\n";
 
-can_ok('ISP::User', ('new'));
+can_ok('Business::ISP::User', ('new'));
 
-{ # is $user an ISP::User obj
+{ # is $user an Business::ISP::User obj
 
-    my $user = ISP::User->new({ config => $conf });
-    isa_ok($user, 'ISP::User');
+    my $user = Business::ISP::User->new({ config => $conf });
+    isa_ok($user, 'Business::ISP::User');
 }
 
 { # is also an Ojbect
     
-    my $user = ISP::User->new({ config => $conf });
-    isa_ok($user, 'ISP::Object');
+    my $user = Business::ISP::User->new({ config => $conf });
+    isa_ok($user, 'Business::ISP::Object');
 }
 
 { # can initialize with a username
     
-    my $user = ISP::User->new({ config => $conf, username => 'steveb' });
+    my $user = Business::ISP::User->new({ config => $conf, username => 'steveb' });
     is ($user->username(), 'steveb', "${\(ref $user)}->new({ username => 'steveb' }) can initialize an object given a username parameter");
 }
 
 { # undef with bad username
     
-    my $user = ISP::User->new({ config => $conf, username => 'asdf' });
+    my $user = Business::ISP::User->new({ config => $conf, username => 'asdf' });
     is ($user->username(), undef, "${\(ref $user)}->new({ config => $conf }) returns undef if given an invalid username parameter");
 }
 
 { # can build a user manually/properly
 
-    my $user = ISP::User->new({ config => $conf });
-    can_ok ('ISP::User', ('build_db_user'));
+    my $user = Business::ISP::User->new({ config => $conf });
+    can_ok ('Business::ISP::User', ('build_db_user'));
 
     my $build_user_ret = $user->build_db_user('steveb');
     is ( $user->username(), 'steveb', "${\(ref $user)}->build_db_user('steveb') properly initializes an object");
@@ -64,7 +64,7 @@ can_ok('ISP::User', ('new'));
 
 { # manual build returns undef with bad username
     
-    my $user = ISP::User->new({ config => $conf });
+    my $user = Business::ISP::User->new({ config => $conf });
     $user->build_db_user('asdf');
     is ($user->username(), undef, "${\(ref $user)}->build_db_user() returns undef if given an invalid username parameter");
 }
@@ -75,7 +75,7 @@ can_ok('ISP::User', ('new'));
 
 {
     print "\nAccessor Tests ********************\n\n";
-    my $user = ISP::User->new({ config => $conf });
+    my $user = Business::ISP::User->new({ config => $conf });
 
     my @rw_attrs = qw (
                    tax_exempt
@@ -104,7 +104,7 @@ can_ok('ISP::User', ('new'));
 
 {
     
-    my $user = ISP::User->new({ config => $conf });
+    my $user = Business::ISP::User->new({ config => $conf });
 
     my @ro_attrs = qw (
            username
@@ -120,14 +120,14 @@ can_ok('ISP::User', ('new'));
 
 SKIP: {
     
-    eval { require ISP::RADIUS };
-    skip "ISP::RADIUS not installed" if $@;
+    eval { require Business::ISP::RADIUS };
+    skip "Business::ISP::RADIUS not installed" if $@;
 
     { # get_monthly_login_totals
     
-        can_ok( 'ISP::User', 'get_monthly_login_totals' );
+        can_ok( 'Business::ISP::User', 'get_monthly_login_totals' );
     
-        my $user = ISP::User->new({ config => $conf, username => 'steveb' });
+        my $user = Business::ISP::User->new({ config => $conf, username => 'steveb' });
         my $plan = $user->get_plan( 1 );
 
         my $stats = $user->get_monthly_login_totals({
@@ -144,7 +144,7 @@ SKIP: {
     #
 
     { 
-        my $user    = ISP::User->new({ config => $conf, username => 'steveb' });
+        my $user    = Business::ISP::User->new({ config => $conf, username => 'steveb' });
         my $orig_pw = $user->radius_password();
 
         ok( $orig_pw eq 'verb4mm', "radius_password returns the user's pw" );
@@ -159,14 +159,14 @@ SKIP: {
         ok ( $last_pw eq $orig_pw, "radius_password can reset the password back to original" );
     }
 
-} # end skip no ISP::RADIUS
+} # end skip no Business::ISP::RADIUS
 
 #
 # plan_password()
 #
 
 {
-    my $user    = ISP::User->new({ config => $conf, username => 'steveb' });
+    my $user    = Business::ISP::User->new({ config => $conf, username => 'steveb' });
     my $cur_pw  = $user->plan_password();
 
     # no plan_id supplied
@@ -186,7 +186,7 @@ SKIP: {
 #
 
 {
-    my $clientdb    = ISP::User->new({ config => $conf });
+    my $clientdb    = Business::ISP::User->new({ config => $conf });
 
     my $user = {
 
@@ -218,7 +218,7 @@ SKIP: {
           fax_phone => '',
     };  
     
-    my $error       = ISP::Error->new({ config => $conf });
+    my $error       = Business::ISP::Error->new({ config => $conf });
 
     $clientdb->add_client({
                         error       => $error,
@@ -230,9 +230,9 @@ SKIP: {
 
 { # bug 208 - client_info() not updating the db
 
-    can_ok( 'ISP::User', 'client_info' );
+    can_ok( 'Business::ISP::User', 'client_info' );
 
-    my $user = ISP::User->new({ username => 'steveb' });
+    my $user = Business::ISP::User->new({ username => 'steveb' });
 
     my $client_info = $user->client_info();
 
@@ -258,7 +258,7 @@ SKIP: {
 
     ok( $orig eq $orig_var, "...and reverts it back again" );
 
-    # check ISP::Error failure (die)
+    # check Business::ISP::Error failure (die)
 
     $client_info->{ blah } = 'blah';
 
@@ -268,6 +268,6 @@ SKIP: {
 
     like (  $@,
             '/has invalid attributes/',
-            "client_info() dies via ISP::Error if Sanity checks fail on the incoming data"
+            "client_info() dies via Business::ISP::Error if Sanity checks fail on the incoming data"
     );
 }

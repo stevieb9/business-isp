@@ -4,7 +4,7 @@ use strict;
 
 print <<EOT;
 bug 48 test
-ISP::Sanity's check_* methods are doing the wrong thing with cascading
+Business::ISP::Sanity's check_* methods are doing the wrong thing with cascading
 'and' statements.
 
 When the first 'do' expression got a return of 0, the next exprs
@@ -26,9 +26,9 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
 
 my $sanity;
 my $vardb;
@@ -45,9 +45,9 @@ sub _reset {
 
     _clean();
 
-	$vardb	= ISP::Vars->new();
-	$sanity	= ISP::Sanity->new();
-    $error 	= ISP::Error->new();
+	$vardb	= Business::ISP::Vars->new();
+	$sanity	= Business::ISP::Sanity->new();
+    $error 	= Business::ISP::Error->new();
 }
 
 sub _nothing{} # placeholder
@@ -83,9 +83,9 @@ _reset();
 		my @data	= $error->data();
 		my $stack	= $error->get_stack();
 
-		isnt ( $data[0], 	undef, "ISP::Sanity $method properly adds a data entry to error" );
-		isnt ( $stack->[1],	undef, "ISP::Sanity $method properly adds a stack entry to error" );
-		isnt ( $msg[0], 	undef, "ISP::Sanity $method properly adds a message entry to error" );
+		isnt ( $data[0], 	undef, "Business::ISP::Sanity $method properly adds a data entry to error" );
+		isnt ( $stack->[1],	undef, "Business::ISP::Sanity $method properly adds a stack entry to error" );
+		isnt ( $msg[0], 	undef, "Business::ISP::Sanity $method properly adds a message entry to error" );
 
 	}
 }

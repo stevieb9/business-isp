@@ -15,9 +15,9 @@ $ENV{'ISP_CONFIG'} = $conf;
 BEGIN {
   #
 print "\n\nInit ******************\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Error');
 }
 
 my $user;
@@ -32,16 +32,16 @@ my %plan_info;
 
 print "\n\nPlan Tests ****************************\n\n";
 
-can_ok('ISP::User', ('_init_plans'));
-can_ok('ISP::User', ('get_plans'));
-can_ok('ISP::User', ('get_plan'));
-can_ok('ISP::User', ('add_plan'));
+can_ok('Business::ISP::User', ('_init_plans'));
+can_ok('Business::ISP::User', ('get_plans'));
+can_ok('Business::ISP::User', ('get_plan'));
+can_ok('Business::ISP::User', ('add_plan'));
 
 { # check for proper references
 
     _reset();
 
-    $user = ISP::User->new({ config => $conf, username => 'steveb' });
+    $user = Business::ISP::User->new({ config => $conf, username => 'steveb' });
 
     my @plans   = $user->get_plans();
     my $planref     = $plans[0];
@@ -71,7 +71,7 @@ can_ok('ISP::User', ('add_plan'));
 
     _reset();
 
-    my $plan_user = ISP::User->new({ config => $conf, username => 'noplan' });
+    my $plan_user = Business::ISP::User->new({ config => $conf, username => 'noplan' });
     my @no_plans    = $plan_user->get_plans();
     my $no_planref  = $no_plans[0];
 
@@ -90,7 +90,7 @@ can_ok('ISP::User', ('add_plan'));
 
     _reset();
 
-    $user = ISP::User->new({ config => $conf, username => 'steveb' });
+    $user = Business::ISP::User->new({ config => $conf, username => 'steveb' });
     my $init_plans_ret = $user->_init_plans();
     is ( $init_plans_ret, 0, "_init_plans() returns 0 upon success" );
 
@@ -102,8 +102,8 @@ print "\nTest Plan Addition API calls\n\n";
 
     _reset();
 
-    $user  = ISP::User->new({ config => $conf, username => 'steveb' });
-    my $error = ISP::Error->new({ config => $conf }); 
+    $user  = Business::ISP::User->new({ config => $conf, username => 'steveb' });
+    my $error = Business::ISP::Error->new({ config => $conf }); 
     my %plan_info;
 
     # No params at all
@@ -112,7 +112,7 @@ print "\nTest Plan Addition API calls\n\n";
     like (  $@,
         '/Bad API/',
         "${\(ref $user)}->add_plan() is terminated by " .
-        "ISP::Error->bad_api() when no parameters are passed in"
+        "Business::ISP::Error->bad_api() when no parameters are passed in"
       );
 
 
@@ -125,7 +125,7 @@ print "\nTest Plan Addition API calls\n\n";
     like (  $@, 
         '/Bad API/', 
         "${\(ref $user)}->add_plan() is terminated by " .
-        "ISP::Error->bad_api() if an ISP::Error is not passed in" 
+        "Business::ISP::Error->bad_api() if an Business::ISP::Error is not passed in" 
     );
 
     # Bad Data Type
@@ -138,8 +138,8 @@ print "\nTest Plan Addition API calls\n\n";
     eval { $user->add_plan({ plan_info => \%plan_info, error => $error }) } ;
     like (  $@,
         '/invalid attributes/',
-        "${\(ref $user)}->add_plan() is terminated by ISP::Error->bad_data() if " .
-        "the plan_info data does not conform to the defined type in ISP::Vars"
+        "${\(ref $user)}->add_plan() is terminated by Business::ISP::Error->bad_data() if " .
+        "the plan_info data does not conform to the defined type in Business::ISP::Vars"
      );
 
 }
@@ -173,7 +173,7 @@ _reset();
     eval { $user->add_plan({ plan_info => \%plan_info, error => $error }) } ;
     like (  $@,
         '/id field must be empty/',
-        "${\(ref $user)}->add_plan() is terminated by ISP::Error->bad_data() if " .
+        "${\(ref $user)}->add_plan() is terminated by Business::ISP::Error->bad_data() if " .
         "the plan_info data tries to set the id field."
      );
 
@@ -202,7 +202,7 @@ print "\nTesting the 'hours' field\n\n";
     for (@bad_hours) {
         $plan_info{hours} = $_;
         my $return = $user->add_plan({ plan_info => \%plan_info, error => $error });
-        isa_ok ( $return, 'ISP::Error', "$_ in the hours field, the return" );
+        isa_ok ( $return, 'Business::ISP::Error', "$_ in the hours field, the return" );
         _reset();
     }
 }
@@ -237,7 +237,7 @@ print "\nTesting the 'hours' field\n\n";
         _reset();
         $plan_info{login_name} = $_;
         my $return = $user->add_plan({ plan_info => \%plan_info, error => $error });
-        isa_ok ( $return, 'ISP::Error', "$_ in the login_name field, the return " );
+        isa_ok ( $return, 'Business::ISP::Error', "$_ in the login_name field, the return " );
     }
 }
 
@@ -270,7 +270,7 @@ print "\nTesting modify_plan_expiry()\n\n";
                             id          => 2,
                             quantity    => 2,
                         });
-    is ( $result, 1, "ISP::User->modify_plan_expiry()returns 1 if the plan has no expiry date" ); 
+    is ( $result, 1, "Business::ISP::User->modify_plan_expiry()returns 1 if the plan has no expiry date" ); 
 
 }
 
@@ -284,7 +284,7 @@ print "\nTesting modify_plan_expiry()\n\n";
                             id          => 1,
                             quantity    => 'a',
                         });
-    is ( $result, 1, "ISP::User->modify_plan_expiry() returns 1 if quantity is not an integer" ); 
+    is ( $result, 1, "Business::ISP::User->modify_plan_expiry() returns 1 if quantity is not an integer" ); 
 
 }
 
@@ -326,7 +326,7 @@ print "\nTesting modify_plan_expiry()\n\n";
 
     _reset();
 
-    my $client_db = ISP::User->new({ config => $conf });
+    my $client_db = Business::ISP::User->new({ config => $conf });
 
     my @get_client_list_ret = $client_db->get_client_list();
     isa_ok ( \@get_client_list_ret, 'ARRAY', "taking a ref of the get_client_list() return is" );
@@ -347,7 +347,7 @@ print "\nTesting modify_plan_expiry()\n\n";
 
     # we need a temporary user here, or else the notes subsystem will barf
 
-    my $del_user = ISP::User->new({ config => $conf, username => 'steveb' });
+    my $del_user = Business::ISP::User->new({ config => $conf, username => 'steveb' });
 
     my $del_id = $del_user->get_plan();
 
@@ -407,9 +407,9 @@ sub _reset {
 
     _clean();
 
-    $user  = ISP::User->new({ config => $conf });
-    $plan_db = ISP::User->new({ config => $conf });
-    $error = ISP::Error->new({ config => $conf });
+    $user  = Business::ISP::User->new({ config => $conf });
+    $plan_db = Business::ISP::User->new({ config => $conf });
+    $error = Business::ISP::Error->new({ config => $conf });
     %plan_info = (
           'pap_date' => '',
           'last_update' => '2009-07-28',

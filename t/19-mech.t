@@ -11,7 +11,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
   use_ok( 'WWW::Mechanize' );
-  use_ok( 'ISP::Object' );
+  use_ok( 'Business::ISP::Object' );
 
 my $mech;
 my $obj;
@@ -26,7 +26,7 @@ sub _reset {
 
     _clean();
 
-    $obj = ISP::Object->new();
+    $obj = Business::ISP::Object->new();
     $mech = WWW::Mechanize->new();
 }
 

@@ -10,8 +10,8 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-    use_ok( 'ISP::Sanity' );
-    use_ok( 'ISP::Error' );
+    use_ok( 'Business::ISP::Sanity' );
+    use_ok( 'Business::ISP::Error' );
 
 # Declarations go here
 
@@ -22,7 +22,7 @@ print <<EOT;
 
 bug 18
 
-ISP::Sanity check_username() allows an underscore as its first character (and it shouldn't)
+Business::ISP::Sanity check_username() allows an underscore as its first character (and it shouldn't)
 
 EOT
 
@@ -36,8 +36,8 @@ sub _reset {
 
     _clean();
 
-    $sanity = ISP::Sanity->new();
-    $error  = ISP::Error->new();
+    $sanity = Business::ISP::Sanity->new();
+    $error  = Business::ISP::Error->new();
 }
 
 # Tests go below _nothing();

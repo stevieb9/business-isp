@@ -15,10 +15,10 @@ my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::User');
-  use_ok('ISP::Sanity');
-  use_ok('ISP::Vars');
-  use_ok('ISP::Error');
+  use_ok('Business::ISP::User');
+  use_ok('Business::ISP::Sanity');
+  use_ok('Business::ISP::Vars');
+  use_ok('Business::ISP::Error');
 
 my $user;
 my $sanity;
@@ -37,10 +37,10 @@ sub _reset {
 
     _clean();
 
-    $user   = ISP::User->new({ config => $conf, username => 'steveb' });
-    $vardb  = ISP::Vars->new({ config => $conf });
-    $sanity = ISP::Sanity->new({ config => $conf });
-    $error  = ISP::Error->new({ config => $conf });
+    $user   = Business::ISP::User->new({ config => $conf, username => 'steveb' });
+    $vardb  = Business::ISP::Vars->new({ config => $conf });
+    $sanity = Business::ISP::Sanity->new({ config => $conf });
+    $error  = Business::ISP::Error->new({ config => $conf });
 }
 
 sub plan_info {
@@ -299,14 +299,14 @@ print "************************************\n\n\n\n*******************\n";
 
 print "\n\n***** Public Tests *****\n\n";
 
-can_ok('ISP::Sanity', ('validate_data'));
-can_ok('ISP::Sanity', ('unsafe_string'));
-can_ok('ISP::Sanity', ('unsafe_word'));
-can_ok('ISP::Sanity', ('validate_renew'));
+can_ok('Business::ISP::Sanity', ('validate_data'));
+can_ok('Business::ISP::Sanity', ('unsafe_string'));
+can_ok('Business::ISP::Sanity', ('unsafe_word'));
+can_ok('Business::ISP::Sanity', ('validate_renew'));
 
 print "\n\n***** Core Tests *****\n\n";
 
-can_ok('ISP::Sanity', ('check_type'));
+can_ok('Business::ISP::Sanity', ('check_type'));
 
 #
 # DATA VALIDATION
@@ -445,7 +445,7 @@ for my $type (@known_types) {
 
 _reset;
 
-#my $object = ISP::Object->new({ config => $conf });
+#my $object = Business::ISP::Object->new({ config => $conf });
 #print join ("\n", $object->GET_CODEFLOW());
 
 print "\n*****Testing validate_renew*****\n\n";
@@ -456,21 +456,21 @@ eval { $sanity->validate_renew() } ;
 like (  $@, 
         '/Bad API/',
         "Calling validate_renew() with no params is " .
-        "mutilated by ISP::Error->bad_api()"
+        "mutilated by Business::ISP::Error->bad_api()"
     );      
 
 eval { $sanity->validate_renew({ error => $error, }) } ;
 like (  $@,
         '/Invalid or missing plan_id parameter/',
         "Calling validate_renew() with a bad plan_id " .
-        "dies by ISP::Error->bad_data()"
+        "dies by Business::ISP::Error->bad_data()"
     );
 
 eval { $sanity->validate_renew({ error => $error, plan_id => '1', }) } ;
 like (  $@,
         '/Quantity must/',
         "Calling validate_renew() with a good plan_id but bad quantity " .
-        "dies by ISP::Error->bad_data()"
+        "dies by Business::ISP::Error->bad_data()"
     );
 
 
@@ -480,7 +480,7 @@ my $return = $sanity->validate_renew({
                             quantity    => 300,
                             amount      => '2asdf99.00' 
                         });
-isa_ok ( $return, 'ISP::Error', "Passing a bad amount param to validate_renew() return value" );
+isa_ok ( $return, 'Business::ISP::Error', "Passing a bad amount param to validate_renew() return value" );
 
 undef $return;
 
@@ -535,7 +535,7 @@ for my $bad_num ( @phone_nums ) {
     _reset();
 
     $sanity->check_phone( 'phone', $bad_num, $error );
-    is ( $error->exists(), 1, "$bad_num passed to check_phone results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_num passed to check_phone results in an Business::ISP::Error being flagged" );
 
 }   
 
@@ -571,7 +571,7 @@ for my $bad_user ( @bad_users ) {
 
     $sanity->check_username( 'username', $bad_user, $error );
 
-    is ( $error->exists(), 1, "$bad_user passed to check_username() results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_user passed to check_username() results in an Business::ISP::Error being flagged" );
 }
 
 # check_password
@@ -592,7 +592,7 @@ for my $bad_pw ( @bad_pass ) {
     
     $sanity->check_password( 'pw', $bad_pw, $error );
 
-    is ( $error->exists(), 1, "$bad_pw passed to check_password() results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_pw passed to check_password() results in an Business::ISP::Error being flagged" );
 
 }
 
@@ -615,7 +615,7 @@ for my $bad_int ( @bad_ints ) {
 
     $sanity->check_int( 'int', $bad_int, $error );
 
-    is ( $error->exists(), 1, "$bad_int passed to check_int() results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_int passed to check_int() results in an Business::ISP::Error being flagged" );
 }
 
 # check_hour
@@ -651,7 +651,7 @@ for my $bad_hour ( @bad_hours ) {
 
     $sanity->check_hour( 'hour', $bad_hour, $error );
 
-    is ( $error->exists(), 1, "$bad_hour passed to check_hour() results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_hour passed to check_hour() results in an Business::ISP::Error being flagged" );
 }
 
 # check_decimal
@@ -687,7 +687,7 @@ for my $bad_decimal ( @bad_decimals ) {
 
     $sanity->check_decimal( 'decimal', $bad_decimal, $error );
 
-    is ( $error->exists(), 1, "$bad_decimal passed to check_decimal() results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_decimal passed to check_decimal() results in an Business::ISP::Error being flagged" );
 }
 
 # check_date
@@ -728,7 +728,7 @@ for my $bad_date ( @bad_dates ) {
 
     $sanity->check_date( 'date', $bad_date, $error );
 
-    is ( $error->exists(), 1, "$bad_date passed to check_date() results in an ISP::Error being flagged" );
+    is ( $error->exists(), 1, "$bad_date passed to check_date() results in an Business::ISP::Error being flagged" );
 }
 
 { # check email good
@@ -773,6 +773,6 @@ for my $bad_date ( @bad_dates ) {
     for my $addr ( @bad_addr ) {
         _reset();
         $sanity->check_email( 'email', $addr, $error );
-        is( $error->exists(), 1, "$addr passed to check_email() results in an ISP::Error being flagged" );
+        is( $error->exists(), 1, "$addr passed to check_email() results in an Business::ISP::Error being flagged" );
     }
 }

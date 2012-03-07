@@ -2,13 +2,13 @@
 
 use warnings;
 use strict;
-use ISP::GUI::Accounting;
+use Business::ISP::GUI::Accounting;
 use CGI::HTMLError trace => 1;
 use HTML::Menu::Select qw( menu options );
 
 use DBI;
 
-my $accounting_gui = ISP::GUI::Accounting->new();
+my $accounting_gui = Business::ISP::GUI::Accounting->new();
 
 $accounting_gui->function_orders();
 

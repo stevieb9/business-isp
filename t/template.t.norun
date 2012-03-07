@@ -6,7 +6,7 @@ use warnings;
 use Test::More qw(no_plan);
 
 print "\n\n***** Init *****\n\n";
-#  use_ok('ISP::Sanity');
+#  use_ok('Business::ISP::Sanity');
 
 # Declarations go here
 
@@ -24,7 +24,7 @@ sub _reset {
 
     _clean();
 
-    $sanity = ISP::Sanity->new({ new({ config => 'ISP.conf-dist' }) });
+    $sanity = Business::ISP::Sanity->new({ new({ config => 'ISP.conf-dist' }) });
 }
 
 # Tests go below _nothing();

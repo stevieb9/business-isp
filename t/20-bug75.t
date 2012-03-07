@@ -5,7 +5,7 @@ use strict;
 #
 # bug 75 test
 #
-# ISP::User
+# Business::ISP::User
 #
 
 # This bug refers to an issue in that the username in an account
@@ -32,7 +32,7 @@ EOT
 
 print "\n\n***** Init *****\n\n";
 
-use ISP::User;
+use Business::ISP::User;
 
 my $user;
 
@@ -45,7 +45,7 @@ sub _reset {
 
     _clean();
 
-    $user = ISP::User->new({ username => 'steveb' });
+    $user = Business::ISP::User->new({ username => 'steveb' });
 }
 
 sub _nothing{} # placeholder

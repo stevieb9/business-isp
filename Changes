@@ -1,4 +1,4 @@
-Revision history for ISP::* 
+Revision history for Business::ISP::* 
 
 0.0.13_01   2012-03-07
 - implemented the new HST tax system (but left gst/pst in the config
@@ -31,7 +31,7 @@ Notable bug fixes:
   the live-time config file. eg: 0.12d (bug 194)
 - API CHANGE: Reports::total_by_payment_type to income_by_payment_type()
 - three other reports written
-- ISP::Email config is saved across re-installations
+- Business::ISP::Email config is saved across re-installations
 - Conversion routines now deal with the resetting of their invoice
   numbers, starting from one
 
@@ -74,7 +74,7 @@ Notable bug fixes:
 
 0.0.9
 - changed version numbering scheme
-- created a GUI base class, ISP::GUI::Base
+- created a GUI base class, Business::ISP::GUI::Base
 - config file location can now be overridden by setting $ENV{ ISP_CONFIG }
 - clicking on a config file heading or directive in the GUI 'Display Config'
   will take you to the specific portion of the online documentation
@@ -111,14 +111,14 @@ Notable bug fixes:
   not overwritten
 - introduced DBIx::Class, and rewrote all calls requiring DB operations
   to use it
-- DEPRECATED ISP::Object::dsn() and ISP::Object::db_handle(). They will
+- DEPRECATED Business::ISP::Object::dsn() and Business::ISP::Object::db_handle(). They will
   be obsoleted/removed ~v0.0.10
 - ALPHA database replication implemented
 - added new targets to Makefile.PL. make install now installs everything
-- config file now has a man page: "man ISP::ISP.conf"
+- config file now has a man page: "man Business::ISP::ISP.conf"
 - configuration file directives in the gui now take the user to the appropriate
   section of the config file manual when clicked on
-- ISP.conf config file now has a man page ( perldoc ISP::ISP.conf )
+- ISP.conf config file now has a man page ( perldoc Business::ISP::ISP.conf )
 - simulated master database server locking introduced
 
 

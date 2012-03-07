@@ -9,29 +9,29 @@ use Cwd 'abs_path';
 
 use Test::More qw(no_plan);
 use Data::Dumper;
-use ISP::Sanity;
-use ISP::Vars;
-use ISP::Error;
+use Business::ISP::Sanity;
+use Business::ISP::Vars;
+use Business::ISP::Error;
 
 my $conf = abs_path( 't/ISP.conf-dist' );
 $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
-  use_ok('ISP::Object');
+  use_ok('Business::ISP::Object');
 
-can_ok ( 'ISP::Object', 'new' );  
-can_ok ( 'ISP::Object', 'configure' );  
-can_ok ( 'ISP::Object', 'function_orders' );  
-can_ok ( 'ISP::Object', 'build_stack' );  
-can_ok ( 'ISP::Object', 'db_handle' );  
-can_ok ( 'ISP::Object', 'dsn' );  
-can_ok ( 'ISP::Object', 'tax_rate' );  
-can_ok ( 'ISP::Object', 'bank_info' );  
-can_ok ( 'ISP::Object', 'full_date' );  
-can_ok ( 'ISP::Object', 'string_date' );  
-can_ok ( 'ISP::Object', 'string_to_date' );  
-can_ok ( 'ISP::Object', 'storeit' );  
-can_ok ( 'ISP::Object', 'DESTROY' );  
+can_ok ( 'Business::ISP::Object', 'new' );  
+can_ok ( 'Business::ISP::Object', 'configure' );  
+can_ok ( 'Business::ISP::Object', 'function_orders' );  
+can_ok ( 'Business::ISP::Object', 'build_stack' );  
+can_ok ( 'Business::ISP::Object', 'db_handle' );  
+can_ok ( 'Business::ISP::Object', 'dsn' );  
+can_ok ( 'Business::ISP::Object', 'tax_rate' );  
+can_ok ( 'Business::ISP::Object', 'bank_info' );  
+can_ok ( 'Business::ISP::Object', 'full_date' );  
+can_ok ( 'Business::ISP::Object', 'string_date' );  
+can_ok ( 'Business::ISP::Object', 'string_to_date' );  
+can_ok ( 'Business::ISP::Object', 'storeit' );  
+can_ok ( 'Business::ISP::Object', 'DESTROY' );  
 
 # definitions
 
@@ -70,11 +70,11 @@ my $error;
     _reset();
 
     for my $const_sub ( @constant_subs ) {
-        can_ok ( 'ISP::Object', $const_sub );
+        can_ok ( 'Business::ISP::Object', $const_sub );
     }
 
     for my $dispatch_sub ( @dispatch_subs ) {
-        can_ok ( 'ISP::Object', $dispatch_sub );
+        can_ok ( 'Business::ISP::Object', $dispatch_sub );
     }
 }
 
@@ -270,9 +270,9 @@ sub _reset {
 
     _clean();
 
-    $obj    = ISP::Object->new({ config => $conf });
-    $sanity = ISP::Sanity->new({ config => $conf });
-    $error  = ISP::Error->new({ config => $conf });
+    $obj    = Business::ISP::Object->new({ config => $conf });
+    $sanity = Business::ISP::Sanity->new({ config => $conf });
+    $error  = Business::ISP::Error->new({ config => $conf });
 }
 
 _reset();

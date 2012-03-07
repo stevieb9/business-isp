@@ -5,8 +5,8 @@ use strict;
 
 use Test::More qw( no_plan );
 
-use_ok('ISP::Object') ;
-can_ok( 'ISP::Object', 'date' );
+use_ok('Business::ISP::Object') ;
+can_ok( 'Business::ISP::Object', 'date' );
 
 use Cwd 'abs_path';
 my $conf = abs_path( 't/ISP.conf-dist' );
@@ -14,7 +14,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { #date bad param
 
-    my $obj = ISP::Object->new();
+    my $obj = Business::ISP::Object->new();
 
     eval { $obj->date( { get => 'that' } ) };
 
@@ -23,7 +23,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # date() 
     
-    my $obj = ISP::Object->new();
+    my $obj = Business::ISP::Object->new();
 
     my $ret = $obj->date();
     
@@ -32,14 +32,14 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # date() get param
 
-    my $obj = ISP::Object->new();
+    my $obj = Business::ISP::Object->new();
     my $ret = $obj->date({ get => 'month' });
     ok( $ret =~ m{ \A \d{4}-\d{2} \z }xms, "called with get=>month works out ok" );
 }
 
 { # timezone checks
 
-    my $obj = ISP::Object->new();
+    my $obj = Business::ISP::Object->new();
 
     $obj->TIMEZONE( 0 );
     eval { my $ret = $obj->date({ get => 'month' }) };
@@ -48,7 +48,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # with datetime sent in
 
-    my $obj = ISP::Object->new();
+    my $obj = Business::ISP::Object->new();
 
     my $datetime = DateTime->now( time_zone => $obj->TIMEZONE() )->subtract( days => 1);
 
@@ -59,7 +59,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # string_to_date()
 
-    my $o = ISP::Object->new();
+    my $o = Business::ISP::Object->new();
 
     my $date = "Dec 31, 2009";
 

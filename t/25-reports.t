@@ -7,8 +7,8 @@ use Test::More qw( no_plan );
 
 use Data::Dumper;
 
-use_ok('ISP::Object');
-use_ok('ISP::Reports');
+use_ok('Business::ISP::Object');
+use_ok('Business::ISP::Reports');
 
 use Cwd 'abs_path';
 my $conf = abs_path( 't/ISP.conf-dist' );
@@ -16,9 +16,9 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # income_by_payment_type  
 
-    can_ok( 'ISP::Reports', ('income_by_payment_type') );
+    can_ok( 'Business::ISP::Reports', ('income_by_payment_type') );
 
-    my $rep = ISP::Reports->new();
+    my $rep = Business::ISP::Reports->new();
 
     my $date = $rep->date({ get => 'day' });
 
@@ -66,9 +66,9 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # income_by_item
 
-    can_ok( 'ISP::Reports', ('income_by_item') );
+    can_ok( 'Business::ISP::Reports', ('income_by_item') );
 
-    my $rep = ISP::Reports->new();
+    my $rep = Business::ISP::Reports->new();
 
     my $date = $rep->date({ get => 'day' });
 
@@ -86,9 +86,9 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 { # unused service
 
-    can_ok( 'ISP::Reports', ('unused_service') );
+    can_ok( 'Business::ISP::Reports', ('unused_service') );
 
-    my $rep = ISP::Reports->new();
+    my $rep = Business::ISP::Reports->new();
 
     my $ret = $rep->unused_service();
 
@@ -101,7 +101,7 @@ $ENV{'ISP_CONFIG'} = $conf;
     ok( exists $ret->[0][0]{ months }, "unused_service() has 'months' in the totals hash elem when called with no params" );
     ok( exists $ret->[1][0]{ expires }, "unused_service() has 'months' in the data hash elem when called with no params" ); 
 
-    my $error = ISP::Error->new();
+    my $error = Business::ISP::Error->new();
 
     $ret = $rep->unused_service({ hours => 1, error => $error });
 

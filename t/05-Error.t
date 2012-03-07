@@ -14,7 +14,7 @@ $ENV{'ISP_CONFIG'} = $conf;
 
 print "\n\n***** Init *****\n\n";
   
-use_ok('ISP::Error');
+use_ok('Business::ISP::Error');
 
 my $error;
 
@@ -26,7 +26,7 @@ sub _reset {
 
     _clean();
 
-    $error  = ISP::Error->new({ config => $conf });
+    $error  = Business::ISP::Error->new({ config => $conf });
 }
 
 sub _nothing {} # it's only here to break vim folds...TESTS START HERE
@@ -38,23 +38,23 @@ print "************************************\n\n\n\n*******************\n";
 
 print "\n\n***** Public Tests *****\n\n";
 
-can_ok('ISP::Error', ('add_trace'));
-can_ok('ISP::Error', ('add_message'));
-can_ok('ISP::Error', ('data'));
-can_ok('ISP::Error', ('exists'));
-can_ok('ISP::Error', ('dump_stack'));
-can_ok('ISP::Error', ('dump_messages'));
-can_ok('ISP::Error', ('dump_data'));
-can_ok('ISP::Error', ('dump_all'));
-can_ok('ISP::Error', ('get_messages'));
-can_ok('ISP::Error', ('get_stack'));
-can_ok('ISP::Error', ('bad_api'));
-can_ok('ISP::Error', ('bad_data'));
-can_ok('ISP::Error', ('render_gui_data'));
+can_ok('Business::ISP::Error', ('add_trace'));
+can_ok('Business::ISP::Error', ('add_message'));
+can_ok('Business::ISP::Error', ('data'));
+can_ok('Business::ISP::Error', ('exists'));
+can_ok('Business::ISP::Error', ('dump_stack'));
+can_ok('Business::ISP::Error', ('dump_messages'));
+can_ok('Business::ISP::Error', ('dump_data'));
+can_ok('Business::ISP::Error', ('dump_all'));
+can_ok('Business::ISP::Error', ('get_messages'));
+can_ok('Business::ISP::Error', ('get_stack'));
+can_ok('Business::ISP::Error', ('bad_api'));
+can_ok('Business::ISP::Error', ('bad_data'));
+can_ok('Business::ISP::Error', ('render_gui_data'));
 
 print "\n\n***** Private Tests *****\n\n";
 
-can_ok('ISP::Error', ('_flag'));
+can_ok('Business::ISP::Error', ('_flag'));
 
 print "\n\n***** Tests against the methods *****\n\n";
 
@@ -91,7 +91,7 @@ print "\n\n***** Tests against the methods *****\n\n";
     like (  $@,
             '/Bad API/', 
             "add_trace() with a param when you are a first-level " .
-            "caller() results in death via ISP::Error"
+            "caller() results in death via Business::ISP::Error"
         );
 }
 =end coment
