@@ -13,4 +13,4 @@ t/ISP.conf-dist$
 Makefile.old
 ^doc/*html$
 .hg/
-^.hgignore$
+.hgignore$

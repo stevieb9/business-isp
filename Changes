@@ -10,6 +10,8 @@ Revision history for ISP::*
 - replaced my old email author address
 - added a META_MERGE{} section in Makefile.PL to house our bugtracker
   and repository links
+- vim retab all files to four-space tabs
+- updated README with some basic info
 
 Notable bug fixes:
 

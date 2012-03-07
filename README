@@ -1,6 +1,10 @@
-NAME
+=head1 NAME
 
 Business::ISP
+
+
+
+=head1 DESCRIPTION
 
 This system is a client account and billing manager geared
 to an ISP-type business. It allows note/problem tracking,
@@ -24,7 +28,9 @@ the dependency trees.
 
 Things WILL change.
 
-INSTALLATION
+
+
+=head1 INSTALLATION
 
 To install this module, run the following commands:
 
@@ -43,7 +49,7 @@ To install this module, run the following commands:
 
 	make install
 
-SUPPORT AND DOCUMENTATION
+=head1 SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
 perldoc command.
@@ -58,13 +64,21 @@ You can also look for information at:
     Search CPAN
         http://search.cpan.org/dist/Business::ISP
 
-AUTHOR
+
+
+=head1 AUTHOR
 
 Steve Bertrand, C<< <steveb at cpan.org> >>
 
-COPYRIGHT AND LICENCE
+
+
+=head1 COPYRIGHT
 
 Copyright (C) 2012 Steve Bertrand
+
+
+
+=head1 LICENSE
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
