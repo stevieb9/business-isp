@@ -1,10 +1,10 @@
-package ISP::Vars;
+package Business::ISP::Vars;
 
 use warnings;
 use strict;
 
 use vars qw(@ISA);
-use base qw(ISP::Object);
+use base qw(Business::ISP::Object);
 use HTML::Menu::Select qw( menu options );
 
 BEGIN {
@@ -479,7 +479,7 @@ sub struct {
     my $type_is_known = $self->is_type( $type );
 
     if ( ! $type_is_known ) { 
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->bad_data( "No such data type: $type" );
     }
 
@@ -572,8 +572,8 @@ sub DESTROY {
 
 =head1 NAME
 
-ISP::Vars - Perl module used to store various variables used throughout the
-ISP:: collection of modules.
+Business::ISP::Vars - Perl module used to store various variables used throughout the
+Business::ISP:: collection of modules.
 
 =head1 VERSION
 
@@ -582,8 +582,8 @@ our $VERSION = sprintf ("%d", q$Revision: 165 $ =~ /(\d+)/);
 
 =head1 SYNOPSIS
 
-    use ISP::Vars;
-    my $vardb = ISP::Vars->new();
+    use Business::ISP::Vars;
+    my $vardb = Business::ISP::Vars->new();
 
     # Retrieve the different payment methods avaiable
     my %payment_options = $vardb->payment_methods();
@@ -597,7 +597,7 @@ variables for ISP applications and modules.
 
 =head2 new
 
-Instantiates a ISP::Var object. There is no config for this module.
+Instantiates a Business::ISP::Var object. There is no config for this module.
 
 
 
@@ -613,7 +613,7 @@ plan, pap_method, pap_date, payment_method, billing_method.
 
 DATA is a mandatory parameter, and is passed in as a hashref.
 
-ERROR is a mandatory parameter, and is an ISP::Error object.
+ERROR is a mandatory parameter, and is an Business::ISP::Error object.
 
 All parameters are passed in within a hash reference.
 
@@ -708,7 +708,7 @@ Takes no params. Returns an array of all the known data types.
 
 =head2 sanity_value_skip_permitted
 
-This method returns a hash ref of attribute names that ISP::Sanity is
+This method returns a hash ref of attribute names that Business::ISP::Sanity is
 allowed to bypass it's validate_value() check on.
 
 The keys are the actual attributes allowed to be skipped, the values are
@@ -743,7 +743,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Vars
+    perldoc Business::ISP::Vars
 
 =head1 COPYRIGHT & LICENSE
 

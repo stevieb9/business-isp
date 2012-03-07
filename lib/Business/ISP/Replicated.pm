@@ -1,5 +1,5 @@
-package ISP::Replicated;
-use base qw/ ISP::Database /;
+package Business::ISP::Replicated;
+use base qw/ Business::ISP::Database /;
 
 __PACKAGE__->load_namespaces();
 

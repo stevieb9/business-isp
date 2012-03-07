@@ -1,10 +1,10 @@
-package ISP::Error;
+package Business::ISP::Error;
 
 use warnings;
 use strict;
 
 use vars qw(@ISA);
-use base qw(ISP::Object);
+use base qw(Business::ISP::Object);
 use Storable;
 
 BEGIN {
@@ -37,7 +37,7 @@ sub add_trace {
 
             my $message =   "\nYou must have a valid position in the stack trace " .
                             "to call add_trace() with the BACK parameter. " .
-                            "See perldoc ISP::Error\n\n";
+                            "See perldoc Business::ISP::Error\n\n";
         
             $self->bad_api( $message );
         }
@@ -195,7 +195,7 @@ sub bad_api {
             "$message\nCaller: ${ _caller }, Function: ${ _sub }...\n\n";
     }
     else {
-        die "\n\nBad API call to ${_sub} from ${_caller}: You did not supply an ISP::Error object\n\n" .
+        die "\n\nBad API call to ${_sub} from ${_caller}: You did not supply an Business::ISP::Error object\n\n" .
             "Please read \"perldoc $_package\" for proper API use\n\n";
     }
 }
@@ -270,7 +270,7 @@ sub DESTROY {
 
 =head1 NAME
 
-ISP::Error - Perl module within the ISP:: namespace. Performs various
+Business::ISP::Error - Perl module within the Business::ISP:: namespace. Performs various
 operations for error checking, printing and storage.
 
 =head1 VERSION
@@ -280,16 +280,16 @@ our $VERSION = sprintf ("%d", q$Revision: 165 $ =~ /(\d+)/);
 
 =head1 SYNOPSIS
 
-    # Initialize an ISP::Error object
+    # Initialize an Business::ISP::Error object
 
-    use ISP::Error;
-    my $error = ISP::Error->new();
+    use Business::ISP::Error;
+    my $error = Business::ISP::Error->new();
 
-    # Permit ISP::Error to die() a program if a function requires an ISP::Error
+    # Permit Business::ISP::Error to die() a program if a function requires an Business::ISP::Error
     # object as a parameter, but one was not supplied
 
     unless defined $error {
-        $error = ISP::Error->new;
+        $error = Business::ISP::Error->new;
         $error->bad_api();
     }
 
@@ -307,14 +307,14 @@ This module can, and generally is used to kill an entire process immediately via
 is also very handy as a troubleshooting mechanism for long running programs. Although
 its main purpose is to cause death, it has the side-effect of storing full stack traces, 
 custom error messages and faulty data. This information can be rendered at will. In 
-combination with ISP::GUI:: modules, prints the info to the browser in a nicely formatted
+combination with Business::ISP::GUI:: modules, prints the info to the browser in a nicely formatted
 manner.
 
 =head1 METHODS
 
 =head2 new
  
-Instantiates a new ISP::Error object.
+Instantiates a new Business::ISP::Error object.
 
 This method is inhereted from the base class.
 
@@ -357,7 +357,7 @@ Otherwise, it can be a reference of any type, or a simple scalar string.
 Returns an array ref containing all of the items stored. It's up to the caller
 to sort out what type of data is contained in each element.
 
-Call this method when you want to tell the ISP::Error about the DATA that triggered
+Call this method when you want to tell the Business::ISP::Error about the DATA that triggered
 the error event. 
 
 If the method is called without the DATA parameter, the existing DATA will be returned per above.
@@ -387,7 +387,7 @@ Returns true if an error has been flagged, else returns 0.
 
 Enables a caller to flip the exists bit on and off.
 
-The purpose of this method is to provide the use of the ISP::Error object
+The purpose of this method is to provide the use of the Business::ISP::Error object
 in a loop manner, without appending any custom data to the object each time
 through the loop, when data is being appended based on the exists flag.
 
@@ -464,7 +464,7 @@ Returns undef if no messages have yet been stored.
 
 =head2 bad_api( MESSAGE )
  
-Call this routine if an ISP::Error object is not supplied via parameter,
+Call this routine if an Business::ISP::Error object is not supplied via parameter,
 and it needs to be mandatory.
 
 If MESSAGE is supplied, it will be included in the die() output. Otherwise,
@@ -477,11 +477,11 @@ This method uses die() to kill all processes immediately.
 
 =head2 bad_data ( MESSAGE )
 
-This routine allows ISP::Error to die() if an ISP::Sanity data
+This routine allows Business::ISP::Error to die() if an Business::ISP::Sanity data
 comparison check fails. More work needs to be done, but essentially, for now,
 it does the same thing as bad_api().
 
-Although this method was designed for use specifically by ISP::Sanity, it
+Although this method was designed for use specifically by Business::ISP::Sanity, it
 can be used elsewhere. If the optional scalar string MESSAGE is passed in,
 the error message will override the default, and display the string passed in
 instead.
@@ -517,7 +517,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Error
+    perldoc Business::ISP::Error
 
 
 =head1 COPYRIGHT & LICENSE

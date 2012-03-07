@@ -1,16 +1,16 @@
-package ISP::Conversion;
+package Business::ISP::Conversion;
 
 use warnings;
 use strict;
 
-use ISP::User;
-use ISP::Sanity;
-use ISP::Error;
-use ISP::Ledger;
+use Business::ISP::User;
+use Business::ISP::Sanity;
+use Business::ISP::Error;
+use Business::ISP::Ledger;
 use Storable;
 
 use vars qw(@ISA);
-use base qw(ISP::Object);
+use base qw(Business::ISP::Object);
 
 BEGIN {
 # config accessors
@@ -30,14 +30,14 @@ sub current_plan_password_to_db {
     # convert current radius pw to the info db
 
     my $self    = shift;
-    my $user_db = ISP::User->new();
-    my $radius  = ISP::RADIUS->new();
+    my $user_db = Business::ISP::User->new();
+    my $radius  = Business::ISP::RADIUS->new();
 
     my @client_list = $user_db->get_client_list();
 
     for my $username ( @client_list ) {
 
-        my $client = ISP::User->new({ username => $username });
+        my $client = Business::ISP::User->new({ username => $username });
         
         my @plan_ids = $client->get_plan_ids();
         my $current_pw  = $client->radius_password();
@@ -56,11 +56,11 @@ sub current_plan_password_to_db {
 sub client_inf_to_db {
    
     use EagleUser;
-    use ISP::Error;
+    use Business::ISP::Error;
     use Data::Dumper;
 
     my $self        = shift;
-    my $user        = ISP::User->new();
+    my $user        = Business::ISP::User->new();
     my $inf_user    = EagleUser->new();
     
     my @userlist    = $inf_user->get_inf_user_list();
@@ -98,7 +98,7 @@ sub client_inf_to_db {
         delete $client_info{ billing_salutation };
         delete $client_info{ shipping_salutation };
 
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
 
         $user->add_client({ error => $error, client_info => \%client_info });
 
@@ -116,14 +116,14 @@ sub plans_inf_to_db {
     use EagleUser;
     
     my $self            = shift;  
-    my $client_db       = ISP::User->new();
-    my $error           = ISP::Error->new();
+    my $client_db       = Business::ISP::User->new();
+    my $error           = Business::ISP::Error->new();
 
     my @userlist        = $client_db->get_client_list();
 
     for my $username (@userlist) {                
 
-        my $user        = ISP::User->new({ username => $username });
+        my $user        = Business::ISP::User->new({ username => $username });
    
         my $inf_data    = EagleUser->new();     
         $inf_data->build_inf_user($username);
@@ -444,7 +444,7 @@ sub uledger_inf_to_db {
                     
                         $entry_count++;
 
-                        my $ledger = ISP::Ledger->new();
+                        my $ledger = Business::ISP::Ledger->new();
 
                         if ( ! defined $ledger->balance({ username => $username }) ){
 
@@ -491,7 +491,7 @@ sub uledger_inf_to_db {
 
 =head1 NAME
 
-ISP::Conversion - ISP specific conversion module.
+Business::ISP::Conversion - ISP specific conversion module.
 
 =head1 VERSION
 
@@ -501,8 +501,8 @@ our $VERSION = sprintf ("%d", q$Revision: 165 $ =~ /(\d+)/);
 
 =head1 SYNOPSIS
 
-    use ISP::Vars;
-    my $vardb = ISP::Vars->new();
+    use Business::ISP::Vars;
+    my $vardb = Business::ISP::Vars->new();
 
     # Retrieve the different payment methods avaiable
     my %payment_options = $vardb->payment_methods();
@@ -577,7 +577,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Conversion
+    perldoc Business::ISP::Conversion
 
 =head1 COPYRIGHT & LICENSE
 

@@ -1,9 +1,9 @@
-package ISP::GUI::Accounting;
+package Business::ISP::GUI::Accounting;
 
 use warnings;
 use strict;
 
-use base qw( ISP::GUI::Base );
+use base qw( Business::ISP::GUI::Base );
 use HTML::Menu::Select qw( menu options );
 
 sub setup {
@@ -128,8 +128,8 @@ sub load_client_profile {
 
     $self->function_orders();
 
-    my $sanity  = ISP::Sanity->new();
-    my $error   = ISP::Error->new();
+    my $sanity  = Business::ISP::Sanity->new();
+    my $error   = Business::ISP::Error->new();
 
     my $username    = $self->query->param( 'search_for' );
     $username       = $self->session->param( 'username' ) if ! $username;
@@ -144,7 +144,7 @@ sub load_client_profile {
 
     $self->session->param( username => $username );
 
-    my $client = ISP::User->new({ username => $username });
+    my $client = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -164,7 +164,7 @@ sub client_add {
     $self->_header();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -193,7 +193,7 @@ sub client_delete {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -213,7 +213,7 @@ sub client_delete {
 
     if ( $opgroup ne 'admin' ) {
 
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         
         $error->add_trace();
         $error->add_message( "The operator group you belong to is not authorized to remove a client." );
@@ -241,7 +241,7 @@ sub client_delete_confirm {
     my $captcha     = $self->query->param( 'captcha' );
     my $confirm     = $self->query->param( 'confirm' );
 
-    my $error       = ISP::Error->new();
+    my $error       = Business::ISP::Error->new();
 
     if ( $self->captcha({ captcha => $captcha, input => $confirm }) ne 'ok' ) {     
         $error->add_trace();
@@ -250,7 +250,7 @@ sub client_delete_confirm {
         return $self->_process({ error => $error });
     }
     
-    my $userdb  = ISP::User->new();
+    my $userdb  = Business::ISP::User->new();
 
     my $delete_result = $userdb->delete_client({ username => $username });
 
@@ -269,8 +269,8 @@ sub process_client_add {
 
     $self->function_orders();
 
-    my $client_shell    = ISP::User->new();
-    my $vardb           = ISP::Vars->new();
+    my $client_shell    = Business::ISP::User->new();
+    my $vardb           = Business::ISP::Vars->new();
 
     my @client_items    = $vardb->struct( 'user_info' );
     
@@ -303,7 +303,7 @@ sub process_client_add {
         }
     }
 
-    my $error   = ISP::Error->new();
+    my $error   = Business::ISP::Error->new();
 
     $client_shell->add_client({ error => $error, client_info => $new_client });
 
@@ -348,7 +348,7 @@ sub _find_plan_by_id {
 
     $self->function_orders();
 
-    my $client = ISP::User->new();
+    my $client = Business::ISP::User->new();
 
     my $plan    = $client->get_plan( $search_data );
 
@@ -383,7 +383,7 @@ sub show_plan {
         ? $self->query->param( 'planid' )
         : $self->session->param( 'planid' );
 
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -430,7 +430,7 @@ sub show_plan {
 
     if ( $change_status_click == 1) {
         
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
 
         $client->change_plan_status( { 
                                 error       => $error,
@@ -508,7 +508,7 @@ sub display_edit_client {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -519,7 +519,7 @@ sub display_edit_client {
     my $username = $self->session->param( 'username' );
     $self->session->param( username => $username );
 
-    my $client   = ISP::User->new({ username => $username });
+    my $client   = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -556,9 +556,9 @@ sub edit_client_info {
     $self->function_orders();
 
     my $username = $self->session->param( 'username' );
-    my $client   = ISP::User->new({ username => $username });
+    my $client   = Business::ISP::User->new({ username => $username });
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
     my @client_info_struct = $vardb->struct( 'user_info' );
     
     my $updated_client_data;
@@ -600,7 +600,7 @@ sub edit_client_info {
 
     if ( $update_success != 0 ) {
         
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $error->add_message( "Client edit did not succeed" );
         $error->data( $updated_client_data );
@@ -617,7 +617,7 @@ sub display_edit_plan {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -628,7 +628,7 @@ sub display_edit_plan {
     my $plan_id = $self->query->param( 'id' );
     my $username    = $self->session->param( 'username' );
 
-    my $client = ISP::User->new({ username => $username });
+    my $client = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -645,7 +645,7 @@ sub display_edit_plan {
     # are passed to the tmpl
 
     # load up vars
-    my $vardb    = ISP::Vars->new();
+    my $vardb    = Business::ISP::Vars->new();
 
     # billing_method
     my $billing_method_select       = $vardb->build_select({ 
@@ -694,12 +694,12 @@ sub edit_plan {
     my $username            = $self->session->param( 'username' );
     my $plan_id             = $self->session->param( 'planid' );
 
-    my $client              = ISP::User->new({ username => $username });
+    my $client              = Business::ISP::User->new({ username => $username });
     my $current_plan_info   = $client->get_plan( $plan_id );
 
     my ( @plan_changes, @original_plan_value, @new_plan_value, %gui_plan_data );
     
-    my $vardb       = ISP::Vars->new();
+    my $vardb       = Business::ISP::Vars->new();
     my @plan_items  = $vardb->struct( 'plan_info' );
 
     # figure out which params from the gui contain plan_info
@@ -728,7 +728,7 @@ sub edit_plan {
 
     return 1 if ! @plan_changes;
 
-    my $error = ISP::Error->new();
+    my $error = Business::ISP::Error->new();
 
     $client->write_plan_changes({
                             error   => $error,
@@ -780,7 +780,7 @@ sub display_add_plan {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -788,7 +788,7 @@ sub display_add_plan {
 
     }
 
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
@@ -800,7 +800,7 @@ sub display_add_plan {
     $self->pb_param( username   => $username );
 
     # load up vars
-    my $vardb    = ISP::Vars->new();
+    my $vardb    = Business::ISP::Vars->new();
 
     # plan name
     my $plan_name_select  = $vardb->build_select({ type => 'plan' });
@@ -831,7 +831,7 @@ sub add_plan {
     $self->function_orders();
 
     my $username  = $self->query->param( 'username' );
-    my $client    = ISP::User->new({ username => $username });
+    my $client    = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
@@ -850,7 +850,7 @@ sub add_plan {
 
     delete $plan_info{ do };
 
-    my $error = ISP::Error->new();
+    my $error = Business::ISP::Error->new();
 
     $client->add_plan({ plan_info => \%plan_info, error => $error });
 
@@ -866,7 +866,7 @@ sub delete_plan {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -879,7 +879,7 @@ sub delete_plan {
     my $captcha     = $self->query->param( 'captcha' );
     my $confirm     = $self->query->param( 'confirm' );
 
-    my $client = ISP::User->new({ username => $username });
+    my $client = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -899,7 +899,7 @@ sub show_notes {
     $self->function_orders();
 
     my $username    = $self->session->param( 'username' );
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
     
     $self->_header();
     $self->_client_info_table( $client );
@@ -927,7 +927,7 @@ sub add_notes {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -935,7 +935,7 @@ sub add_notes {
     }
 
     my $username    = $self->session->param( 'username' );
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );   
@@ -949,7 +949,7 @@ sub add_notes {
     $self->pb_param( do => 'process_notes' );
     $self->session->param( username => $username );
 
-    my $vardb   = ISP::Vars->new();
+    my $vardb   = Business::ISP::Vars->new();
 
     my $notes_class_select  = $vardb->build_select({ type => 'note_classification', default => 'technical' });
     $self->session->param( classification   => $notes_class_select );
@@ -968,7 +968,7 @@ sub process_notes {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -977,7 +977,7 @@ sub process_notes {
     }
 
     my $username    = $self->session->param( 'username' );
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     #$self->_header();
     #$self->_client_info_table( $client );
@@ -1003,7 +1003,7 @@ sub display_purchase_form {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -1011,7 +1011,7 @@ sub display_purchase_form {
 
     }
 
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
@@ -1022,7 +1022,7 @@ sub display_purchase_form {
     $self->pb_param( do       => 'confirm_purchase' );
     $self->pb_param( username => $username );
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
 
     my $payment_method_select = $vardb->build_select({ type => 'payment_method', default => 'visa' });
         $self->pb_param( payment_method => $payment_method_select );
@@ -1055,7 +1055,7 @@ sub confirm_purchase {
 
     my $self        = shift;
     my $username    = $self->query->param( 'username' );
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->function_orders();
 
@@ -1071,7 +1071,7 @@ sub confirm_purchase {
     # loop 5 times to ensure we get all entries
     #FIXME...there has GOT to be a better way to do this
 
-    my $error = ISP::Error->new();
+    my $error = Business::ISP::Error->new();
 
     my @transaction_items;
 
@@ -1131,7 +1131,7 @@ sub confirm_purchase {
     $self->pb_param( subtotal   => $grand_total_untaxed );
     $self->pb_param( total      => $grand_total_with_tax );
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
 
     if ( $vardb->is_credit_card( $payment_method )) {
             $self->pb_param( cc => 1 );
@@ -1146,7 +1146,7 @@ sub process_purchase {
 
     my $self        = shift;
     my $username    = $self->query->param( 'username' );
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->function_orders();
 
@@ -1193,8 +1193,8 @@ sub process_purchase {
 
     my $first_item = shift @transaction_items;
 
-    my $error = ISP::Error->new();
-    my $transac = ISP::Transac->create_transaction({
+    my $error = Business::ISP::Error->new();
+    my $transac = Business::ISP::Transac->create_transaction({
                                     data    => $first_item, 
                                     error   => $error
                                 });
@@ -1256,7 +1256,7 @@ sub display_payment_form {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -1264,7 +1264,7 @@ sub display_payment_form {
 
     }
 
-    my $client = ISP::User->new({ username => $username });
+    my $client = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
@@ -1274,7 +1274,7 @@ sub display_payment_form {
     
     # retrieve the payment methods
     
-    my $vardb        = ISP::Vars->new();
+    my $vardb        = Business::ISP::Vars->new();
 
     my $payment_method_select = $vardb->build_select({ type => 'payment_method', default => 'visa' });
 
@@ -1294,7 +1294,7 @@ sub confirm_payment {
     my $username    = $self->query->param( 'username' );
 
     $self->function_orders();
-    my $client     = ISP::User->new({ username => $username });
+    my $client     = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
@@ -1325,12 +1325,12 @@ sub confirm_payment {
         tax             => 0,
     );
 
-    my $error = ISP::Error->new();
+    my $error = Business::ISP::Error->new();
     return $self->_process({ data => \%payment_data, error => $error }) if $error->exists();
 
     $self->pb_param( payment_method => $payment_method );
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
 
     if ( $vardb->is_credit_card( $payment_method ) ) {
         $self->pb_param( cc => 1 );
@@ -1349,7 +1349,7 @@ sub process_payment {
 
     $self->function_orders();
  
-    my $client      = ISP::User->new({ username => $username });
+    my $client      = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
@@ -1372,8 +1372,8 @@ sub process_payment {
         tax             => 0,
     );
 
-    my $error = ISP::Error->new();
-    my $transaction = ISP::Transac->create_transaction({
+    my $error = Business::ISP::Error->new();
+    my $transaction = Business::ISP::Transac->create_transaction({
                                         data    => \%payment_data, 
                                         error   => $error
                                     });
@@ -1427,7 +1427,7 @@ sub display_renew_form {
     $self->function_orders();
 
     if ( $self->MASTER_LOCKED() ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $self->_write_protected({ error => $error });
 
@@ -1435,7 +1435,7 @@ sub display_renew_form {
 
     }
 
-    my $client = ISP::User->new({ username => $username });
+    my $client = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -1472,7 +1472,7 @@ sub display_renew_form {
         $plan_iter++;
     }
 
-    my $vardb                   = ISP::Vars->new();
+    my $vardb                   = Business::ISP::Vars->new();
     my $payment_method_select   = $vardb->build_select({ type => 'payment_method', default => 'visa' });
     $self->pb_param( payment_method => $payment_method_select );
 
@@ -1482,14 +1482,14 @@ sub display_renew_form {
 }
 sub display_renew_confirm {
 
-    use ISP::User;
+    use Business::ISP::User;
 
     my $self        = shift;
     my $username    = $self->query->param( 'username' );
 
     $self->function_orders();
 
-    my $client  = ISP::User->new({ username => $username });
+    my $client  = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -1550,7 +1550,7 @@ sub display_renew_confirm {
     my $payment_method = $self->query->param( 'payment_method' );
     $self->pb_param( payment_method => $payment_method );
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
 
     if ( $vardb->is_credit_card( $payment_method ) ) {
         $self->pb_param( cc => 1 );
@@ -1567,8 +1567,8 @@ sub process_renew {
 
     $self->function_orders();
 
-    my $client      = ISP::User->new({ username => $username });
-    my $error       = ISP::Error->new();
+    my $client      = Business::ISP::User->new({ username => $username });
+    my $error       = Business::ISP::Error->new();
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -1706,9 +1706,9 @@ sub process_renew {
 
     my $first_line_item = shift @renewal_line_items;
 
-    my $sanity = ISP::Sanity->new();
+    my $sanity = Business::ISP::Sanity->new();
     
-    my $renewal_transac = ISP::Transac->create_transaction({
+    my $renewal_transac = Business::ISP::Transac->create_transaction({
                                         data    => $first_line_item,
                                         error   => $error,
                                     });
@@ -1749,12 +1749,12 @@ sub display_uledger {
     $username = $self->query->param('username') unless $username;
 
     $self->function_orders;
-    my $client    = ISP::User->new({ username => $username });
+    my $client    = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table($client);
 
-    my $ledger  = ISP::Ledger->new();
+    my $ledger  = Business::ISP::Ledger->new();
     my $uledger = $ledger->get_uledger({ username => $username });
 
     for my $uledger_entry ( @$uledger ) {
@@ -1801,7 +1801,7 @@ sub display_invoice {
         ? $params->{ print }
         : $self->query->param( 'print' );
 
-    my $client = ISP::User->new({ username => $username });
+    my $client = Business::ISP::User->new({ username => $username });
 
     my $template_dir = $self->TEMPLATE_DIR();
     my $template = $self->load_tmpl( "$template_dir/display_invoice.html.tpl" );
@@ -1858,7 +1858,7 @@ sub display_invoice {
 
     $self->session->param( invoice_number       => $invoice_number );   
 
-    my $ledger  = ISP::Ledger->new();
+    my $ledger  = Business::ISP::Ledger->new();
 
     my $invoice = $ledger->get_gledger({ invoice_number => $invoice_number });
 
@@ -1932,7 +1932,7 @@ sub display_invoice {
 
     # prep to display the bank statement
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
     my $is_credit_payment = $vardb->is_credit_card( $payment_method );
 
     if ( $is_credit_payment ) {
@@ -1967,7 +1967,7 @@ sub email_invoice {
     $self->pb_param( username       => $username );
     $self->pb_param( invoice_number => $invoice_number );
 
-    my $billing = ISP::Billing->new();
+    my $billing = Business::ISP::Billing->new();
 
     my $email_ok = $billing->email_bill({ invoice => $invoice_number });
 
@@ -1991,7 +1991,7 @@ sub initialize_credit_payment {
         # an error obj
 
         if ( ! defined $error ) {
-            my $error = ISP::Error->new();
+            my $error = Business::ISP::Error->new();
             $error->bad_api();
         }
 
@@ -2006,7 +2006,7 @@ sub initialize_credit_payment {
                         CardHoldersName => $card_holder,
                     );
 
-        my $transac     = ISP::Transac->new();
+        my $transac     = Business::ISP::Transac->new();
 
         my @bank_response 
             = $transac->credit_card_payment({
@@ -2156,7 +2156,7 @@ sub _client_info_table {
     $self->pb_param( show_notes_link => @$links[5]);
     $self->pb_param( add_notes_link => @$links[6]);
 
-    my $ledger  = ISP::Ledger->new();
+    my $ledger  = Business::ISP::Ledger->new();
     my $balance = $ledger->balance({ username => $username });
 
     $self->pb_param( balance => $balance );
@@ -2182,7 +2182,7 @@ sub client_info_detail {
     $self->function_orders();
 
     my $username        = $self->session->param( 'username' );
-    my $client          = ISP::User->new({ username => $username });
+    my $client          = Business::ISP::User->new({ username => $username });
 
     $self->_header();
     $self->_client_info_table( $client );
@@ -2291,7 +2291,7 @@ sub exec_report {
 }
 sub income_by_payment_type {
 
-    use ISP::Reports;
+    use Business::ISP::Reports;
 
     my $self    = shift;
 
@@ -2305,7 +2305,7 @@ sub income_by_payment_type {
 
     $self->_header();
 
-    my $report = ISP::Reports->new();
+    my $report = Business::ISP::Reports->new();
 
     my $report_data 
       = $report->income_by_payment_type({
@@ -2348,7 +2348,7 @@ sub income_by_item {
 
     $self->_header();
 
-    my $report      = ISP::Reports->new();
+    my $report      = Business::ISP::Reports->new();
     my $report_data = $report->income_by_item({
                                     date    => $date,
                                     item    => $item,
@@ -2372,7 +2372,7 @@ sub unused_service {
     
     $self->_header();
 
-    my $report  = ISP::Reports->new();
+    my $report  = Business::ISP::Reports->new();
     my $report_data;
 
     my $template_dir = $self->TEMPLATE_DIR;
@@ -2386,7 +2386,7 @@ sub unused_service {
     }
     else {
 
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
 
         $self->pb_template( "$template_dir/unused_service_hours.html.tpl" );
         $self->pb_param( report_name => 'Unused Service -- Hours' );
@@ -2396,7 +2396,7 @@ sub unused_service {
                                             error   => $error,
                                         });
 
-        if ( ref( $report_data ) eq 'ISP::Error' ) {
+        if ( ref( $report_data ) eq 'Business::ISP::Error' ) {
 
             $error = $report_data;
             return $self->_process({ error => $error }) if $error->exists();
@@ -2474,7 +2474,7 @@ sub DESTROY {
 
 =head1 NAME
 
-ISP::GUI::Accounting - This module is the complete web GUI for the ISP accounting system.
+Business::ISP::GUI::Accounting - This module is the complete web GUI for the ISP accounting system.
 
 =head1 VERSION
 
@@ -2486,8 +2486,8 @@ our $VERSION = sprintf ("%d", q$Revision: 165 $ =~ /(\d+)/);
 
     # In the CGI script visible to the web server (accounting.cgi)
 
-    use ISP::GUI::Accounting;
-    my $gui = ISP::GUI::Accounting->new();
+    use Business::ISP::GUI::Accounting;
+    my $gui = Business::ISP::GUI::Accounting->new();
     $gui->run();
 
 =head1 DESCRIPTION
@@ -2546,7 +2546,7 @@ $self->_client_info_table().
 
 =head2 process_purchase
 
-This method takes the input from the display_purchase_form(), and hands off to ISP::Transac
+This method takes the input from the display_purchase_form(), and hands off to Business::ISP::Transac
 for final processing.
 
 =head2 display_payment_form
@@ -2560,7 +2560,7 @@ $self->_client_info_table().
 
 =head2 process_payment ()
 
-This method takes the input from the display_payment_form(), and hands off to ISP::Transac
+This method takes the input from the display_payment_form(), and hands off to Business::ISP::Transac
 for final processing.
 
 =head2 _process(\%DATA)
@@ -2572,7 +2572,7 @@ error template or the successful template to the calling CGI.
 DATA is an optional hashref parameter of the data you want inserted into the error
 page template.
 
-Returns either a rendered ISP::Error page template, or a pb_build.
+Returns either a rendered Business::ISP::Error page template, or a pb_build.
 
 If called in list context, this method will skip processing the success template and return
 control to the calling method. Otherwise, you signify that you are done, and want the return
@@ -2582,7 +2582,7 @@ to be sent to the calling CGI.
 
 Builds and creates the HTML template that displays the error messages via the template.
 
-Uses ISP::Error->render_gui_data() to format the data for the template.
+Uses Business::ISP::Error->render_gui_data() to format the data for the template.
 
 =head2 initialize_credit_payment ( NAME => VALUE )
 
@@ -2592,14 +2592,14 @@ process_bank_response().
 The two mandatory parameters are:
 
     -amount => float
-    -error  => ISP::Error object
+    -error  => Business::ISP::Error object
 
 Returns success (0) if everything went properly and 1 if not.
 
 =head2 process_bank_response ( BANK_RESPONSE )
 
 Reusable method that takes the array provided by calling 
-ISP::Transac->credit_card_payment() as it's only mandatory parameter.
+Business::ISP::Transac->credit_card_payment() as it's only mandatory parameter.
 
 Returns/renders to the GUI immediately if the transaction failed, thereby
 halting the rest of the transaction processing.
@@ -2628,7 +2628,7 @@ Takes no parameters, there is no return.
 
 Generates the users plan information that is included in each accounting web page.
 
-The mandatory parameter USERNAME is an ISP::User object.
+The mandatory parameter USERNAME is an Business::ISP::User object.
 
 =head2 _contact_info_table (USERNAME)
 
@@ -2636,7 +2636,7 @@ Generates the users contact-type information. This method is only called by
 _client_info_table(), and will only print this table if run mode is 'home', and it
 is not disabled in the config.
 
-The mandatory parameter USERNAME is an ISP::User object. There is no return.
+The mandatory parameter USERNAME is an Business::ISP::User object. There is no return.
 
 =head2 _clear_session ( { NAME => VALUE } )
 
@@ -2679,10 +2679,10 @@ out while in maintenance mode.
 
 It is responsible for generating relevant error messages.
 
-The parameters are passed in within a hash reference. ERROR is an ISP::Error
+The parameters are passed in within a hash reference. ERROR is an Business::ISP::Error
 object, and is mandatory.
 
-Returns the ISP::Error object. It is the responsibility of the caller
+Returns the Business::ISP::Error object. It is the responsibility of the caller
 to act on it.
 
 =head2 income_by_payment_type()
@@ -2707,7 +2707,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::GUI::Accounting
+    perldoc Business::ISP::GUI::Accounting
 
 =head1 COPYRIGHT & LICENSE
 

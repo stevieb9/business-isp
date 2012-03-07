@@ -34,7 +34,7 @@ MANIFEST.SKIP
 README
 src/cgi-bin/accounting.cgi
 src/conf/ISP.conf-dist
-src/examples/steve.pref
+src/examples/admin.pref
 src/graphics/image.jpeg
 src/libraries/isp.js
 src/schema/audit.sql

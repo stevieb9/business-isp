@@ -1,4 +1,4 @@
-package ISP::Database;
+package Business::ISP::Database;
 use base qw/ DBIx::Class::Schema /;
 
 __PACKAGE__->load_namespaces();

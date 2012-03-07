@@ -1,12 +1,12 @@
-package ISP::Ledger;
+package Business::ISP::Ledger;
 
 use strict;
 use warnings;
 
 use vars qw( $VERSION @ISA );
-use base qw( ISP::Object );
+use base qw( Business::ISP::Object );
 
-use ISP::Billing;
+use Business::ISP::Billing;
 
 $VERSION = sprintf "%d", q$Revision: 184 $ =~ /(\d+)/;
 
@@ -192,7 +192,7 @@ sub write_ledger {
     
     $self->balance({ username => $username, balance => $new_balance });
 
-    my $send_bill = ISP::Billing->new();
+    my $send_bill = Business::ISP::Billing->new();
     $send_bill->email_bill({ invoice => $invoice_number });
 
     return $invoice_number;
@@ -584,8 +584,8 @@ sub balance {
 
     if ( defined $new_balance ) {
 
-        my $sanity  = ISP::Sanity->new();
-        my $error   = ISP::Error->new();
+        my $sanity  = Business::ISP::Sanity->new();
+        my $error   = Business::ISP::Error->new();
 
         $sanity->validate_value({ tag => 'balance', value => $new_balance, error => $error });
     
@@ -687,12 +687,12 @@ __END__
 
 =head1 NAME
 
-ISP::Ledger - Perl module for ISP accounting user/general ledger operations.
+Business::ISP::Ledger - Perl module for ISP accounting user/general ledger operations.
 
 =head1 SYNOPSIS
 
-  use ISP::Ledger;
-  my  $ledger = ISP::Ledger->new();
+  use Business::ISP::Ledger;
+  my  $ledger = Business::ISP::Ledger->new();
 
 =head1 DESCRIPTION
 
@@ -704,7 +704,7 @@ db system.
 
 =head2 new()
 
-Instantiates a new ISP::Ledger object. Returns undef upon failure.
+Instantiates a new Business::ISP::Ledger object. Returns undef upon failure.
 
 This method is inhereted from the base class.
 
@@ -717,7 +717,7 @@ ledgers, and updates the clients balance.
 
 Both parameters are mandatory, and are passed in within a hash reference.
 
-USER is an ISP::User object, and TRANSAC is an ISP::Transac object.
+USER is an Business::ISP::User object, and TRANSAC is an Business::ISP::Transac object.
 
 Returns the invoice number of this transaction  upon success.
 
@@ -731,8 +731,8 @@ Returns the invoice number of this transaction  upon success.
 Prepares the appropriate legacy-style ledger strings, and inserts them into the
 ISP accounting ledgers.
 
-USER is an ISP::User object, and TRANSACTION is an ISP::Transac object. No
-error checking is performed here, as the data verification is done via ISP::Transac.
+USER is an Business::ISP::User object, and TRANSACTION is an Business::ISP::Transac object. No
+error checking is performed here, as the data verification is done via Business::ISP::Transac.
 
 Uses _gledger_write_legacy() and _uledger_write_legacy() to write out the 
 ledger data.
@@ -745,7 +745,7 @@ Returns the invoice number of the current process as an $int.
 
 * This method will be deprecated once we go into production.
 
-Writes the transaction data to the legacy style general ledger. USER is an ISP::User
+Writes the transaction data to the legacy style general ledger. USER is an Business::ISP::User
 object. DATE is a DateTime (now()) object, and ENTRY is an array reference that
 contains one ledger line per array element.
 
@@ -755,7 +755,7 @@ contains one ledger line per array element.
 
 * This method will be deprecated once we go into production.
 
-Writes the transaction data to the legacy style user ledger. USER is an ISP::User
+Writes the transaction data to the legacy style user ledger. USER is an Business::ISP::User
 object. DATE is a DateTime (now()) object, and ENTRY is a hash reference that
 contains the entry items.
  

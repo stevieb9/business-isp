@@ -1,11 +1,11 @@
-package ISP::GUI::Base;
+package Business::ISP::GUI::Base;
 
 use warnings;
 use strict;
 use Data::Dumper;
 use vars qw( @ISA );
 
-use base qw( ISP::Object CGI::Application );
+use base qw( Business::ISP::Object CGI::Application );
 
 use CGI::Application::Plugin::PageBuilder;
 use CGI::Application::Plugin::Session;
@@ -17,11 +17,11 @@ use HTML::Menu::Select qw( menu options );
 
 use DateTime;
 
-use ISP::User;
-use ISP::Vars;
-use ISP::Transac;
-use ISP::Sanity;
-use ISP::Error;
+use Business::ISP::User;
+use Business::ISP::Vars;
+use Business::ISP::Transac;
+use Business::ISP::Sanity;
+use Business::ISP::Error;
 
 {
 
@@ -71,7 +71,7 @@ sub cgiapp_prerun {
     
         if ( ! $operator ) {
 
-            my $error = ISP::Error->new();
+            my $error = Business::ISP::Error->new();
             my $error_msg = "Your session has expired. You need to log back in";
 
             $error->add_trace();
@@ -326,7 +326,7 @@ sub _header {
 
     # render the values that we aren't going to check for
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
 
     my $value_checks_skipped = $vardb->sanity_value_skip_permitted();
     
@@ -383,8 +383,8 @@ sub login {
 
     # perform some sanity checks...
     
-    my $sanity  = ISP::Sanity->new();
-    my $error   = ISP::Error->new();
+    my $sanity  = Business::ISP::Sanity->new();
+    my $error   = Business::ISP::Error->new();
 
     if ( ( length ( $operator )) > 16 ) {
         $error->add_message( "Operator field must be less than 10 characters" );

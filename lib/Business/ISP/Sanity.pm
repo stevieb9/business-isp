@@ -1,16 +1,16 @@
-package ISP::Sanity;
+package Business::ISP::Sanity;
 
 use warnings;
 use strict;
 
 use vars qw( @ISA );
-use base qw( ISP::Object );
+use base qw( Business::ISP::Object );
 
 use Data::Types qw( :all );
 use Scalar::Util qw( reftype );
 use Switch;
 
-use ISP::Vars;
+use Business::ISP::Vars;
 
 BEGIN {
 # config accessors
@@ -32,7 +32,7 @@ BEGIN {
 
 sub audit {
 
-    use ISP::Error;
+    use Business::ISP::Error;
 
     my $self        = shift;
     my $params      = shift;
@@ -60,7 +60,7 @@ sub audit {
         ? $params->{ runtype }
         : 'auto';
 
-    my $error       = ISP::Error->new();
+    my $error       = Business::ISP::Error->new();
 
     my $schedule = $self->check_process( $process );
 
@@ -141,13 +141,13 @@ sub validate_data {
     my $data    = $params->{ data };
     my $error   = $params->{ error };
 
-    my $vardb    = ISP::Vars->new();
+    my $vardb    = Business::ISP::Vars->new();
 
     # die right off the bat if either data is an invalid type,
     # or no $error obj was passed in
 
     unless ( defined $error ) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -195,7 +195,7 @@ sub validate_value {
     return ( 1 ) if $self->DISABLE_VALIDATE_VALUE();    
     
     unless ( defined $error ) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -230,7 +230,7 @@ sub validate_payment {
     # die if API error
     
     unless ( defined $error ) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -280,7 +280,7 @@ sub validate_renew {
     my $amount  = $params->{ amount };
 
     if ( ! defined $error ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -290,7 +290,7 @@ sub validate_renew {
         $error->bad_data( "Invalid or missing plan_id parameter" );
     }
 
-    my $plan_db = ISP::User->new();
+    my $plan_db = Business::ISP::User->new();
     my $plan    = $plan_db->get_plan( $plan_id );
 
     if ( ! defined $plan ) {
@@ -344,7 +344,7 @@ sub check_type {
     my $data    = $params->{ data };
     my $error   = $params->{ error };
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
     $vardb->compare({ type => $type, data => $data, error => $error });
 
     return 1;
@@ -356,7 +356,7 @@ sub check_process {
 
     $self->function_orders();
 
-    my $vardb = ISP::Vars->new();
+    my $vardb = Business::ISP::Vars->new();
     my $proclist    = $vardb->struct( 'process' );
 
     return $proclist->{ $process_name };
@@ -582,7 +582,7 @@ sub check_tables {
     my $error   = $params->{ error };
     my $table   = $params->{ table };
 
-    my $vardb   = ISP::Vars->new();
+    my $vardb   = Business::ISP::Vars->new();
 
     my $table_exists    = $vardb->is_table({ table => $table });
 
@@ -728,18 +728,18 @@ sub DESTROY {
 
 =head1 NAME
 
-ISP::Sanity - Perl module for ISP:: programs. This module is used to
+Business::ISP::Sanity - Perl module for Business::ISP:: programs. This module is used to
 perform validation, verification, authentication and other sanitization
 checks on data that is input from other modules, or directly from applications.
 
 
 =head1 SYNOPSIS
 
-    use ISP::Sanity;
+    use Business::ISP::Sanity;
 
     # Initialize a Sanity object, and pull in config if 
     # available
-    my $sanity_check = ISP::Sanity->new();
+    my $sanity_check = Business::ISP::Sanity->new();
 
 =cut
 
@@ -754,7 +754,7 @@ This module generally sits somewhere between the user application, and the
 modules that perform any write operations. We will work hard to ensure that
 all data is passed through this module in the future, no matter what it is.
 
-ISP::Sanity uses the ISP::Error object heavily to relay error notification, 
+Business::ISP::Sanity uses the Business::ISP::Error object heavily to relay error notification, 
 error messages and error traces back to the caller.
 
 This module is relatively generic, and can be adapted with new APIs, even if
@@ -764,7 +764,7 @@ the new callers are not related to the accounting system.
 
 =head2 new
 
-Initializes a new ISP::Sanity object, and if available, will configure itself
+Initializes a new Business::ISP::Sanity object, and if available, will configure itself
 from the ISP.conf configuration file.
 
 This method is inhereted from the base class.
@@ -799,20 +799,20 @@ are 'auto' and 'manual'. Defaults to 'auto' if not passed in.
 statistics, and should not be called by any automated processes. 
 
 Called without 'complete', the return will be 0 if the operation has not run during
-this run cycle, and if it has, will die via ISP::Error.
+this run cycle, and if it has, will die via Business::ISP::Error.
 
 Called with 'complete', the return will be 1 if the cycle finished and the
-audit entry was successfully saved. Will die with an ISP::Error otherwise.
+audit entry was successfully saved. Will die with an Business::ISP::Error otherwise.
 
 
 
 
 =head2 validate_data({ type => TYPE, data => DATA, error => ERROR })
 
-Validates a data structure as defined in ISP::Vars. 
+Validates a data structure as defined in Business::ISP::Vars. 
 
 TYPE is a scalar string name of the defined type to validate. DATA is
-the actual data of the type TYPE. ERROR is an ISP::Error object. All 
+the actual data of the type TYPE. ERROR is an Business::ISP::Error object. All 
 parameters are passed in within a hash reference.
 
 Checks include:
@@ -833,7 +833,7 @@ The program will die if any of the following are encountered:
 - the type does not contain all defined properties
 
 If the type is correct thus far but it has invalid values for its properties,
-the ISP::Error will be returned.
+the Business::ISP::Error will be returned.
 
 If all checks pass, the return is 1.
 
@@ -845,7 +845,7 @@ Validates the value of a pre-defined element. This method is primarily called by
 validate_data(), but this is not enforced.
 
 TAG is the name of the property being validated. VALUE is the TAG value.
-ERROR is an ISP::Error object. All parameters are passed in as a hash reference.
+ERROR is an Business::ISP::Error object. All parameters are passed in as a hash reference.
 
 Setting VALIDATE_VALUE_DEBUG will have this method perform diagnostic printing to
 STDOUT. Setting VALIDATE_VALUE_TRACE allows the profiler to track calls.
@@ -853,7 +853,7 @@ STDOUT. Setting VALIDATE_VALUE_TRACE allows the profiler to track calls.
 Returns:
 
 - die() if an ERROR is not passed in
-- die() if TAG does not have an ISP::Sanity check internally
+- die() if TAG does not have an Business::ISP::Sanity check internally
 - returns ERROR if VALIDATE_VALUE_TRACE is enabled, and an error has been flagged
 - otherwise, returns 1
 
@@ -865,14 +865,14 @@ Returns:
 This method is specifically used when a transaction is a payment. It confirms
 that the figures are inline with that of a payment.
 
-TRANSAC is an ISP::Transac object that has already been validated against
-ISP::Sanity::validate_data(). ERROR is an ISP::Error object. The parameters are passed
+TRANSAC is an Business::ISP::Transac object that has already been validated against
+Business::ISP::Sanity::validate_data(). ERROR is an Business::ISP::Error object. The parameters are passed
 in within a hash reference.
 
 die()s if an ERROR is not passed in.
 
 Returns 0 upon completion. It is up to the caller to handle error conditions. See
-perldoc ISP::Error.
+perldoc Business::ISP::Error.
 
 
 
@@ -882,9 +882,9 @@ perldoc ISP::Error.
 This method is specifically used when a transaction is a renewal. It confirms
 that the figures are inline with that of a renewal.
 
-ID is the id of the ISP::User account plan being renewed. QTY is an integer of the number
+ID is the id of the Business::ISP::User account plan being renewed. QTY is an integer of the number
 of months/hours for the renewal. AMT is either a two decimal float or an integer
-that represents the dollar value of each QTY. ERROR is an ISP::Error object. These
+that represents the dollar value of each QTY. ERROR is an Business::ISP::Error object. These
 parameters are passed in as a hash reference.
 
 Either die()s or returns ERROR depending on the severity of any issues. Returns 0 upon
@@ -910,15 +910,15 @@ invalid character in the string.
 =head2 check_type({ type => $TYPE, data => \%DATA, error => ERROR })
 
 Although this is advertised as a public method, it's primary purpose is for
-use internally within ISP::Sanity.
+use internally within Business::ISP::Sanity.
 
-This is a wrapper for data that needs to be passed to ISP::Var::compare().
+This is a wrapper for data that needs to be passed to Business::ISP::Var::compare().
 
-TYPE is a mandatory scalar string specifying the ISP::Vars type we need to check,
+TYPE is a mandatory scalar string specifying the Business::ISP::Vars type we need to check,
 and DATA is a mandatory hashref pointing to the data structure specified by
-TYPE. ERROR is an ISP::Error object. Parameters are passed within a hash reference.
+TYPE. ERROR is an Business::ISP::Error object. Parameters are passed within a hash reference.
 
-Returns true on success, executes and dies with ISP::Error->bad_data() on
+Returns true on success, executes and dies with Business::ISP::Error->bad_data() on
 failure.
 
 
@@ -936,7 +936,7 @@ Returns either true or false depending on whether the process is legitimate.
 
 Check to see if a table exists in the database.
 
-ERROR is a mandatory ISP::Error object parameter, and TABLE is a mandatory
+ERROR is a mandatory Business::ISP::Error object parameter, and TABLE is a mandatory
 string scalar of the table you want to verify whether it exists.
 
 Returns 0, sets $error->exists() if the table doesn't exist
@@ -945,7 +945,7 @@ Returns 0, sets $error->exists() if the table doesn't exist
 =head2 get_struct_dispatch_table
 
 This method is also primarly for use internally, but it can and does have
-limited functionality outside of the ISP::Sanity package scope.
+limited functionality outside of the Business::ISP::Sanity package scope.
 
 Call this method to retrieve the dispatch table that maps individual type
 property (tag) components to their respective sanity check subroutine.
@@ -965,7 +965,7 @@ notified, and you will receive a response when the bug is fixed.
 
 You can find documentation for this module with the perldoc command. 
 
-    perldoc ISP::Sanity
+    perldoc Business::ISP::Sanity
 
 
 =head1 COPYRIGHT & LICENSE

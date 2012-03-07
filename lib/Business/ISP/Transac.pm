@@ -1,10 +1,10 @@
-package ISP::Transac;
+package Business::ISP::Transac;
 
 use warnings;
 use strict;
 
 use vars qw( @ISA );
-use base qw( ISP::Object );
+use base qw( Business::ISP::Object );
 
 BEGIN {
 # config accessors
@@ -21,7 +21,7 @@ BEGIN {
 
 sub create_transaction {
 
-    use ISP::Sanity;
+    use Business::ISP::Sanity;
 
     my $class   = shift;
     my $params  = shift;
@@ -30,7 +30,7 @@ sub create_transaction {
     my $error   = $params->{ error };
 
     unless ( defined $error ) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -40,7 +40,7 @@ sub create_transaction {
 
     $self->function_orders();
 
-    my $sanity = ISP::Sanity->new;
+    my $sanity = Business::ISP::Sanity->new;
 
     $sanity->validate_data({ 
                 type    => 'transaction_data', 
@@ -61,7 +61,7 @@ sub create_transaction {
 }
 sub add_transaction_line {
 
-    use ISP::Sanity;
+    use Business::ISP::Sanity;
     
     my $self    = shift;
     my $params  = shift;
@@ -72,11 +72,11 @@ sub add_transaction_line {
     my $error   = $params->{ error };
 
     unless (defined $error) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
-    my $sanity = ISP::Sanity->new;
+    my $sanity = Business::ISP::Sanity->new;
     $sanity->validate_data({
                     type    => 'transaction_data', 
                     data    => $data, 
@@ -96,11 +96,11 @@ sub add_transaction_line {
 }
 sub purchase {
 
-    use ISP::Sanity;
-    use ISP::Ledger;
+    use Business::ISP::Sanity;
+    use Business::ISP::Ledger;
 
-    my $sanity = ISP::Sanity->new();
-    my $ledger = ISP::Ledger->new();
+    my $sanity = Business::ISP::Sanity->new();
+    my $ledger = Business::ISP::Ledger->new();
 
     my $self     = shift;
     my $params   = shift;
@@ -114,7 +114,7 @@ sub purchase {
     # check for mandatory $error param
 
     unless (defined $error) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -125,7 +125,7 @@ sub purchase {
 
     if ($failure) {
         die     "There were errors, but you neglected to check them." .
-                "Please review 'perldoc ISP::Transac' for proper usage: $!";
+                "Please review 'perldoc Business::ISP::Transac' for proper usage: $!";
     }
 
 
@@ -151,11 +151,11 @@ sub purchase {
 
 sub payment {
 
-    use ISP::Sanity;
-    use ISP::Ledger;
+    use Business::ISP::Sanity;
+    use Business::ISP::Ledger;
 
-    my $sanity = ISP::Sanity->new;
-    my $ledger = ISP::Ledger->new;
+    my $sanity = Business::ISP::Sanity->new;
+    my $ledger = Business::ISP::Ledger->new;
 
     my $self        = shift;
     my $params      = shift;
@@ -169,7 +169,7 @@ sub payment {
     # check for mandatory $error param
 
     unless (defined $error) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -180,7 +180,7 @@ sub payment {
         
     if ($failure) {
         die     "There were errors, but you have not used the API properly." .
-                "Please review 'perldoc ISP::Transac' for proper usage: $!";
+                "Please review 'perldoc Business::ISP::Transac' for proper usage: $!";
     }
 
     # do sanity checking on the payment
@@ -214,9 +214,9 @@ sub payment {
 
 sub renew {
 
-    use ISP::Ledger;
-    use ISP::User;
-    use ISP::Sanity;
+    use Business::ISP::Ledger;
+    use Business::ISP::User;
+    use Business::ISP::Sanity;
 
     my $self        = shift;
     my $params      = shift;
@@ -229,17 +229,17 @@ sub renew {
 
     # check for mandatory $error param
     unless (defined $error) {
-        $error = ISP::Error->new;
+        $error = Business::ISP::Error->new;
         $error->bad_api();
     }
     
     #my $failure    = $error->exists();
     #if ($failure) {
 #       die "There were errors, but you have not used the API properly." .
-#           "Please review 'perldoc ISP::Transac for proper usage: $!";
+#           "Please review 'perldoc Business::ISP::Transac for proper usage: $!";
 #   }
 
-    my $ledger = ISP::Ledger->new();
+    my $ledger = Business::ISP::Ledger->new();
 
     my $transac_invoice_number
         = $ledger->write_ledger({
@@ -307,7 +307,7 @@ sub calculate_invoice_amount {
     my $username        = $params->{ username };
     my $transac_data    = $params->{ data }; # href
 
-    my $user = ISP::User->new({ username => $username });
+    my $user = Business::ISP::User->new({ username => $username });
     my $tax_exempt  = $user->tax_exempt();
 
     my $total_amount;
@@ -334,7 +334,7 @@ sub DESTROY {
 
 =head1 NAME
 
-ISP::Transac - Perl module for ISP accounting system.
+Business::ISP::Transac - Perl module for ISP accounting system.
 
 =cut
 our $VERSION = sprintf "%d", q$Revision: 188 $ =~ /(\d+)/;
@@ -342,10 +342,10 @@ our $VERSION = sprintf "%d", q$Revision: 188 $ =~ /(\d+)/;
 
 =head1 SYNOPSIS
 
-    use ISP::Transac;
+    use Business::ISP::Transac;
 
     # Create a new transaction, and populate it with some initial data
-    my $transaction = ISP::Transac->create_transaction({
+    my $transaction = Business::ISP::Transac->create_transaction({
                                                 data    => \%data, 
                                                 error   => $error
                                             });
@@ -366,15 +366,15 @@ for the ISP accounting system applications. This is the intermediary layer
 between the applications and the ledgers.
 
 This is the ONLY module that should ever have direct access to the write functions
-in ISP::Ledger.
+in Business::ISP::Ledger.
 
 =head1 METHODS
 
 =head2 new()
 
-Creates a new ISP::Transac object, and if possible, will set $self->{config} to
+Creates a new Business::ISP::Transac object, and if possible, will set $self->{config} to
 $config->{transac}. This method is inherited from the base class. More often than not,
-you will want to use create_transaction() to initialize an ISP::Transac object.
+you will want to use create_transaction() to initialize an Business::ISP::Transac object.
 
 Initializes a new empty transaction object. This method is inhereted from the base
 class. More often than not, you will want to use create_transaction() instead
@@ -386,15 +386,15 @@ Returns undef if an object can not be created.
 
 =head2 create_transaction({ data => TRANSAC_INFO, error => ERROR })
 
-Creates a new ISP::Transac object.
+Creates a new Business::ISP::Transac object.
 
 Parameters are passed in as a hash reference.
 
 The data parameter MUST contain a hash reference with the following keys: quantity,
 payment_method, item_name, comment, amount, payment, gst and pst. The error
-parameter is an ISP::Error object. ERROR MUST be present.
+parameter is an Business::ISP::Error object. ERROR MUST be present.
 
-Uses ISP::Sanity to validate the data, and updates ERROR accordingly.
+Uses Business::ISP::Sanity to validate the data, and updates ERROR accordingly.
 
 Returns ERROR if an error has been flagged, else returns itself as a hash
 reference.
@@ -411,7 +411,7 @@ Parameters must be passed in as a hash reference.
 
 TRANSAC_INFO format is consistent with that in create_transaction().
 
-ERROR is an ISP::Error object. ERROR MUST be supplied.
+ERROR is an Business::ISP::Error object. ERROR MUST be supplied.
 
 Returns 0 upon success and the ERROR upon failure.
 
@@ -420,14 +420,14 @@ Returns 0 upon success and the ERROR upon failure.
 
 =head2 purchase({ NAME => VALUE })
 
-Sends the Transac object to ISP::Ledger for processing. Will die if errors
+Sends the Transac object to Business::ISP::Ledger for processing. Will die if errors
 are present, and the caller has not done error trapping/processing.
 
 Valid parameters are as follows:
 
-    client      => $client      # ISP::User object
+    client      => $client      # Business::ISP::User object
     cc_receipt  => $cc_receipt  # bank receipt string
-    error       => $error       # ISP::Error object
+    error       => $error       # Business::ISP::Error object
 
 Both error and client are mandatory. Returns the invoice number of the
 transaction upon success.
@@ -450,7 +450,7 @@ Updates the ledger and account plan status for account renewals.
 RENEWALS is a mandatory array reference parameter. Each element must contain
 a hashref, where each hashref is in the format plan_id => int, quantity => int.
 
-ERROR is a manadory ISP::Error object parameter.
+ERROR is a manadory Business::ISP::Error object parameter.
 
 FIXME: This sub is incomplete, so we don't know what it will return yet.
 
@@ -462,7 +462,7 @@ FIXME: This sub is incomplete, so we don't know what it will return yet.
 There are two mandatory parameters that must be supplied within a hash
 reference.
 
-ERROR is an ISP::Error object, and DATA must be supplied as a hashref in the
+ERROR is an Business::ISP::Error object, and DATA must be supplied as a hashref in the
 following format:
 
     my $transaction_data = {                        
@@ -502,7 +502,7 @@ Please report any bugs or feature requests to C<steve at ibctech.ca>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Transac
+    perldoc Business::ISP::Transac
 
 
 =head1 ACKNOWLEDGEMENTS
@@ -518,4 +518,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of ISP::Transac
+1; # End of Business::ISP::Transac

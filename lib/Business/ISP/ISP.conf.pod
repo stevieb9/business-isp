@@ -1,10 +1,10 @@
 =head1 NAME
 
-ISP.conf - Configuration file for the core ISP:: modules.
+ISP.conf - Configuration file for the core Business::ISP:: modules.
 
 =head1 DESCRIPTION
 
-ISP.conf is the primary configuration file for the core ISP::
+ISP.conf is the primary configuration file for the core Business::ISP::
 modules.
 
 By default, it is installed into /usr/local/etc as ISP.conf-dist. It
@@ -28,14 +28,14 @@ Contains the system version number. Do not change it.
 
 
 
-=head2 [ ISP::Error ]
+=head2 [ Business::ISP::Error ]
 
 No directives at this time.
 
 
 
 
-=head2 [ ISP::Ledger ]
+=head2 [ Business::ISP::Ledger ]
 
 
 =head3 lines_to_stdout
@@ -50,7 +50,7 @@ Default: off.
 
 
 
-=head2 [ ISP::Sanity ]
+=head2 [ Business::ISP::Sanity ]
 
 =head3 validate_value_codeflow
 
@@ -92,14 +92,14 @@ Default: off.
 
 
 
-=head2 [ ISP::Transac ]
+=head2 [ Business::ISP::Transac ]
 
 No directives at this time.
 
 
 
 
-=head2 [ ISP::User ]
+=head2 [ Business::ISP::User ]
 
 =head3 plana_deduct_enable
 
@@ -126,7 +126,7 @@ Default: 5.
 
 
 
-=head2 [ ISP::Vars ]
+=head2 [ Business::ISP::Vars ]
 
 
 =head3 forgive_missing_attrs
@@ -140,7 +140,7 @@ Default: off.
 
 
 
-=head2 [ ISP::GUI::Accounting ]
+=head2 [ Business::ISP::GUI::Accounting ]
 
 =head3 enable_url_checksum
 

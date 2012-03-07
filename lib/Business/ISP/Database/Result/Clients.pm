@@ -1,4 +1,4 @@
-package ISP::Database::Result::Clients;
+package Business::ISP::Database::Result::Clients;
 use base qw/DBIx::Class/;
 
 __PACKAGE__->load_components( qw/Core/ );

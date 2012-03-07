@@ -1,16 +1,16 @@
-package ISP::Reports;
+package Business::ISP::Reports;
 
 use warnings;
 use strict;
 
-use ISP::User;
-use ISP::Sanity;
-use ISP::Error;
-use ISP::Ledger;
-use ISP::Email;
+use Business::ISP::User;
+use Business::ISP::Sanity;
+use Business::ISP::Error;
+use Business::ISP::Ledger;
+use Business::ISP::Email;
 
 use vars qw(@ISA);
-use base qw(ISP::Object);
+use base qw(Business::ISP::Object);
 
 BEGIN {
 # config accessors
@@ -53,7 +53,7 @@ sub income_by_payment_type {
         ? $params->{ date } 
         : $self->date({ get => 'day', datetime => $datetime });
 
-    my $ledger = ISP::Ledger->new();
+    my $ledger = Business::ISP::Ledger->new();
 
     my $doc_nums = $ledger->invoice_number( undef, $date ); # aref
 
@@ -83,7 +83,7 @@ sub income_by_payment_type {
                                                     fields => \@ledger_fields,
                                             });
 
-            my $client = ISP::User->new({ username => $entry_info->{ username } });
+            my $client = Business::ISP::User->new({ username => $entry_info->{ username } });
             $entry_info->{ fullname } = $client->fullname();
 
             my $payment_method      = $entry_info->{ payment_method };
@@ -124,7 +124,7 @@ sub income_by_item {
 
     my $single_item = $params->{ item };
 
-    my $ledger  = ISP::Ledger->new();
+    my $ledger  = Business::ISP::Ledger->new();
 
     # we need to use a custom DateTime obj, so we can pass it in with
     # the subtracted day, if the date wasn't passed in
@@ -202,7 +202,7 @@ sub unused_service {
         }       
         my %data; # the actual plan data
 
-        my $client = ISP::User->new({ username => $plan->username });
+        my $client = Business::ISP::User->new({ username => $plan->username });
 
         my $service_remaining;
 
@@ -260,7 +260,7 @@ sub unused_service {
 
             if ( $error->exists() ){
                 $error->add_trace();
-                $error->add_message( "ISP::User::plan_hours() triggered an error" );
+                $error->add_message( "Business::ISP::User::plan_hours() triggered an error" );
                 return $error;
             }
 
@@ -313,7 +313,7 @@ sub renewal_notices {
     my $template_dir = $self->TEMPLATE_DIR();
     my $template     = $template_dir . "/renewal_notice_report.tpl";
 
-    my $email   = ISP::Email->new();
+    my $email   = Business::ISP::Email->new();
 
     $email->email({
                 tmpl    => $template,
@@ -330,7 +330,7 @@ __END__
 
 =head1 NAME
 
-ISP::Reports - Reporting system for the ISP:: system.
+Business::ISP::Reports - Reporting system for the Business::ISP:: system.
 
 =head1 VERSION
 
@@ -340,12 +340,12 @@ ISP::Reports - Reporting system for the ISP:: system.
 
     # instantiate a new Report object
 
-    my $report = ISP::Reports->new();
+    my $report = Business::ISP::Reports->new();
 
 =head1 DESCRIPTION
 
 This module contains the structure and function for most all reporting
-that happens within the ISP:: System.
+that happens within the Business::ISP:: System.
 
 =head1 METHODS
 
@@ -393,7 +393,7 @@ have not yet used.
 
 If wanting a report on the clients who purchase blocks of hours, both
 the 'hours' and 'error' parameters are mandatory, passed in within a hash
-reference. BOOL must be set to a true value, and ERROR is an ISP::Error
+reference. BOOL must be set to a true value, and ERROR is an Business::ISP::Error
 object.
 
 Otherwise, if reporting on the number of months outstanding to
@@ -423,7 +423,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Reports
+    perldoc Business::ISP::Reports
 
 =head1 COPYRIGHT & LICENSE
 

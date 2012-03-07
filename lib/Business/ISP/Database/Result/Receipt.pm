@@ -1,4 +1,4 @@
-package ISP::Database::Result::Receipt;
+package Business::ISP::Database::Result::Receipt;
 use base qw/DBIx::Class/;
 
 __PACKAGE__->load_components( qw/Core/ );

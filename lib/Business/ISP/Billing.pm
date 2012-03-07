@@ -1,17 +1,17 @@
-package ISP::Billing;
+package Business::ISP::Billing;
 
 use warnings;
 use strict;
 
-use ISP::User;
-use ISP::Sanity;
-use ISP::Error;
-use ISP::Ledger;
-use ISP::Email;
-use ISP::Reports;
+use Business::ISP::User;
+use Business::ISP::Sanity;
+use Business::ISP::Error;
+use Business::ISP::Ledger;
+use Business::ISP::Email;
+use Business::ISP::Reports;
 
 use vars qw(@ISA);
-use base qw(ISP::Object);
+use base qw(Business::ISP::Object);
 
 BEGIN {
 # config accessors
@@ -48,7 +48,7 @@ sub email_bill {
 
     my $inv_num = $params->{ invoice };
 
-    my $ledger  = ISP::Ledger->new();
+    my $ledger  = Business::ISP::Ledger->new();
     my $invoice = $ledger->get_gledger({ invoice_number => $inv_num });
 
     my $invoice_data;   # href
@@ -59,7 +59,7 @@ sub email_bill {
     my $username        = $invoice->[0]->{ username };
     my $payment;
 
-    my $user        = ISP::User->new({ username => $username });
+    my $user        = Business::ISP::User->new({ username => $username });
 
     my $billto_addr = ( $user->billing_email_address() ne '' )
         ? $user->billing_email_address()
@@ -124,7 +124,7 @@ sub email_bill {
     $invoice_data->{ sub_total }        = $sub_total;
     $invoice_data->{ grand_total }      = $grand_total;
 
-    my $mailer  = ISP::Email->new();
+    my $mailer  = Business::ISP::Email->new();
     my $tmpl    = $self->TEMPLATE_DIR() . "/email_bill.tpl";
 
     $mailer->email({
@@ -147,12 +147,12 @@ sub renewal_notice {
     # die off if a type is not passed in
 
     if ( ! $account_type ) {
-        my $error = ISP::Error->new();
+        my $error = Business::ISP::Error->new();
         $error->add_trace();
         $error->bad_api( "account_type parameter is missing or incorrect. Values are 'month' or 'hour' ");
     }
 
-    my $user_object = ISP::User->new();
+    my $user_object = Business::ISP::User->new();
 
     my @renewals;
     my @notices;
@@ -173,9 +173,9 @@ sub renewal_notice {
 
             my $plan        = $user_object->get_plan( $plan_id );
             my $username    = $plan->{ username };
-            my $client      = ISP::User->new({ username => $username });
+            my $client      = Business::ISP::User->new({ username => $username });
 
-            my $error   = ISP::Error->new();
+            my $error   = Business::ISP::Error->new();
 
             my $hours_balance = $client->plan_hours({
                                                 id          => $plan_id,
@@ -243,7 +243,7 @@ sub renewal_notice {
     $sent{ notices }    = \@notices;
     $sent{ renewals }   = \@renewals;
 
-    my $report = ISP::Reports->new();
+    my $report = Business::ISP::Reports->new();
     $report->renewal_notices({
                             data    => \%sent,
                         });
@@ -261,7 +261,7 @@ __END__
 
 =head1 NAME
 
-ISP::Billing - Billing system for the ISP:: system.
+Business::ISP::Billing - Billing system for the Business::ISP:: system.
 
 =head1 VERSION
 
@@ -269,11 +269,11 @@ ISP::Billing - Billing system for the ISP:: system.
 
 =head1 SYNOPSIS
 
-    use ISP::Billing;
+    use Business::ISP::Billing;
 
     # create a billing object
 
-    my $billing = ISP::Billing->new();
+    my $billing = Business::ISP::Billing->new();
 
     # email an invoice/receipt
 
@@ -289,7 +289,7 @@ This is module performs all client billing functions.
 
 =head2 new
 
-Instantiates a new ISP::Billing object
+Instantiates a new Business::ISP::Billing object
 
 
 
@@ -316,7 +316,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Billing
+    perldoc Business::ISP::Billing
 
 =head1 COPYRIGHT & LICENSE
 

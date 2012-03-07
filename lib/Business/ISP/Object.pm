@@ -1,4 +1,4 @@
-package ISP::Object;
+package Business::ISP::Object;
 
 use strict;
 use warnings;
@@ -144,9 +144,9 @@ sub new {
 
     # class specific
     
-    if ( $class =~ /ISP::GUI/ ) {
+    if ( $class =~ /Business::ISP::GUI/ ) {
     
-        my $gui_base = 'ISP::GUI::Base';
+        my $gui_base = 'Business::ISP::GUI::Base';
         
         while ( my ( $key, $value ) = each ( %{ $config->{ $gui_base } } )) {
                 $key = uc $key;
@@ -454,8 +454,8 @@ sub dsn {
 }
 sub schema {
 
-    use ISP::Database;
-    use ISP::Replicated;
+    use Business::ISP::Database;
+    use Business::ISP::Replicated;
 
     my $self    = shift;
     my $params  = shift;
@@ -497,7 +497,7 @@ sub schema {
     if ( ! $self->IN_TEST_MODE() && $self->ENABLE_REPLICATION() ) {
     
         my $schema 
-            = ISP::Replicated->connect( @{ $master } );
+            = Business::ISP::Replicated->connect( @{ $master } );
 
         $schema->storage->connect_replicants( @{ $database_servers } );
         
@@ -505,7 +505,7 @@ sub schema {
     }
 
     my $schema
-        = ISP::Database->connect( @{ $master } );
+        = Business::ISP::Database->connect( @{ $master } );
 
     return $schema;
 }
@@ -773,24 +773,24 @@ sub DESTROY {
 
 =head1 NAME
 
-ISP::Object - This module is the base class for all other modules under the ISP:: umbrella.
+Business::ISP::Object - This module is the base class for all other modules under the Business::ISP:: umbrella.
 
 =head1 SYNOPSIS
 
-    use ISP::Transac; # does not override new()
-    use ISP::User;    # overrides new
+    use Business::ISP::Transac; # does not override new()
+    use Business::ISP::User;    # overrides new
 
     # Instantiate a new object who's class does not provide a new() method
-    my $transaction = ISP::Transaction->new();
+    my $transaction = Business::ISP::Transaction->new();
 
     # Load in info from the config file if the object's class overrides the
     # new() method
-    my $user = ISP::User->new();
+    my $user = Business::ISP::User->new();
     $user->configure();
     
 =head1 DESCRIPTION
 
-This module contains base methods common to multiple other classes. All ISP:: modules should
+This module contains base methods common to multiple other classes. All Business::ISP:: modules should
 use this class as it's base class.
 
 =head1 METHODS
@@ -854,7 +854,7 @@ of the running application.
 This method is used to perform global operations, such as stack tracing,
 profiling, codeflow rendering etc.
 
-All methods in all classes in the ISP:: umbrella call this method
+All methods in all classes in the Business::ISP:: umbrella call this method
 just after shifting $self.
 
 Takes no parameters, and it has no return.
@@ -1114,7 +1114,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Object
+    perldoc Business::ISP::Object
 
 =head1 COPYRIGHT & LICENSE
 

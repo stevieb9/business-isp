@@ -1,10 +1,10 @@
-package ISP::User;
+package Business::ISP::User;
 
 use strict;
 use warnings;
 
 use vars qw( @ISA );
-use base qw( ISP::Object );
+use base qw( Business::ISP::Object );
 
 use Carp;
 $Carp::Verbose = 1;
@@ -163,7 +163,7 @@ sub client_info {
 
     my $error       = ( exists $params->{ error } )
         ? $params->{ error }
-        : ISP::Error->new();
+        : Business::ISP::Error->new();
 
     $self->function_orders();
 
@@ -180,7 +180,7 @@ sub client_info {
     
     my $existing_client_info = $client_info_rs->first;
 
-    my $sanity  = ISP::Sanity->new();
+    my $sanity  = Business::ISP::Sanity->new();
 
     $client_info->{ last_update } = $self->full_date();
     
@@ -227,7 +227,7 @@ sub add_client {
     $client_info->{ id } = '';
     $client_info->{ last_update } = $self->full_date();
 
-    my $sanity      = ISP::Sanity->new();
+    my $sanity      = Business::ISP::Sanity->new();
     $sanity->validate_data({
                     type    => 'user_info', 
                     data    => $client_info, 
@@ -350,7 +350,7 @@ sub add_plan {
         }
     }
 
-    my $sanity = ISP::Sanity->new;
+    my $sanity = Business::ISP::Sanity->new;
 
     $sanity->validate_data({ 
                 type    => 'plan_info', 
@@ -606,7 +606,7 @@ sub plan_hours {
 
     my $plan        = $self->get_plan( $id );
 
-    my $sanity      = ISP::Sanity->new();
+    my $sanity      = Business::ISP::Sanity->new();
     $sanity->validate_data({ 
                 type    => 'plan_info', 
                 data    => $plan, 
@@ -646,7 +646,7 @@ sub modify_plan_expiry {
 
     my $plan        = $self->get_plan( $id );
 
-    my $sanity = ISP::Sanity->new();
+    my $sanity = Business::ISP::Sanity->new();
     $sanity->validate_data({
                 type    => 'plan_info', 
                 data    => $plan, 
@@ -689,8 +689,8 @@ sub modify_plan_expiry {
 }   
 sub plana_deduction {
 
-    use ISP::Error;
-    use ISP::Sanity;
+    use Business::ISP::Error;
+    use Business::ISP::Sanity;
 
     use Data::Dumper;
 
@@ -704,7 +704,7 @@ sub plana_deduction {
     # the very first thing we do is ensure that we already haven't
     # run in this current month
 
-    my $sanity      = ISP::Sanity->new();
+    my $sanity      = Business::ISP::Sanity->new();
     my $executed = $sanity->audit({
                                 operator    => 'system',
                                 runtype     => 'auto',
@@ -739,7 +739,7 @@ sub plana_deduction {
     for my $plan_id ( @$plan_ids ) {
 
         my $username    = shift @$usernames;
-        my $user        = ISP::User->new({ username => $username });
+        my $user        = Business::ISP::User->new({ username => $username });
 
         my $hours_remaining 
             = $self->plan_hours({ id => $plan_id, quantity => 0, error => $error });
@@ -941,7 +941,7 @@ sub delete_notes {
 }
 sub write_plan_changes {
 
-    use ISP::Sanity;
+    use Business::ISP::Sanity;
 
     my $self    = shift;
     my $params  = shift;
@@ -953,7 +953,7 @@ sub write_plan_changes {
     my $updated_plan    = $params->{ plan };
     my $field_to_change = $params->{ change };
 
-    my $sanity  = ISP::Sanity->new();
+    my $sanity  = Business::ISP::Sanity->new();
 
     $sanity->validate_data({ 
                 type    => 'plan_info', 
@@ -966,7 +966,7 @@ sub write_plan_changes {
     $self->function_orders();
 
     unless (defined $error) {
-        $error = ISP::Error->new();
+        $error = Business::ISP::Error->new();
         $error->bad_api();
     }
 
@@ -1058,7 +1058,7 @@ sub plan_members {
 }
 sub get_monthly_login_totals {
 
-    use ISP::RADIUS;
+    use Business::ISP::RADIUS;
 
     my $self    = shift;
     my $params  = shift;
@@ -1074,7 +1074,7 @@ sub get_monthly_login_totals {
     $username    = $self->username_to_login( $plan, $username );
 
     if ( $class ) {
-        my $radius  = ISP::RADIUS->new();
+        my $radius  = Business::ISP::RADIUS->new();
 
         $stats  
             = $radius->monthly_login_totals({
@@ -1087,7 +1087,7 @@ sub get_monthly_login_totals {
 }
 sub get_month_hours_used {
     
-    use ISP::RADIUS;
+    use Business::ISP::RADIUS;
 
     my $self    = shift;
     my $params  = shift;
@@ -1104,7 +1104,7 @@ sub get_month_hours_used {
 
     $username = $self->username_to_login( $plan, $username );
 
-    my $radius  = ISP::RADIUS->new();
+    my $radius  = Business::ISP::RADIUS->new();
     
     if ( $month ) {
     
@@ -1127,7 +1127,7 @@ sub plan_classification {
 
     my $plan    = $params->{ plan };
 
-    my $vardb   = ISP::Vars->new();
+    my $vardb   = Business::ISP::Vars->new();
     
     my $class 
         = $vardb->plan_classification({ plan => $plan });
@@ -1153,7 +1153,7 @@ sub last_plan_update {
 }
 sub radius_password {
 
-    use ISP::RADIUS;
+    use Business::ISP::RADIUS;
 
     my $self        = shift;
     my $params      = shift;
@@ -1164,7 +1164,7 @@ sub radius_password {
 
     $self->function_orders();
 
-    my $radius      = ISP::RADIUS->new();
+    my $radius      = Business::ISP::RADIUS->new();
 
     # return if getter
     return $radius->password({ username => $self->username() }) if ! $new_pw;
@@ -1192,24 +1192,24 @@ __END__
 
 =head1 NAME
 
-ISP::User - Perl module for ISP user operations.
+Business::ISP::User - Perl module for ISP user operations.
 
 =head1 SYNOPSIS
 
-  # Initialize and populate a new ISP::User
-  use ISP::User;
-  my $user = ISP::User->new({ username => 'username' });
+  # Initialize and populate a new Business::ISP::User
+  use Business::ISP::User;
+  my $user = Business::ISP::User->new({ username => 'username' });
 
 =head1 DESCRIPTION
 
 This module is used for all client information gathering, manipulation and storage
-functions within the ISP:: collection of modules, and the ISP accounting system.
+functions within the Business::ISP:: collection of modules, and the ISP accounting system.
 
 =head1 METHODS
 
 =head2 new ({ username => USERNAME })
 
-Instantiates a new ISP::User object.
+Instantiates a new Business::ISP::User object.
 
 The optional parameter USERNAME is a scalar string, and is passed in within a
 hash reference. If present, will attempt to configure itself with the user's
@@ -1245,13 +1245,13 @@ Sets and gets the client's personal information.
 CLIENT_INFO is an optional parameter, and if present, will update the client's
 information with the data set in The user object itself will be updated. 
 
-The format of the data is that of the 'user_info' hashref as documented in ISP::Vars. 
+The format of the data is that of the 'user_info' hashref as documented in Business::ISP::Vars. 
 This parameter must be passed in within a hash reference.
 
 If the parameter is not passed in, a hash reference of the current user's info
 is returned.
 
-If the parameter is passed in, this method will die() via ISP::Sanity if the param
+If the parameter is passed in, this method will die() via Business::ISP::Sanity if the param
 contains illicit data. Otherwise, the return will be success (0).
 
 
@@ -1262,10 +1262,10 @@ Adds a new client to the database.
 
 There are two mandatory params, passed in within a hash reference.
 
-error is an ISP::Error object. CLIENT_INFO is a hash reference type as defined
-in ISP::Vars.
+error is an Business::ISP::Error object. CLIENT_INFO is a hash reference type as defined
+in Business::ISP::Vars.
 
-Returns the ISP::Error object upon Sanity failure, or if trying to
+Returns the Business::ISP::Error object upon Sanity failure, or if trying to
 create a client who has the same username as someone else.
 
 Returns 0 upon success.
@@ -1289,7 +1289,7 @@ Returns 1 upon success, and 0 if the user could not be found/deleted.
 
 Adds a new account plan for the pre-configured user object that calls us.
 
-PLAN_INFO and ERROR are both mandatory parameters, ERROR is an ISP::Error.
+PLAN_INFO and ERROR are both mandatory parameters, ERROR is an Business::ISP::Error.
 
 DATE is an optional parameter, and must be in the form YYYY-MM-DD. This param
 is primarily only used with the Conversion utility. It sets the plan
@@ -1384,7 +1384,7 @@ Modifies the active/non-active status of a users account plan.
 All three parameters are mandatory, and are passed in within a hash reference.
 
 OP is the name of the operator performing the task. ID is the id of the plan
-itself, and ERROR is an ISP::Error object.
+itself, and ERROR is an Business::ISP::Error object.
 
 
 
@@ -1429,9 +1429,9 @@ account plan, if the plan is PlanA.
 All three parameters are mandatory, and are passed in within a hash reference.
 
 Supply a negative integer as QTY to subtract from the total, or 0 to
-simply return the current balance of hours. ERROR is ISP::Error object.
+simply return the current balance of hours. ERROR is Business::ISP::Error object.
 
-An ISP::Error will be returned immediately if the plan 'id' is invalid.
+An Business::ISP::Error will be returned immediately if the plan 'id' is invalid.
 
 Returns 1 on failure, and returns the updated number of hours remaining
 in the client account plan upon success.
@@ -1453,7 +1453,7 @@ expiry date.
 Upon failure, returns are identical to plan_hours(), but on success,
 returns the new expiry date in YYYY-MM-DD format.
 
-An ISP::Error object will be returned immediately if the plan 'id' is
+An Business::ISP::Error object will be returned immediately if the plan 'id' is
 invalid.
 
 
@@ -1467,7 +1467,7 @@ If 'plana_deduct_enable' is set to true in the configuration file, any
 user who didn't use up to their minimum hours (plana_min_hours in the config file)
 will have that time deducted as well.
 
-The ERROR paramater is mandatory, and is an ISP::Error object.
+The ERROR paramater is mandatory, and is an Business::ISP::Error object.
 
 MONTH is a scalar string in the format YYYY-MM. If it is provided, the month
 specified will be operated on, as opposed to the default of last month.
@@ -1541,7 +1541,7 @@ Takes four mandatory params within a hash reference:
 
 ID is the id of the plan to change.
 PLAN is the plan information that include the desired changes.
-ERROR is an ISP::Error object.
+ERROR is an Business::ISP::Error object.
 
 CHANGE is the plan item(s) that are to be updated. If a scalar value is passed in,
 only that item will be changed. If CHANGE is passed in as an array reference, all
@@ -1595,11 +1595,11 @@ time duration ).
 PLAN is the hashref representing the user's plan that you want to operate
 on.
 
-ISP::RADIUS is a prerequisite for using this method.
+Business::ISP::RADIUS is a prerequisite for using this method.
 
 Returns an array reference of hash references.
 
-See ISP::RADIUS::monthly_login_totals() for further details.
+See Business::ISP::RADIUS::monthly_login_totals() for further details.
 
 
 
@@ -1618,7 +1618,7 @@ with the month you specify.
 
 The parameters must be passed in within a hashref.
 
-See ISP::RADIUS::month_hours_used() for further details.
+See Business::ISP::RADIUS::month_hours_used() for further details.
 
 
 

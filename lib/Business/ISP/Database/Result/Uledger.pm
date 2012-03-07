@@ -1,4 +1,4 @@
-package ISP::Database::Result::Uledger;
+package Business::ISP::Database::Result::Uledger;
 use base qw/DBIx::Class/;
 
 __PACKAGE__->load_components( qw/Core/ );

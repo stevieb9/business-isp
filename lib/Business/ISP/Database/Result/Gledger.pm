@@ -1,4 +1,4 @@
-package ISP::Database::Result::Gledger;
+package Business::ISP::Database::Result::Gledger;
 use base qw/DBIx::Class/;
 
 __PACKAGE__->load_components( qw/Core/ );

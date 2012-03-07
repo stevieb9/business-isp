@@ -1,9 +1,9 @@
-package ISP::Database::Result::Notes;
+package Business::ISP::Database::Result::Notes;
 use base qw/DBIx::Class/;
 
 __PACKAGE__->load_components( qw/Core/ );
 
-#__PACKAGE__->load_components( qw/ +ISP::Database::Override / );
+#__PACKAGE__->load_components( qw/ +Business::ISP::Database::Override / );
 
 
 __PACKAGE__->table( 'notes' );

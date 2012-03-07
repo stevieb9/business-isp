@@ -1,4 +1,4 @@
-package ISP::Email;
+package Business::ISP::Email;
 
 use warnings;
 use strict;
@@ -6,7 +6,7 @@ use strict;
 use MIME::Lite::TT;
 
 use vars qw(@ISA);
-use base qw(ISP::Object);
+use base qw(Business::ISP::Object);
 
 BEGIN {
 # config accessors
@@ -86,7 +86,7 @@ __END__
 
 =head1 NAME
 
-ISP::Email - Emailing system for the ISP:: system.
+Business::ISP::Email - Emailing system for the Business::ISP:: system.
 
 =head1 VERSION
 
@@ -105,7 +105,7 @@ This is module performs all email functions.
 
 =head2 new
 
-Instantiates a new ISP::Email object, and returns itself.
+Instantiates a new Business::ISP::Email object, and returns itself.
 
 
 
@@ -138,7 +138,7 @@ back to you with any updates.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ISP::Email
+    perldoc Business::ISP::Email
 
 =head1 COPYRIGHT & LICENSE
 
