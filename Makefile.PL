@@ -8,6 +8,8 @@ use Config::Tiny;
 use Data::Dumper;
 use File::Copy;
 
+my $manual_configuration = $ARGV[0];
+
 my $conf_file = ( -e 'ISP.conf-dist' )
 	? 'ISP.conf-dist'
 	: 'src/conf/ISP.conf-dist';
@@ -71,28 +73,32 @@ my %email_directives = (
 				email_addr_support	=> "Support department's email address [$config->{ 'Business::ISP::Email' }->{ email_addr_support }] : ",
 			);
 
-for my $directive ( keys %directives ) {
+if ( $manual_configuration ) {
+    
+	for my $directive ( keys %directives ) {
 
-	print "$directives{ $directive }";
+		print "$directives{ $directive }";
 	
-	my $response = <STDIN>;
-	chomp $response;
+		my $response = <STDIN>;
+		chomp $response;
 	
-	$config->{ Constants }{ $directive } = $response if $response;
+		$config->{ Constants }{ $directive } = $response if $response;
 
-}
+	}
 
-print "\n\n";
+	print "\n\n";
 
-for my $directive ( keys %email_directives ) {
+	for my $directive ( keys %email_directives ) {
 
-	print "$email_directives{ $directive }";
+		print "$email_directives{ $directive }";
 
-	my $response = <STDIN>;
-	chomp $response;
+		my $response = <STDIN>;
+		chomp $response;
 
-	$config->{ 'Business::ISP::Email' }{ $directive } = $response if $response;
-}
+		$config->{ 'Business::ISP::Email' }{ $directive } = $response if $response;
+	}
+
+} #end $manual_configuration
 
 $config->{ Constants }{ acct_app }
 	= $config->{ Constants }{ http_server }
@@ -114,12 +120,11 @@ my %system_info = (
 for my $sys_directive ( keys %system_info ) {
 
 	print "$system_info{ $sys_directive }";
-	my $response = <STDIN>;
+	my $response;
+    $response = <STDIN> if $manual_configuration;
 	chomp $response;
 
-	$system_info{ $sys_directive } = ( $response )
-		? $response
-		: 'www';
+	$system_info{ $sys_directive } = $response || 'www'; 
 }
 
 # install the test db
@@ -149,6 +154,7 @@ WWWUSER		= $system_info{ WWWUSER }
 '
 install:: all cgi conf graphics docs libs templates retest
 clean::	clean_sourcedirs clean_test
+cleanall: clean_sourcedirs clean_test clean_dist
 
 cgi:
 	install -m 0500 -o www -g www src/cgi-bin/accounting.cgi ${CGIDIR}
@@ -168,6 +174,10 @@ clean_dist:
 	rm -f Makefile.old
 	rm -f ISP.conf-dist
 	rm -f MANIFEST.bak 
+	rm -f Makefile
+	rm -f MYMETA.json
+	rm -f MYMETA.yml
+
 
 conf:
 	install -m 0640 -o ${WWWUSER} -g ${WWWUSER} ISP.conf-dist ${CONFDIR}
@@ -220,7 +230,7 @@ retest:
 sub nothing{} # fold placeholder for vim
 
 WriteMakefile(
-    NAME                => 'ISP',
+    NAME                => 'Business::ISP',
     AUTHOR              => 'Steve Bertrand <steveb@cpan.org>',
     VERSION_FROM		=> 'lib/Business/ISP/Object.pm',
 
@@ -247,7 +257,7 @@ WriteMakefile(
 		'DBIx::Class'							=> 0,
 		'Data::Types'							=> 0, # deprecate
 		'Business::ISP::RADIUS'							=> 0.02,
-		'EagleUser'								=> 0, # deprecate
+        #'EagleUser'								=> 0, # deprecate
 		'Exact::Transaction'					=> 0, # deprecate due to licensing
 		'MIME::Lite::TT'						=> 0,
 	},

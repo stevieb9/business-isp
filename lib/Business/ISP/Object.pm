@@ -4,7 +4,7 @@ use strict;
 use warnings;
 no warnings 'redefine';
 
-our $VERSION = '0.13_01';
+our $VERSION = '0.13_02';
 
 use Carp;
 $Carp::Verbose = 1;

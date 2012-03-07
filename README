@@ -26,7 +26,7 @@ and am currently making sweeping changes, most of all the
 cleanup of redundant and repetitive code, and smoothing out
 the dependency trees.
 
-Things WILL change.
+Things WILL change, and things ARE broken :)
 
 
 
@@ -36,18 +36,27 @@ To install this module, run the following commands:
 
     (The install is problematic at best)
 
-	perl Makefile.PL
-	make
-	make test
-	
-	Note: if you run into errors while running 'make test', find out
-	      which file is causing grief (eg. t/21-audit.t), and run 
-		  'perl t/21-audit.t'.
-		
-		  Many of the test files have diagnostic printouts on what is
-		  wrong, and potential solutions on how to fix.
+    perl Makefile.PL configure
+    make
+    make test
+    
+    Notes:
+          The 'configure' argument to the 'perl Makefile.PL' line is
+          necessary. Supplying no argument will use defaults, which
+          you most likely do not want. This allows CPAN to bypass the
+          user-input portion of the setup.
+ 
+          if you run into errors while running 'make test', find out
+          which file is causing grief (eg. t/21-audit.t), and run 
+          'perl t/21-audit.t'.
+        
+          Many of the test files have diagnostic printouts on what is
+          wrong, and potential solutions on how to fix.
 
-	make install
+    make install
+
+
+
 
 =head1 SUPPORT AND DOCUMENTATION
 
