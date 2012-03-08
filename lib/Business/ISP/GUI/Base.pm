@@ -200,7 +200,7 @@ sub platform {
 
     my $software_version = $self->VERSION();
 
-    if ( $software_version =~ /d$/ ) {
+    if ( $software_version =~ /_\d+$/ ) {
         my $is_devel_system = 1;
         $self->pb_param( is_devel_system => $is_devel_system );
     }

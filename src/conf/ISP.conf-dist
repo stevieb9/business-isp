@@ -15,7 +15,7 @@ disable_validate_value  = 0 ; only for testing
 [Business::ISP::Transac]
 
 [Business::ISP::User]
-plana_deduct_enable     = 1 ; perform monthly plana deductions
+plana_deduct_enable     = 0 ; perform monthly plana deductions
 plana_min_hours         = 5 ; number of hours user must use each month
 
 [Business::ISP::Vars]

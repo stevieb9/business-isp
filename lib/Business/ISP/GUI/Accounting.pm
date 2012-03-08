@@ -2060,6 +2060,7 @@ sub _receipt_header {
             die_on_bad_params => $self->DIE_ON_BAD_PARAMS(),
         );
 
+    #FIXME bug6
     # same as _header()...
     # check to see if we're operating on a development system and
     # notify the user. We don't want to confuse production boxes
@@ -2067,7 +2068,7 @@ sub _receipt_header {
 
     my $software_version = $self->VERSION();
     
-    if ( $software_version =~ /d$/ ) {
+    if ( $software_version =~ /_\d+$/ ) {
 
         my $is_devel_system = 1;
         $self->pb_param( is_devel_system => $is_devel_system );
