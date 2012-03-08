@@ -263,8 +263,8 @@ WriteMakefile(
 	},
     META_MERGE => {
         resources => {
-            bugtracker  =>      'https://bitbucket.org/spek/isp/issues',
-            repository  =>      'https://bitbucket.org/spek/isp',
+            bugtracker  =>      'https://bitbucket.org/spek/business-isp/issues',
+            repository  =>      'https://bitbucket.org/spek/business-isp',
         },
     },
 
