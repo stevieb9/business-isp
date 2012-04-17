@@ -6,32 +6,32 @@ html         { color: #5C5C5C; text-decoration: none; }
 .quickview a:visited    { color: #FFAD5B; text-decoration: none; }
 .quickview html         { color: #5C5C5C; text-decoration: none; }
 
-.alert a:link		{ color: red; text-decoration: none; }
-.alert a:visited	{ color: red; text-decoration: none; }
-.alert a:html		{ color: red; text-decoration: none; }
+.alert a:link       { color: red; text-decoration: none; }
+.alert a:visited    { color: red; text-decoration: none; }
+.alert a:html       { color: red; text-decoration: none; }
 
 body {
-	font-family: 	Verdana,Arial,Helvetica,Sans Serif;
-	font-size:	10pt;
+    font-family:    Verdana,Arial,Helvetica,Sans Serif;
+    font-size:  10pt;
 }
 
 th {
-	background-color: #ff8000;
-	text-align:	  left;
+    background-color: #ff8000;
+    text-align:   left;
 }
 
 table#accounting {
 
-	align:center;
-	background-color:#ffffff;
-	border-collapse: collapse;
-	font-size: 10pt;
-	width:     760;
+    align:center;
+    background-color:#ffffff;
+    border-collapse: collapse;
+    font-size: 10pt;
+    width:     760;
 }
 
 table#plans {
-	
-	padding: 10px;
+    
+    padding: 10px;
         background-color:#ffffff;
         border-collapse: collapse;
         font-size: 10pt;
@@ -39,13 +39,13 @@ table#plans {
 }
 
 table#error {
-	font-size:	10pt;
+    font-size:  10pt;
 }
 
 .toprow {
 
-	background-color: #FF8000;
-	font-size:	  10pt;
+    background-color: #FF8000;
+    font-size:    10pt;
 }
 
 .status {
@@ -53,48 +53,48 @@ table#error {
 
 .function {
 
-	background-color: #ffffff;
-	font-weight: 	bold;
-	font-size:	10pt;
-	align: 		center;
+    background-color: #ffffff;
+    font-weight:    bold;
+    font-size:  10pt;
+    align:      center;
 }
 
 .plan {
 
-	background-color: #FFffff;
-	font-weight: 	bold;
-	color:		#ff8000;
-	font-size:	10pt;
-	width:		110;
+    background-color: #FFffff;
+    font-weight:    bold;
+    color:      #ff8000;
+    font-size:  10pt;
+    width:      110;
 
 }
 
 .heading {
-	background-color: #ffff99;
+    background-color: #ffff99;
 }
 
 .whitespace {
-	
-	background-color: #ffffff;
-	color:		  #ffffff;
+    
+    background-color: #ffffff;
+    color:        #ffffff;
 }
 
 .quickview {
-	font-size:	12pt;
+    font-size:  12pt;
 }
 
 .searchbox {
-	maxlength:	30;
+    maxlength:  30;
 }
 
 .info {
-	font-weight:	  bold;
+    font-weight:      bold;
 }
 
 .error-text {
-	text-align:	left;
-}	
+    text-align: left;
+}   
 
 .alert {
-	color: red;
+    color: red;
 }
