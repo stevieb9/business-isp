@@ -31,7 +31,7 @@ sub current_plan_password_to_db {
 
     my $self    = shift;
     my $user_db = Business::ISP::User->new();
-    my $radius  = Business::ISP::RADIUS->new();
+    my $radius  = FreeRADIUS::Database->new();
 
     my @client_list = $user_db->get_client_list();
 

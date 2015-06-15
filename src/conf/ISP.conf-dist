@@ -35,7 +35,7 @@ client_cookie_expiry    = 30m ; must be higher than client_session_expiry
 client_login_timeout    = 5m ; must be less than both cookie and session expiry
 
 [Business::ISP::GUI::Accounting]
-display_plan_stats      = 1 ; show up/down/hrs -- requires Business::ISP::RADIUS
+display_plan_stats      = 1 ; show up/down/hrs -- requires FreeRADIUS::Database 
 display_contact_info    = 1 
 display_source_repo     = 0 ; display the link to the source repository
 

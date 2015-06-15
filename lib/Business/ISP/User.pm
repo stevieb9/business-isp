@@ -1058,7 +1058,7 @@ sub plan_members {
 }
 sub get_monthly_login_totals {
 
-    use Business::ISP::RADIUS;
+    use FreeRADIUS::Database;
 
     my $self    = shift;
     my $params  = shift;
@@ -1074,7 +1074,7 @@ sub get_monthly_login_totals {
     $username    = $self->username_to_login( $plan, $username );
 
     if ( $class ) {
-        my $radius  = Business::ISP::RADIUS->new();
+        my $radius  = FreeRADIUS::Database->new();
 
         $stats  
             = $radius->monthly_login_totals({
@@ -1087,7 +1087,7 @@ sub get_monthly_login_totals {
 }
 sub get_month_hours_used {
     
-    use Business::ISP::RADIUS;
+    use FreeRADIUS::Database;
 
     my $self    = shift;
     my $params  = shift;
@@ -1104,7 +1104,7 @@ sub get_month_hours_used {
 
     $username = $self->username_to_login( $plan, $username );
 
-    my $radius  = Business::ISP::RADIUS->new();
+    my $radius  = FreeRADIUS::Database->new();
     
     if ( $month ) {
     
@@ -1153,7 +1153,7 @@ sub last_plan_update {
 }
 sub radius_password {
 
-    use Business::ISP::RADIUS;
+    use FreeRADIUS::Database;
 
     my $self        = shift;
     my $params      = shift;
@@ -1164,7 +1164,7 @@ sub radius_password {
 
     $self->function_orders();
 
-    my $radius      = Business::ISP::RADIUS->new();
+    my $radius      = FreeRADIUS::Database->new();
 
     # return if getter
     return $radius->password({ username => $self->username() }) if ! $new_pw;
@@ -1595,11 +1595,11 @@ time duration ).
 PLAN is the hashref representing the user's plan that you want to operate
 on.
 
-Business::ISP::RADIUS is a prerequisite for using this method.
+FreeRADIUS::Database is a prerequisite for using this method.
 
 Returns an array reference of hash references.
 
-See Business::ISP::RADIUS::monthly_login_totals() for further details.
+See FreeRADIUS::Database::monthly_login_totals() for further details.
 
 
 
@@ -1618,7 +1618,7 @@ with the month you specify.
 
 The parameters must be passed in within a hashref.
 
-See Business::ISP::RADIUS::month_hours_used() for further details.
+See FreeRADIUS::Database::month_hours_used() for further details.
 
 
 

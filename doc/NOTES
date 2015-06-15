@@ -24,7 +24,9 @@ EagleUser				( scary, deprecated! )
 DBD::mysql
 CGI::HTMLError
 Email::Valid
-Business::ISP::RADIUS
+FreeRADIUS::Database
+Switch
+Cwd
 
 * profiles need to be copied
 * template directories need to be created manually

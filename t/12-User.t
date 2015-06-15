@@ -120,8 +120,8 @@ can_ok('Business::ISP::User', ('new'));
 
 SKIP: {
     
-    eval { require Business::ISP::RADIUS };
-    skip "Business::ISP::RADIUS not installed" if $@;
+    eval { require FreeRADIUS::Database };
+    skip "FreeRADIUS::Database not installed" if $@;
 
     { # get_monthly_login_totals
     
@@ -159,7 +159,7 @@ SKIP: {
         ok ( $last_pw eq $orig_pw, "radius_password can reset the password back to original" );
     }
 
-} # end skip no Business::ISP::RADIUS
+} # end skip no FreeRADIUS::Database
 
 #
 # plan_password()

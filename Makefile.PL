@@ -256,8 +256,8 @@ WriteMakefile(
 		'DBIx::Recordset'						=> 0, # deprecate
 		'DBIx::Class'							=> 0,
 		'Data::Types'							=> 0, # deprecate
-		'Business::ISP::RADIUS'							=> 0.02,
-        #'EagleUser'								=> 0, # deprecate
+		'FreeRADIUS::Database'							=> 0.02,
+	        #'EagleUser'								=> 0, # deprecate
 		'Exact::Transaction'					=> 0, # deprecate due to licensing
 		'MIME::Lite::TT'						=> 0,
 	},
